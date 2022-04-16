@@ -1,5 +1,6 @@
 html {
-    font-family: 'Crimson Text', serif, 'Font Awesome';
+    font-family: 'Amiri', serif, 'Font Awesome';
+    text-underline-offset: 0.1em;
 }
 
 /* article h1 {
@@ -46,11 +47,11 @@ nav ul p {
 }
 
 nav li a:hover {
-    border-bottom: 0.1em solid #cc0000;
+    text-decoration: underline;
 }
 
 nav p a:hover {
-    border-bottom: 0.1em solid black;
+    text-decoration: underline;
 }
 
 a {
@@ -58,7 +59,13 @@ a {
 }
 
 article p {
+    text-indent: 1em;
     margin-bottom: 2em;
+}
+
+article li {
+    text-indent: 0.5em;
+    margin-top: 0.3em;
 }
 
 hgroup {
@@ -116,7 +123,6 @@ article section aside {
     padding-right: 1em;
     display: inline-block;
     width: 20em;
-    line-height: normal;
     vertical-align: middle;
 }
 
@@ -138,7 +144,7 @@ article a:hover {
 }
 
 article footer a:hover {
-    border-bottom: 0.1em solid #cc0000;
+    text-decoration: underline;
 }
 
 figure {
