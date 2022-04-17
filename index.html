@@ -2,11 +2,31 @@
 title: Liam Pulles
 description: Home
 ---
-<article><hgroup>
-    <h3>
-        <p>Hi! I'm Liam, and this is my site.</p>
-        <p>Here you can learn more <a href="/about">about</a> me, read my <a href="/blog">blog</a>,<br> see my 
-        <a href="/digital_restorations">digital restorations</a>, or check out my <a href="{{site.projects}}">code</a>.</p>
-        <p>Questions? Drop me a <a href="mailto:{{site.email}}">mail</a>.</p>
-    </h3>
-</hgroup></article>
+<article>
+    <section>
+        <h1>Welcome!</h1>
+        <p>Hi there - if you're interested in my writing, read on. If you want to hire me (or otherwise find out more about me), then you may wish to see my <a href="/biography.html">biography</a> or my <a href="{{ site.projects }}">code</a></p>
+    </section>
+    <section class="toc">
+        <h2>Blog posts</h2>
+        <ul>
+        {% for post in site.posts %}
+            <li>
+                <span>{{ post.date | date_to_string }}</span>
+                <a href="{{ post.url }}">{{ post.title }}</a>
+            </li>
+        {% endfor %}
+        </ul>
+    </section>
+    <section class="toc">
+        <h2>Digital restorations</h2>
+        <ul>
+        {% for post in site.digital_restorations %}
+            <li>
+                <span>{{ post.date | date_to_string }}</span>
+                <a href="{{ post.url }}">{{ post.title }}</a>
+            </li>
+        {% endfor %}
+        </ul>
+    </section>
+</article>
