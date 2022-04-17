@@ -59,18 +59,15 @@ svg {
 
 a {
     color: var(--link);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
 }
 
 a:visited {
     color: var(--visited);
-}
-
-.site-header a, footer a, footer a:hover {
-    text-decoration: none;
-}
-
-.site-header a:hover {
-    text-decoration: underline;
 }
 
 header a, header a:hover, header a:visited {
@@ -177,10 +174,6 @@ b {
 
 .toc span { 
     display: inline-block; width: 110px;
-}
-
-.toc a {
-    font-style: italic;
 }
 
 /* Mobile (keep at bottom to override) */
