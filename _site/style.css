@@ -17,6 +17,10 @@ body {
     background-color: var(--background);
 }
 
+hr {
+    display: none;
+}
+
 /* Dark/Light mode */
 
 :root[color-mode="light"] {
@@ -89,6 +93,7 @@ h1, h2 {
     flex-direction: row;
     align-items: center;
     padding-top: 0.7em;
+    padding-bottom: 1em;
 }
 
 .site-header p {
