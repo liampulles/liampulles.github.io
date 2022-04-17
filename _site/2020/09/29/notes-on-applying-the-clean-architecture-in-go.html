@@ -1,6 +1,6 @@
 <!doctype html>
 
-<html lang="en">
+<html lang="en" color-mode="light">
     <head>
         <meta charset="utf-8">
 
@@ -14,11 +14,39 @@
         <link href="https://fonts.googleapis.com/css2?family=Amiri&display=swap" rel="stylesheet"> 
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
 
+        <!-- Set default theme here, so we don't get a color flash -->
+        <script>
+            if (
+              localStorage.getItem("color-mode") === "dark" ||
+              (window.matchMedia("(prefers-color-scheme: dark)").matches &&
+                !localStorage.getItem("color-mode"))
+            ) {
+              document.documentElement.setAttribute("color-mode", "dark");
+            }
+        </script>
+
         <link href="/style.css" rel="stylesheet" >
         <link href="/images/favicon.ico" rel="shortcut icon" type="image/x-icon">
     </head>
 
     <body>
+        <!-- Theme SVG definition -->
+        <svg style="display: none;">
+            <symbol viewBox="0 0 24 24" id="moon">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </symbol>
+            <symbol viewBox="0 0 24 24" id="sun">
+                <circle cx="12" cy="12" r="5"></circle>
+                <line x1="12" y1="1" x2="12" y2="3"></line>
+                <line x1="12" y1="21" x2="12" y2="23"></line>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                <line x1="1" y1="12" x2="3" y2="12"></line>
+                <line x1="21" y1="12" x2="23" y2="12"></line>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </symbol>
+        </svg>
         <header class="site-header">
             <p><a href="/">Liam Pulles</a></p>
             <nav>
@@ -26,6 +54,17 @@
                     <li><a href="/biography.html">Biography</a></li><li><a href="https://github.com/liampulles">Code</a></li>
                 </ul>
             </nav>
+            <!--- Theme button --->
+            <div class="color-mode__header">
+                <svg aria-hidden="true" class="color-mode__btn light--hidden">
+                    <title>Light Mode</title>
+                    <use href="#sun"></use>
+                </svg>
+                <svg aria-hidden="true" class="color-mode__btn dark--hidden">
+                    <title>Dark Mode</title>
+                    <use href="#moon"></use>
+                </svg>
+            </div>
         </header>
         <main>
             <article>
@@ -197,5 +236,6 @@
             
             <p>© 2022 Liam Pulles.</p>
         </footer>
+        <script src="/script.js"></script>
     </body>
 </html>
