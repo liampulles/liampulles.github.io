@@ -12,7 +12,7 @@ description: Home
         <ul>
         {% for post in site.posts %}
             <li>
-                <span>{{ post.date | date_to_string }}</span>
+                <span>[{{ post.date | date_to_string }}]</span>
                 <a href="{{ post.url }}">{{ post.title }}</a>
             </li>
         {% endfor %}
@@ -23,7 +23,7 @@ description: Home
         <ul>
         {% for post in site.digital_restorations %}
             <li>
-                <span>{{ post.date | date_to_string }}</span>
+                <span>[{{ post.date | date_to_string }}]</span>
                 <a href="{{ post.url }}">{{ post.title }}</a>
             </li>
         {% endfor %}

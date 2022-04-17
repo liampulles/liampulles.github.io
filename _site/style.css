@@ -103,22 +103,6 @@ figcaption {
     width: 100%;
 }
 
-/* Mobile */
-@media only screen and (max-width: 768px) {
-    .optional {
-        display: none;
-    }
-
-    aside {
-        float: none;
-        max-width: none;
-    }
-
-    .toc ul {
-        padding-left: 0;
-    }
-}
-
 /* Table of contents */
 
 .toc ul {
@@ -130,9 +114,25 @@ figcaption {
 }
 
 .toc span { 
-    display: inline-block; width: 100px;
+    display: inline-block; width: 110px;
 }
 
 .toc a {
     font-style: italic;
+}
+
+/* Mobile (keep at bottom to override) */
+@media only screen and (max-width: 768px) {
+    .optional, .toc span {
+        display: none;
+    }
+
+    aside {
+        float: none;
+        max-width: none;
+    }
+
+    .toc ul {
+        padding-left: 0;
+    }
 }
