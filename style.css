@@ -51,11 +51,15 @@ h1, h2 {
     display: inline-block;
 }
 
+.site-header ul {
+    padding-left: 0;
+}
+
 .site-header nav li {
     font-size: 1.2em;
     font-weight: bold;
     display: inline-block;
-    padding-right: 1.2em;
+    padding-left: 1.2em;
 }
 
 main header p {
@@ -87,7 +91,7 @@ figure {
     justify-content: center;
 }
 
-figure img {
+img {
     max-width: 100%;
     height: auto;
 }

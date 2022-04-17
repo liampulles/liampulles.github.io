@@ -23,9 +23,7 @@
             <p><a href="/">{{site.title}}</a></p>
             <nav>
                 <ul>
-                    {% for item in site.data.navigation %}
-                    <li><a href="{{ item.link }}">{{ item.name }}</a></li>
-                    {% endfor %}
+                    {% for item in site.data.navigation %}<li><a href="{{ item.link }}">{{ item.name }}</a></li>{% endfor %}
                 </ul>
             </nav>
         </header>
