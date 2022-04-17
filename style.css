@@ -124,7 +124,7 @@ figcaption {
 /* Mobile (keep at bottom to override) */
 @media only screen and (max-width: 768px) {
     .optional, .toc span {
-        display: none;
+        display: none !important;
     }
 
     aside {
