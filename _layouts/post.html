@@ -5,7 +5,7 @@ layout: default
     <hr>
     <header>
         <h1>{{page.title}}</h1>
-        <p>Written <time datetime="{{page.date}}">{{page.date | date_to_string}}</time></p>
+        <p>Written <time datetime="{{page.date}}">{{page.date | date_to_long_string}}</time></p>
     </header>
     
     {{ content }}
