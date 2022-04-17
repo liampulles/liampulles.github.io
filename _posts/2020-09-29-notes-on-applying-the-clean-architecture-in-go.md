@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Notes on applying "The Clean Architecture" in Go
+shareable: true
 ---
 <section>
     <p>Having had an appetite for experimenting with a REST API in Go, my research indicated that Robert
