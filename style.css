@@ -184,4 +184,16 @@ b {
     .toc ul {
         padding-left: 0;
     }
+
+    .site-header p {
+        max-width: 2.5em;
+    }
+
+    .site-header nav li {
+        padding-left: 0.5em;
+    }
+
+    svg {
+        padding-left: 0.5em;
+    }
 }
