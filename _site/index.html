@@ -7,6 +7,7 @@
         <title>Liam Pulles</title>
         <meta name="description" content="Home">
         <meta name="author" content="Liam Pulles">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
         <link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css" rel="stylesheet" media="print" onload="this.media='all'; this.onload=null;">
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -19,41 +20,47 @@
     </head>
 
     <body>
-        <header>
+        <header class="site-header">
             <p><a href="/">Liam Pulles</a></p>
+            <nav>
+                <ul>
+                    
+                    <li><a href="/biography.html">Biography</a></li>
+                    
+                    <li><a href="https://github.com/liampulles">Code</a></li>
+                    
+                </ul>
+            </nav>
         </header>
-        <nav>
-            <ul>
-                
-                <li><a href="/biography.html">Biography</a></li>
-                
-                <li><a href="https://github.com/liampulles">Code</a></li>
-                
-            </ul>
-        </nav>
         <main>
             <article>
     <section>
         <h1>Welcome!</h1>
-        <p>Hi there - if you're interested in my writing, read on. If you want to hire me (or otherwise find out more about me), then you may wish to see my Biography or Code as linked to above.</p>
+        <p>Hi there - if you're interested in my writing, read on. If you want to hire me (or otherwise find out more about me), then you may wish to see my <a href="/biography.html">biography</a> or my <a href="https://github.com/liampulles">code</a></p>
     </section>
-    <section>
+    <section class="toc">
         <h2>Blog posts</h2>
         <ul>
         
-            <li>17 Apr 2022 || <a href="/2022/04/17/test.html">Test</a></li>
+            <li>
+                <span>17 Apr 2022</span>
+                <a href="/2022/04/17/test.html">Test</a>
+            </li>
         
-            <li>29 Sep 2020 || <a href="/2020/09/29/notes-on-applying-the-clean-architecture-in-go.html">Notes on applying "The Clean Architecture" in Go</a></li>
+            <li>
+                <span>29 Sep 2020</span>
+                <a href="/2020/09/29/notes-on-applying-the-clean-architecture-in-go.html">Notes on applying "The Clean Architecture" in Go</a>
+            </li>
         
         </ul>
     </section>
-    <section>
+    <section class="toc">
         <h2>Digital restorations</h2>
         <ul>
         
             <li>
-                <p> 01 Oct 2020 || <a href="/digital_restorations/2020/10/01/woodstock-3-days-of-peace-and-music.html">Woodstock: 3 Days of Peace and Music</a></p>
-                <a href="/images/3-days-of-peace-and-music.png" title="Click to see the full-sized image"><img src="/images/3-days-of-peace-and-music.png.small-thumb.webp" alt="The restored image (click for raw)"></a>
+                <span>01 Oct 2020</span>
+                <a href="/digital_restorations/2020/10/01/woodstock-3-days-of-peace-and-music.html">Woodstock: 3 Days of Peace and Music</a>
             </li>
         
         </ul>
