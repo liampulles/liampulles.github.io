@@ -1,4 +1,6 @@
 - name: Biography
   link: /biography.html
+- name: Proverbs
+  link: /proverbs.html
 - name: Code
   link: https://github.com/liampulles
