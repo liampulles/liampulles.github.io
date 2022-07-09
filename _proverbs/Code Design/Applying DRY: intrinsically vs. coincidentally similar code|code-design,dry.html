@@ -1,0 +1,13 @@
+<p>In Uni I learned that you should NEVER have duplicated code. But in the workplace, I've learned from wise old devs and from firsthand experience that this is not always the case.</p>
+<p>My philosophy is as follows: <b>Refactor intrinsically similar code - not coincidentally similar.</b></p>
+<p>Coincidentally similar code is likely to change and differentiate. If you preemptively pull both sets of logic out into a common function, you'll later have to create parameters for
+differences, and you'll dirty your previously clean code.</p>
+<p>An example of this might be a plain text template function and an HTML template function. While the initial implementation of these two functions is the same, the HTML
+function will need to be able to escape certain characters in the future - if you've pulled out a common function, you'll need now need to add a boolean argument to switch
+between HTML or plain text (which is ugly).</p>
+<p>Intrinsically similar code NEEDS to be put in a common function, however. If you don't do this, you risk a business rule being inconsistently implemented.</p>
+<p>An example of this is formatting dates as strings. If you identify two separate pieces (or even one piece) of code which use an anonymous string like "DD/MM/YYYY" to format a date,
+that should be pulled out into a global constant or date utility function. If you don't do this, you risk someone changing one of the format strings
+(or adding another anonymous one somewhere) to "MM/DD/YYYY" - and you'll end up confusing/misinforming your users and potentially making the client liable.</p>
+<p>Determining whether similarities are coincidental or intrinsic is a matter of interrogating your domain, which is an essential part of the job of a developer
+anyway.</p>
