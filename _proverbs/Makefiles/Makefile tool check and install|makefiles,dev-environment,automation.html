@@ -1,0 +1,8 @@
+<p>Often as part of your Makefile, you'll have directives which run dev tools to do things like lint your code, generate mocks, etc. 
+What you may not be aware of is that - provided your dev tool can be installed via the shell - you can automate the installation of these
+tools when the directives are run for the first time. This makes it trivial for new starters on the repo to get up and going.</p>
+<p>Here's an example for a Go tool:</p>
+<script src="https://gist.github.com/liampulles/0cbc6042aa79752ca075c25278e552f7.js"></script>
+<p>If you run inspect, Make will check if a file at $(GOBIN)/golangci-lint exists. If it does not, the associated directive will be executed,
+which then leads to the install directive being executed, and finally whatever shell commands are needed to install the program are run.</p>
+<p>Another benefit of this abstraction is that if you update the tool, you can just advise the team to run <code>make install-golangci-lint</code> manually.</p>

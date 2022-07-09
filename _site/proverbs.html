@@ -85,7 +85,40 @@
 			<p><i>Source: <a href="https://pragprog.com/titles/tpp20/the-pragmatic-programmer-20th-anniversary-edition/">The Pragmatic Programmer</a></i></p>
 <p>Check that the input and output of important functions are sensible. This can be as simple as a few <code>assert</code> statements, e.g.</p>
 <script src="https://gist.github.com/liampulles/eacd3ae1d082a34b6fbc5688c27056f7.js"></script>
-<p>Do this instead of defensive programming, and apply selectively - put it on your core business logic for specific variables; resources</p>
+<p>Do this instead of defensive programming, and apply selectively - put it on your core business logic for specific variables; resources.</p>
+<p>By doing this, you'll help minimize unexpected costly errors where bad data somehow gets through to your business logic.</p>
+		</section>
+		
+	</section>
+	
+	<section>
+		<h2>Golang</h2>
+		
+		<section>
+			<h3>Go implementation check</h3>
+			<p>Go has <i>structural typing</i>, so a type implements an interface if it defines the same method signatures.</p>
+<p>While this can be useful for abstracting external types, it is often nice to be able to check at compile time that a type implements an interface.</p>
+<p>A nice pattern I've seen for this is to assign an unnamed global variable of the interface type to an implementation instance, e.g.</p>
+<script src="https://gist.github.com/liampulles/ae4ab6989b0f80f09306aa52be9537fe.js"></script>
+<p>Here we check that BasicThingy and *StructThingy implement Hashable. If they don't, the compiler will generate a nice error message pointing at the assignment. 
+For this reason, it is nice to put this assignment next to the implementation type declaration.</p>
+		</section>
+		
+	</section>
+	
+	<section>
+		<h2>Makefiles</h2>
+		
+		<section>
+			<h3>Makefile tool check and install</h3>
+			<p>Often as part of your Makefile, you'll have directives which run dev tools to do things like lint your code, generate mocks, etc. 
+What you may not be aware of is that - provided your dev tool can be installed via the shell - you can automate the installation of these
+tools when the directives are run for the first time. This makes it trivial for new starters on the repo to get up and going.</p>
+<p>Here's an example for a Go tool:</p>
+<script src="https://gist.github.com/liampulles/0cbc6042aa79752ca075c25278e552f7.js"></script>
+<p>If you run inspect, Make will check if a file at $(GOBIN)/golangci-lint exists. If it does not, the associated directive will be executed,
+which then leads to the install directive being executed, and finally whatever shell commands are needed to install the program are run.</p>
+<p>Another benefit of this abstraction is that if you update the tool, you can just advise the team to run <code>make install-golangci-lint</code> manually.</p>
 		</section>
 		
 	</section>
@@ -96,22 +129,22 @@
             
             <p>
                 <b>Comments? Send me an <a href="mailto:me@liampulles.com?subject=With regards to your %22Liam Pulles - Proverbs%22 page">email</a>. Or, share this piece:</b>
-                <a href="http://www.facebook.com/sharer.php?u=https%3A%2F%2Fliampulles.com%2F%2Fproverbs.html" target="_blank">
+                <a href="http://www.facebook.com/sharer.php?u=http%3A%2F%2Flocalhost%3A4000%2Fproverbs.html" target="_blank">
                     <i class="fa fa-facebook-square"></i>
                 </a>
-                <a href="https://twitter.com/intent/tweet?url=https%3A%2F%2Fliampulles.com%2F%2Fproverbs.html" target="_blank">
+                <a href="https://twitter.com/intent/tweet?url=http%3A%2F%2Flocalhost%3A4000%2Fproverbs.html" target="_blank">
                     <i class="fa fa-twitter-square"></i>
                 </a>
-                <a href="http://www.linkedin.com/shareArticle?mini=true&amp;url=https%3A%2F%2Fliampulles.com%2F%2Fproverbs.html" target="_blank">
+                <a href="http://www.linkedin.com/shareArticle?mini=true&amp;url=http%3A%2F%2Flocalhost%3A4000%2Fproverbs.html" target="_blank">
                     <i class="fa fa-linkedin-square"></i>
                 </a>
-                <a href="https://news.ycombinator.com/submitlink?u=https%3A%2F%2Fliampulles.com%2F%2Fproverbs.html" target="_blank">
+                <a href="https://news.ycombinator.com/submitlink?u=http%3A%2F%2Flocalhost%3A4000%2Fproverbs.html" target="_blank">
                     <i class="fa fa-hacker-news"></i>
                 </a>
-                <a href="http://reddit.com/submit?url=https%3A%2F%2Fliampulles.com%2F%2Fproverbs.html" target="_blank">
+                <a href="http://reddit.com/submit?url=http%3A%2F%2Flocalhost%3A4000%2Fproverbs.html" target="_blank">
                     <i class="fa fa-reddit-square"></i>
                 </a>
-                <a href="mailto:someone@somewhere.com?subject=Check out this article&body=https://liampulles.com//proverbs.html">
+                <a href="mailto:someone@somewhere.com?subject=Check out this article&body=http://localhost:4000/proverbs.html">
                     <i class="fa fa-envelope-square"></i>
                 </a>
             </p>
