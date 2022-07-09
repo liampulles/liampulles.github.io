@@ -118,6 +118,7 @@ h1, h2 {
 
 main header p {
     font-style: italic;
+    text-align: center;
 }
 
 /* Footer */
@@ -159,6 +160,14 @@ figcaption {
 
 b {
     color: var(--header);
+}
+
+/* Digital restorations */
+
+.centerpiece {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 /* Table of contents */
