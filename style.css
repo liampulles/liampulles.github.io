@@ -185,6 +185,12 @@ b {
     display: inline-block; width: 110px;
 }
 
+/* Iframely */
+
+.iframely-embed {
+    display: flex;
+}
+
 /* Mobile (keep at bottom to override) */
 @media only screen and (max-width: 768px) {
     .optional {

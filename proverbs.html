@@ -14,6 +14,14 @@ shareable: true
 		
 		<section>
 			<h3>Applying DRY: intrinsically vs. coincidentally similar code</h3>
+			
+			<aside>
+				<figure>
+					<img src="images/proverbs/Applying%20DRY:%20intrinsically%20vs.%20coincidentally%20similar%20code.webp">
+					
+				</figure>
+			</aside>
+			
 			<p>In Uni I learned that you should NEVER have duplicated code. But in the workplace, I've learned from wise old devs and from firsthand experience that this is not always the case.</p>
 <p>My philosophy is as follows: <b>Refactor intrinsically similar code - not coincidentally similar.</b></p>
 <p>Coincidentally similar code is likely to change and differentiate. If you preemptively pull both sets of logic out into a common function, you'll later have to create parameters for
@@ -31,6 +39,14 @@ anyway.</p>
 		
 		<section>
 			<h3>Design by contract</h3>
+			
+			<aside>
+				<figure>
+					<img src="images/proverbs/Design%20by%20contract.webp">
+					
+				</figure>
+			</aside>
+			
 			<p><i>Source: <a href="https://pragprog.com/titles/tpp20/the-pragmatic-programmer-20th-anniversary-edition/">The Pragmatic Programmer</a></i></p>
 <p>Check that the input and output of important functions are sensible. This can be as simple as a few <code>assert</code> statements, e.g.</p>
 <div class="iframely-embed"><div class="iframely-responsive" style="padding-bottom: 50%;"><a href="https://gist.github.com/liampulles/eacd3ae1d082a34b6fbc5688c27056f7" data-iframely-url="//cdn.iframe.ly/api/iframe?url=https%3A%2F%2Fgist.github.com%2Fliampulles%2Feacd3ae1d082a34b6fbc5688c27056f7&key=cad99ab35ae2a3489deee2af943d9438"></a></div></div><script async src="//cdn.iframe.ly/embed.js" charset="utf-8"></script>
@@ -45,6 +61,14 @@ anyway.</p>
 		
 		<section>
 			<h3>Implementation checks</h3>
+			
+			<aside>
+				<figure>
+					<img src="images/proverbs/Implementation%20checks.webp">
+					
+				</figure>
+			</aside>
+			
 			<p>Go has <i>structural typing</i>, so a type implements an interface if it defines the same method signatures.</p>
 <p>While this can be useful for abstracting external types, it is often nice to be able to check at compile time that a type implements an interface.</p>
 <p>A nice pattern I've seen for this is to assign an unnamed global variable of the interface type to an implementation instance, e.g.</p>
@@ -55,6 +79,7 @@ For this reason, it is nice to put this assignment next to the implementation ty
 		
 		<section>
 			<h3>You don&#39;t need a dependency injection library</h3>
+			
 			<p>If you follow the Service pattern from DDD, then you'll have a number of services which transitively depend on each other.
 Typically, you'll use some dependency injection container or wiring library to have these services be connected upon startup.</p>
 <p></p>But there's no reason you can't do this wiring yourself:</p>
@@ -71,6 +96,14 @@ can have custom Wire functions which e.g. substitute external client services wi
 		
 		<section>
 			<h3>Tool check and install</h3>
+			
+			<aside>
+				<figure>
+					<img src="images/proverbs/Tool%20check%20and%20install.webp">
+					
+				</figure>
+			</aside>
+			
 			<p>Often as part of your Makefile, you'll have directives which run dev tools to do things like lint your code, generate mocks, etc. 
 What you may not be aware of is that - provided your dev tool can be installed via the shell - you can automate the installation of these
 tools when the directives are run for the first time. This makes it trivial for new starters on the repo to get up and going.</p>
