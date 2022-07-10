@@ -1,6 +1,6 @@
 <p>Go has <i>structural typing</i>, so a type implements an interface if it defines the same method signatures.</p>
 <p>While this can be useful for abstracting external types, it is often nice to be able to check at compile time that a type implements an interface.</p>
 <p>A nice pattern I've seen for this is to assign an unnamed global variable of the interface type to an implementation instance, e.g.</p>
-<script src="https://gist.github.com/liampulles/ae4ab6989b0f80f09306aa52be9537fe.js"></script>
+<div class="iframely-embed"><div class="iframely-responsive" style="padding-bottom: 50%;"><a href="https://gist.github.com/liampulles/ae4ab6989b0f80f09306aa52be9537fe" data-iframely-url="//cdn.iframe.ly/api/iframe?url=https%3A%2F%2Fgist.github.com%2Fliampulles%2Fae4ab6989b0f80f09306aa52be9537fe&key=cad99ab35ae2a3489deee2af943d9438"></a></div></div><script async src="//cdn.iframe.ly/embed.js" charset="utf-8"></script>
 <p>Here we check that BasicThingy and *StructThingy implement Hashable. If they don't, the compiler will generate a nice error message pointing at the assignment. 
 For this reason, it is nice to put this assignment next to the implementation type declaration.</p>

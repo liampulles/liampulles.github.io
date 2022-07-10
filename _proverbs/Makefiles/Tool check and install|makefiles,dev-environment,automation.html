@@ -2,7 +2,7 @@
 What you may not be aware of is that - provided your dev tool can be installed via the shell - you can automate the installation of these
 tools when the directives are run for the first time. This makes it trivial for new starters on the repo to get up and going.</p>
 <p>Here's an example for a Go tool:</p>
-<script src="https://gist.github.com/liampulles/0cbc6042aa79752ca075c25278e552f7.js"></script>
+<div class="iframely-embed"><div class="iframely-responsive" style="padding-bottom: 50%;"><a href="https://gist.github.com/liampulles/0cbc6042aa79752ca075c25278e552f7" data-iframely-url="//cdn.iframe.ly/api/iframe?url=https%3A%2F%2Fgist.github.com%2Fliampulles%2F0cbc6042aa79752ca075c25278e552f7&key=cad99ab35ae2a3489deee2af943d9438"></a></div></div><script async src="//cdn.iframe.ly/embed.js" charset="utf-8"></script>
 <p>If you run inspect, Make will check if a file at $(GOBIN)/golangci-lint exists. If it does not, the associated directive will be executed,
 which then leads to the install directive being executed, and finally whatever shell commands are needed to install the program are run.</p>
 <p>Another benefit of this abstraction is that if you update the tool, you can just advise the team to run <code>make install-golangci-lint</code> manually.</p>
