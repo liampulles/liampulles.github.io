@@ -2,7 +2,6 @@ run: gen-proverbs bundle-install
 	bundle exec jekyll serve --port 4001
 
 pre-commit: gen-proverbs bundle-install
-	bundle install
 	bundle update
 	bundle exec jekyll build
 
