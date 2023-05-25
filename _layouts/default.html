@@ -70,6 +70,14 @@
             {{ content }}
         </main>
         <footer>
+            {% if page.connect %}
+            <p>
+                <b>Connect with me:</b>
+                <a href="https://www.linkedin.com/in/liampulles/">LinkedIn</a>,
+                <a href="https://letterboxd.com/sl1m/">Letterboxd</a>,
+                <a href="mailto:me@liampulles.com">Email</a>
+            </p>
+            {% endif %}
             {% if page.shareable %}
             <p>
                 <b>Comments? Send me an <a href="mailto:{{site.email}}?subject=With regards to your %22{{page.title}}%22 page">email</a>. Or, share this piece:</b>
