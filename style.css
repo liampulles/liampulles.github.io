@@ -1,5 +1,5 @@
 html {
-    font-family: 'Amiri', serif, 'Font Awesome';
+    font-family: arial, sans-serif, 'Font Awesome';
     text-underline-offset: 0.1em;
 }
 
@@ -10,7 +10,7 @@ body {
     align-items: center;
     max-width: 800px;
     margin: auto;
-    font-size: 20px;
+    font-size: 16px;
     padding-left: 0.5em;
     padding-right: 0.5em;
     color: var(--text);
@@ -80,9 +80,25 @@ nav a, nav a:hover, nav a:visited, footer a, footer a:hover, footer a:visited {
 
 /* Headers */
 
+h1, h2, h3 {
+    font-family: 'Amiri', serif, 'Font Awesome';
+}
+
 h1, h2 {
     color: var(--header);
     text-align: center;
+}
+
+h1 {
+    font-size: 2.2em;
+}
+
+h2 {
+    font-size: 1.8em;
+}
+
+h3 {
+    font-size: 1.3em;
 }
 
 .site-header {
@@ -91,16 +107,18 @@ h1, h2 {
     align-items: center;
     padding-top: 0.7em;
     padding-bottom: 1em;
+    font-family: 'Amiri', serif, 'Font Awesome';
 }
 
 .site-header p {
-    font-size: 1.4em;
+    font-size: 1.8em;
     font-weight: bold;
     display: inline-block;
     margin: 0 auto;
 }
 
 .site-header ul {
+    font-size: 1.2em;
     padding-left: 0;
     margin: 0 auto;
 }
@@ -178,11 +196,18 @@ b {
 
 .toc h1, .toc h2 {
     text-align: left;
+}
+
+.toc h1 {
+    font-size: 1.4em;
+}
+
+.toc h2 {
     font-size: 1.2em;
 }
 
 .toc span { 
-    display: inline-block; width: 130px;
+    display: inline-block; width: 100px;
 }
 
 /* Iframely */
@@ -222,4 +247,10 @@ b {
     svg {
         padding-left: 0.5em;
     }
+}
+
+/* Util */
+
+.wide {
+    width: 100%;
 }
