@@ -11,8 +11,8 @@ body {
     max-width: 800px;
     margin: auto;
     font-size: 16px;
-    padding-left: 0.5em;
-    padding-right: 0.5em;
+    padding-left: 1em;
+    padding-right: 1em;
     color: var(--text);
     background-color: var(--background);
 }
@@ -90,11 +90,11 @@ h1, h2 {
 }
 
 h1 {
-    font-size: 2.2em;
+    font-size: 2.0em;
 }
 
 h2 {
-    font-size: 1.8em;
+    font-size: 1.6em;
 }
 
 h3 {
@@ -111,20 +111,20 @@ h3 {
 }
 
 .site-header p {
-    font-size: 1.8em;
+    font-size: 1.8rem;
     font-weight: bold;
     display: inline-block;
     margin: 0 auto;
 }
 
 .site-header ul {
-    font-size: 1.2em;
+    font-size: 1.2rem;
     padding-left: 0;
     margin: 0 auto;
 }
 
 .site-header nav li {
-    font-size: 1.2em;
+    font-size: 1.2rem;
     font-weight: bold;
     display: inline-block;
     padding-left: 1.2em;
@@ -216,7 +216,7 @@ b {
     display: flex;
 }
 
-/* Mobile (keep at bottom to override) */
+/* Mobile responsiveness (keep at bottom to override) */
 /* -> Tablet and below */
 @media only screen and (max-width: 768px) {
     .optional {
@@ -229,7 +229,6 @@ b {
     }
 
     .toc ul {
-        list-style-type: disc;
         padding-left: 0;
     }
 
@@ -247,26 +246,6 @@ b {
 
     svg {
         padding-left: 0.5em;
-    }
-}
-
-/* -> Mobile and below */
-@media only screen and (max-width: 600px) {
-    /* -> Bring header sizes down a bit */
-    h1 {
-        font-size: 1.8em;
-    }
-    h2 {
-        font-size: 1.4em;
-    }
-    h3 {
-        font-size: 1.2em;
-    }
-    .site-header p {
-        font-size: 1.4em;
-    }
-    .site-header ul {
-        font-size: 1em;
     }
 }
 

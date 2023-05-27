@@ -5,11 +5,15 @@ connect: True
 ---
 <article>
     <hr>
-    <figure>
-        <img src="/images/profile.jpg" width="300" height="300">
-        <figcaption><i>Yours truly.</i></figcaption>
-    </figure>
-    <h1>Biography</h1>
+    <header>
+        <h1>Biography</h1>
+    </header>
+    <aside>
+        <figure>
+            <img src="/images/profile.jpg" width="300" height="300">
+            <figcaption><i>Yours truly.</i></figcaption>
+        </figure>
+    </aside>
     <p>I am a {{ site.time | date: '%Y' | minus:1995 }} year old software developer currently working in <b>Johannesburg, South Africa</b> for the <b><a href="https://www.valentureinstitute.com/">Valenture Institute</a></b>. I completed my honors in Computer Science at the University of the Witwatersrand (my research focusing on demosaicking and decorrelation stretch methods) in 2017.</p>
     <p>In terms of languages:</p>
     <ul>
