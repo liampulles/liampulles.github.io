@@ -24,17 +24,11 @@ shareable: true
 			
 			<p>In Uni I learned that you should NEVER have duplicated code. But in the workplace, I've learned from wise old devs and from firsthand experience that this is not always the case.</p>
 <p>My philosophy is as follows: <b>Refactor intrinsically similar code - not coincidentally similar.</b></p>
-<p>Coincidentally similar code is likely to change and differentiate. If you preemptively pull both sets of logic out into a common function, you'll later have to create parameters for
-differences, and you'll dirty your previously clean code.</p>
-<p>An example of this might be a plain text template function and an HTML template function. While the initial implementation of these two functions is the same, the HTML
-function will need to be able to escape certain characters in the future - if you've pulled out a common function, you'll need now need to add a boolean argument to switch
-between HTML or plain text (which is ugly).</p>
+<p>Coincidentally similar code is likely to change and differentiate. If you preemptively pull both sets of logic out into a common function, you'll later have to create parameters for differences, and you'll dirty your previously clean code.</p>
+<p>An example of this might be a plain text template function and an HTML template function. While the initial implementation of these two functions is the same, the HTML function will need to be able to escape certain characters in the future - if you've pulled out a common function, you'll need now need to add a boolean argument to switch between HTML or plain text (which is ugly).</p>
 <p>Intrinsically similar code NEEDS to be put in a common function, however. If you don't do this, you risk a business rule being inconsistently implemented.</p>
-<p>An example of this is formatting dates as strings. If you identify two separate pieces (or even one piece) of code which use an anonymous string like "DD/MM/YYYY" to format a date,
-that should be pulled out into a global constant or date utility function. If you don't do this, you risk someone changing one of the format strings
-(or adding another anonymous one somewhere) to "MM/DD/YYYY" - and you'll end up confusing/misinforming your users and potentially making the client liable.</p>
-<p>Determining whether similarities are coincidental or intrinsic is a matter of interrogating your domain, which is an essential part of the job of a developer
-anyway.</p>
+<p>An example of this is formatting dates as strings. If you identify two separate pieces (or even one piece) of code which use an anonymous string like "DD/MM/YYYY" to format a date, that should be pulled out into a global constant or date utility function. If you don't do this, you risk someone changing one of the format strings (or adding another anonymous one somewhere) to "MM/DD/YYYY" - and you'll end up confusing/misinforming your users and potentially making the client liable.</p>
+<p>Determining whether similarities are coincidental or intrinsic is a matter of interrogating your domain, which is an essential part of the job of a developer anyway.</p>
 		</section>
 		
 		<section>
@@ -49,7 +43,12 @@ anyway.</p>
 			
 			<p><i>Source: <a href="https://pragprog.com/titles/tpp20/the-pragmatic-programmer-20th-anniversary-edition/">The Pragmatic Programmer</a></i></p>
 <p>Check that the input and output of important functions are sensible. This can be as simple as a few <code>assert</code> statements, e.g.</p>
-<div class="iframely-embed"><div class="iframely-responsive" style="padding-bottom: 50%;"><a href="https://gist.github.com/liampulles/eacd3ae1d082a34b6fbc5688c27056f7" data-iframely-url="//cdn.iframe.ly/api/iframe?url=https%3A%2F%2Fgist.github.com%2Fliampulles%2Feacd3ae1d082a34b6fbc5688c27056f7&key=cad99ab35ae2a3489deee2af943d9438"></a></div></div><script async src="//cdn.iframe.ly/embed.js" charset="utf-8"></script>
+{% highlight go %}
+public sendSms(String cell) {
+    assert PhoneValidationUtil.ValidNumber(cell);
+   // ...
+}
+{% endhighlight %}
 <p>Do this instead of defensive programming, and apply selectively - put it on your core business logic for specific variables; resources.</p>
 <p>By doing this, you'll help minimize unexpected costly mistakes where bad data gets through to your business logic.</p>
 		</section>
@@ -72,20 +71,39 @@ anyway.</p>
 			<p>Go has <i>structural typing</i>, so a type implements an interface if it defines the same method signatures.</p>
 <p>While this can be useful for abstracting external types, it is often nice to be able to check at compile time that a type implements an interface.</p>
 <p>A nice pattern I've seen for this is to assign an unnamed global variable of the interface type to an implementation instance, e.g.</p>
-<div class="iframely-embed"><div class="iframely-responsive" style="padding-bottom: 50%;"><a href="https://gist.github.com/liampulles/ae4ab6989b0f80f09306aa52be9537fe" data-iframely-url="//cdn.iframe.ly/api/iframe?url=https%3A%2F%2Fgist.github.com%2Fliampulles%2Fae4ab6989b0f80f09306aa52be9537fe&key=cad99ab35ae2a3489deee2af943d9438"></a></div></div><script async src="//cdn.iframe.ly/embed.js" charset="utf-8"></script>
-<p>Here we check that BasicThingy and *StructThingy implement Hashable. If they don't, the compiler will generate a nice error message pointing at the assignment. 
-For this reason, it is nice to put this assignment next to the implementation type declaration.</p>
+{% highlight go %}
+type Hashable interface {
+    Hash() []byte
+}
+
+type BasicThingy string
+type StructThingy struct{}
+
+// Implementation checks:
+var _ Hashable = (BasicThingy)("")
+var _ Hashable = &StructThingy{}
+{% endhighlight %}
+<p>Here we check that BasicThingy and *StructThingy implement Hashable. If they don't, the compiler will generate a nice error message pointing at the assignment. For this reason, it is nice to put this assignment next to the implementation type declaration.</p>
 		</section>
 		
 		<section>
 			<h3>You don&#39;t need a dependency injection library</h3>
 			
-			<p>If you follow the Service pattern from DDD, then you'll have a number of services which transitively depend on each other.
-Typically, you'll use some dependency injection container or wiring library to have these services be connected upon startup.</p>
+			<p>If you follow the Service pattern from DDD, then you'll have a number of services which transitively depend on each other. Typically, you'll use some dependency injection container or wiring library to have these services be connected upon startup.</p>
 <p></p>But there's no reason you can't do this wiring yourself:</p>
-<div class="iframely-embed"><div class="iframely-responsive" style="padding-bottom: 50%;"><a href="https://gist.github.com/liampulles/faf45dcbc4ba1624cfe84f8f01efb5ba" data-iframely-url="//cdn.iframe.ly/api/iframe?url=https%3A%2F%2Fgist.github.com%2Fliampulles%2Ffaf45dcbc4ba1624cfe84f8f01efb5ba&key=cad99ab35ae2a3489deee2af943d9438"></a></div></div><script async src="//cdn.iframe.ly/embed.js" charset="utf-8"></script>
-<p>Advantages: you don't need to depend on an external library, if it compiles then you know everything is wired, and you
-can have custom Wire functions which e.g. substitute external client services with mock versions for integration tests.</p>
+{% highlight go %}
+func main() {
+    server := Wire()
+    server.Run()
+}
+  
+func Wire() *http.Server {
+    cfgProvider := config.NewProvider()
+    svc := usecase.NewService(cfgProvider)
+    return http.NewServer(cfgProvider, svc)
+}
+{% endhighlight %}
+<p>Advantages: you don't need to depend on an external library, if it compiles then you know everything is wired, and you can have custom Wire functions which e.g. substitute external client services with mock versions for integration tests.</p>
 <p>It is very convenient for small projects.</p>
 		</section>
 		
@@ -104,13 +122,21 @@ can have custom Wire functions which e.g. substitute external client services wi
 				</figure>
 			</aside>
 			
-			<p>Often as part of your Makefile, you'll have directives which run dev tools to do things like lint your code, generate mocks, etc. 
-What you may not be aware of is that - provided your dev tool can be installed via the shell - you can automate the installation of these
-tools when the directives are run for the first time. This makes it trivial for new starters on the repo to get up and going.</p>
+			<p>Often as part of your Makefile, you'll have directives which run dev tools to do things like lint your code, generate mocks, etc. What you may not be aware of is that - provided your dev tool can be installed via the shell - you can automate the installation of these tools when the directives are run for the first time. This makes it trivial for new starters on the repo to get up and going.</p>
 <p>Here's an example for a Go tool:</p>
-<div class="iframely-embed"><div class="iframely-responsive" style="padding-bottom: 50%;"><a href="https://gist.github.com/liampulles/0cbc6042aa79752ca075c25278e552f7" data-iframely-url="//cdn.iframe.ly/api/iframe?url=https%3A%2F%2Fgist.github.com%2Fliampulles%2F0cbc6042aa79752ca075c25278e552f7&key=cad99ab35ae2a3489deee2af943d9438"></a></div></div><script async src="//cdn.iframe.ly/embed.js" charset="utf-8"></script>
-<p>If you run inspect, Make will check if a file at $(GOBIN)/golangci-lint exists. If it does not, the associated directive will be executed,
-which then leads to the install directive being executed, and finally whatever shell commands are needed to install the program are run.</p>
+{% highlight make %}
+GOBIN := $(shell go env GOPATH)/bin
+
+inspect: $(GOBIN)/golangci-lint
+	$(GOBIN)/golangci-lint run
+  
+$(GOBIN)/golangci-lint:
+	$(MAKE) install-golangci-lint
+install-golangci-lint:
+	curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(GOBIN) v1.46.2
+	rm -rf ./v1.46.2
+{% endhighlight %}
+<p>If you run inspect, Make will check if a file at $(GOBIN)/golangci-lint exists. If it does not, the associated directive will be executed, which then leads to the install directive being executed, and finally whatever shell commands are needed to install the program are run.</p>
 <p>Another benefit of this abstraction is that if you update the tool, you can just advise the team to run <code>make install-golangci-lint</code> manually.</p>
 		</section>
 		

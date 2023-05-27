@@ -1,5 +1,10 @@
 <p><i>Source: <a href="https://pragprog.com/titles/tpp20/the-pragmatic-programmer-20th-anniversary-edition/">The Pragmatic Programmer</a></i></p>
 <p>Check that the input and output of important functions are sensible. This can be as simple as a few <code>assert</code> statements, e.g.</p>
-<div class="iframely-embed"><div class="iframely-responsive" style="padding-bottom: 50%;"><a href="https://gist.github.com/liampulles/eacd3ae1d082a34b6fbc5688c27056f7" data-iframely-url="//cdn.iframe.ly/api/iframe?url=https%3A%2F%2Fgist.github.com%2Fliampulles%2Feacd3ae1d082a34b6fbc5688c27056f7&key=cad99ab35ae2a3489deee2af943d9438"></a></div></div><script async src="//cdn.iframe.ly/embed.js" charset="utf-8"></script>
+{% highlight go %}
+public sendSms(String cell) {
+    assert PhoneValidationUtil.ValidNumber(cell);
+   // ...
+}
+{% endhighlight %}
 <p>Do this instead of defensive programming, and apply selectively - put it on your core business logic for specific variables; resources.</p>
 <p>By doing this, you'll help minimize unexpected costly mistakes where bad data gets through to your business logic.</p>

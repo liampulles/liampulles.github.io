@@ -1,7 +1,16 @@
-<p>If you follow the Service pattern from DDD, then you'll have a number of services which transitively depend on each other.
-Typically, you'll use some dependency injection container or wiring library to have these services be connected upon startup.</p>
+<p>If you follow the Service pattern from DDD, then you'll have a number of services which transitively depend on each other. Typically, you'll use some dependency injection container or wiring library to have these services be connected upon startup.</p>
 <p></p>But there's no reason you can't do this wiring yourself:</p>
-<div class="iframely-embed"><div class="iframely-responsive" style="padding-bottom: 50%;"><a href="https://gist.github.com/liampulles/faf45dcbc4ba1624cfe84f8f01efb5ba" data-iframely-url="//cdn.iframe.ly/api/iframe?url=https%3A%2F%2Fgist.github.com%2Fliampulles%2Ffaf45dcbc4ba1624cfe84f8f01efb5ba&key=cad99ab35ae2a3489deee2af943d9438"></a></div></div><script async src="//cdn.iframe.ly/embed.js" charset="utf-8"></script>
-<p>Advantages: you don't need to depend on an external library, if it compiles then you know everything is wired, and you
-can have custom Wire functions which e.g. substitute external client services with mock versions for integration tests.</p>
+{% highlight go %}
+func main() {
+    server := Wire()
+    server.Run()
+}
+  
+func Wire() *http.Server {
+    cfgProvider := config.NewProvider()
+    svc := usecase.NewService(cfgProvider)
+    return http.NewServer(cfgProvider, svc)
+}
+{% endhighlight %}
+<p>Advantages: you don't need to depend on an external library, if it compiles then you know everything is wired, and you can have custom Wire functions which e.g. substitute external client services with mock versions for integration tests.</p>
 <p>It is very convenient for small projects.</p>
