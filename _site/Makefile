@@ -1,7 +1,7 @@
 GOBIN := $(shell go env GOBIN)
 
 run: gen-proverbs bundle-install
-	bundle exec jekyll serve --port 4002
+	bundle exec jekyll serve --port 4002 --draft
 
 pre-commit: gen-proverbs bundle-install ${GOBIN}/minify
 	bundle update

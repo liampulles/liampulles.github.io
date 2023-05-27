@@ -205,12 +205,13 @@ code {
 
 /* Table of contents */
 
-.toc ul {
-    list-style-type: none;
+.toc tr {
+    font-size: 0.95em;
+    text-align: left;
 }
 
-.toc-date { 
-    display: inline-block; width: 6em;
+.toc-date {
+    width: 6em;
 }
 
 /* Mobile responsiveness (keep at bottom to override) */
@@ -241,6 +242,18 @@ code {
     .site-header nav li {
         padding-left: 0.5em;
         padding-top: 0;
+    }
+
+    h1 {
+        font-size: 1.8em;
+    }
+    
+    h2 {
+        font-size: 1.4em;
+    }
+    
+    h3 {
+        font-size: 1.2em;
     }
 
     svg {
