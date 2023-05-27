@@ -1,6 +1,6 @@
 - name: Biography
-  link: /biography.html
+  link: /biography
 - name: Proverbs
-  link: /proverbs.html
+  link: /proverbs
 - name: Code
-  link: https://github.com/liampulles
+  link: /code

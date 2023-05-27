@@ -2,13 +2,13 @@ title: Liam Pulles
 author: Liam Pulles
 url: "https://liampulles.com/"
 email: me@liampulles.com
-projects: https://github.com/liampulles
 defaults:
   - scope:
       path: ""
       type: "posts"
     values:
       layout: "post"
+      permalink: /blog/:title
   - scope:
       path: ""
     values:
@@ -16,4 +16,4 @@ defaults:
 collections:
   digital_restorations:
     output: true
-    permalink: /digital_restorations/:categories/:year/:month/:day/:title:output_ext
+    permalink: /digital_restorations/:title
