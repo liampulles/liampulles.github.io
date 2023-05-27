@@ -1,5 +1,5 @@
 html {
-    font-family: arial, sans-serif, 'Font Awesome';
+    font-family: 'Source Sans Pro', arial, sans-serif, 'Font Awesome';
     text-underline-offset: 0.1em;
 }
 
@@ -81,7 +81,7 @@ nav a, nav a:hover, nav a:visited, footer a, footer a:hover, footer a:visited {
 /* Headers */
 
 h1, h2, h3 {
-    font-family: 'Amiri', serif, 'Font Awesome';
+    font-family: 'Fraunces', serif, 'Font Awesome';
 }
 
 h1, h2 {
@@ -105,13 +105,13 @@ h3 {
     display: flex;
     flex-direction: row;
     align-items: center;
-    padding-top: 0.7em;
-    padding-bottom: 1em;
-    font-family: 'Amiri', serif, 'Font Awesome';
+    padding-top: 0.7rem;
+    padding-bottom: 1rem;
+    font-family: 'Fraunces', serif, 'Font Awesome';
 }
 
 .site-header p {
-    font-size: 1.8rem;
+    font-size: 1.6rem;
     font-weight: bold;
     display: inline-block;
     margin: 0 auto;
@@ -123,10 +123,12 @@ h3 {
 }
 
 .site-header nav li {
-    font-size: 1.4rem;
+    font-family: 'Source Sans Pro', arial;
+    font-size: 1.2rem;
     font-weight: bold;
     display: inline-block;
-    padding-left: 1.2em;
+    padding-top: 0.3rem;
+    padding-left: 1.2rem;
 }
 
 .site-header a {
@@ -194,7 +196,7 @@ b {
 }
 
 .toc span { 
-    display: inline-block; width: 100px;
+    display: inline-block; width: 6em;
 }
 
 /* Iframely */
@@ -225,10 +227,12 @@ b {
 
     .site-header p {
         max-width: 2.5em;
+        padding-right: 0.5em;
     }
 
     .site-header nav li {
         padding-left: 0.5em;
+        padding-top: 0;
     }
 
     svg {
@@ -238,8 +242,11 @@ b {
 
 /* -> Smaller width */
 @media only screen and (max-width:385px) {
+    .site-header p {
+        font-size: 1.4rem;
+    }
     .site-header nav li {
-        font-size: 1.2rem;
+        font-size: 1.1rem;
     }
 }
 
