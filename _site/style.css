@@ -194,18 +194,6 @@ b {
     list-style-type: none;
 }
 
-.toc h1, .toc h2 {
-    text-align: left;
-}
-
-.toc h1 {
-    font-size: 1.4em;
-}
-
-.toc h2 {
-    font-size: 1.2em;
-}
-
 .toc span { 
     display: inline-block; width: 100px;
 }
