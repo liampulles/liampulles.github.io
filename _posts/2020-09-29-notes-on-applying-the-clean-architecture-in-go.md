@@ -69,9 +69,11 @@ shareable: true
     <h2>The "Wire" Package/Layer</h2>
     <p>The <i>wire</i> layer sits outside of the other layers, and it deals with dependency injection. Basically, this layer contains a function which first creates the service instances which have no dependencies, then uses those to construct the services which rely on those services, and so-on until you've created the server, which you can then execute.</p>
 {% highlight go %}
-// CreateServerFactory injects all the dependencies needed to create
-// http.ServerFactory
-func CreateServerFactory(source goConfig.Source) (http.ServerFactory, error) {
+// CreateServerFactory injects all the dependencies
+// needed to create http.ServerFactory
+func CreateServerFactory(
+    source goConfig.Source,
+) (http.ServerFactory, error) {
     // Each "tap" below indicates a level of dependency
     configStore, err := config.NewStoreImpl(
         source,
