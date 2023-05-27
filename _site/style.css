@@ -181,6 +181,20 @@ b {
     color: var(--header);
 }
 
+figure.highlight {
+    margin: 0 auto;
+    max-width: 90vw;
+}
+pre {
+    margin: 0 auto;
+    overflow-x:auto;
+    padding: 0.5em;
+}
+code {
+    font-size: 0.8em;
+    font-family: 'Source Code Pro', monospace;
+}
+
 /* Digital restorations */
 
 .centerpiece {
@@ -195,14 +209,8 @@ b {
     list-style-type: none;
 }
 
-.toc span { 
+.toc-date { 
     display: inline-block; width: 6em;
-}
-
-/* Iframely */
-
-.iframely-embed {
-    display: flex;
 }
 
 /* Mobile responsiveness (keep at bottom to override) */

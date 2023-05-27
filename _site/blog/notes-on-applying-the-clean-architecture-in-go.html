@@ -14,6 +14,7 @@
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap" rel="stylesheet">        
         <link href="https://fonts.googleapis.com/css2?family=Fraunces&family=Nunito+Sans&display=swap" rel="stylesheet"> 
+        <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@500&display=swap" rel="stylesheet">
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
 
         <!-- Set default theme here, so we don't get a color flash -->
@@ -28,6 +29,7 @@
         </script>
 
         <link href="/style.css" rel="stylesheet" >
+        <link href="/base16-paraiso-dark.css" rel="stylesheet" >
         <link href="/images/favicon.ico" rel="shortcut icon" type="image/x-icon">
     </head>
 
@@ -177,7 +179,31 @@
     <p>The <i>wire</i> layer sits outside of the other layers, and it deals with dependency injection. Basically, this
     layer contains a function which first creates the service instances which have no dependencies, then uses those to construct
     the services which rely on those services, and so-on until you've created the server, which you can then execute.</p>
-    <div class="iframely-embed wide"><div class="iframely-responsive" style="padding-bottom: 50%;"><a href="https://gist.github.com/liampulles/f62dbe42763a686df8fe1935fad4f059" data-iframely-url="//iframely.net/mTqd4MD"></a></div></div><script async="" src="//iframely.net/embed.js" charset="utf-8"></script>
+
+<figure class="highlight"><pre><code class="language-go" data-lang="go"><span class="c">// CreateServerFactory injects all the dependencies needed to create</span>
+<span class="c">// http.ServerFactory</span>
+<span class="k">func</span> <span class="n">CreateServerFactory</span><span class="p">(</span><span class="n">source</span> <span class="n">goConfig</span><span class="o">.</span><span class="n">Source</span><span class="p">)</span> <span class="p">(</span><span class="n">http</span><span class="o">.</span><span class="n">ServerFactory</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c">// Each "tap" below indicates a level of dependency</span>
+    <span class="n">configStore</span><span class="p">,</span> <span class="n">err</span> <span class="o">:=</span> <span class="n">config</span><span class="o">.</span><span class="n">NewStoreImpl</span><span class="p">(</span>
+        <span class="n">source</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="n">err</span> <span class="o">!=</span> <span class="no">nil</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="no">nil</span><span class="p">,</span> <span class="n">err</span>
+    <span class="p">}</span>
+    <span class="n">errorParser</span> <span class="o">:=</span> <span class="n">adapterDb</span><span class="o">.</span><span class="n">NewErrorParserImpl</span><span class="p">()</span>
+
+    <span class="c">// --- NEXT TAP ---</span>
+    <span class="n">helperService</span> <span class="o">:=</span> <span class="n">sql</span><span class="o">.</span><span class="n">NewHelperServiceImpl</span><span class="p">(</span><span class="n">errorParser</span><span class="p">)</span>
+    <span class="n">databaseService</span><span class="p">,</span> <span class="n">err</span> <span class="o">:=</span> <span class="n">db</span><span class="o">.</span><span class="n">NewDatabaseServiceImpl</span><span class="p">(</span>
+        <span class="n">configStore</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="n">err</span> <span class="o">!=</span> <span class="no">nil</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="no">nil</span><span class="p">,</span> <span class="n">err</span>
+    <span class="p">}</span>
+    <span class="n">inventoryItemConstructor</span> <span class="o">:=</span> <span class="n">entity</span><span class="o">.</span><span class="n">NewInventoryItemConstructorImpl</span><span class="p">()</span>
+    <span class="n">muxWrapper</span> <span class="o">:=</span> <span class="n">mux</span><span class="o">.</span><span class="n">NewWrapperImpl</span><span class="p">()</span>
+    <span class="c">//...</span></code></pre></figure>
+
     <p>This is fairly mundane, boiler-platery code - but it is pretty easy to understand and update, and I haven't found good
     enough cause to use an external package to do it (though if you want to use an external package,
     <a href="https://github.com/google/wire"> Google's wire tool</a> seems to be a good choice).</p>
@@ -193,7 +219,34 @@
     touching the domain package, so clearly we cannot put any JSON tags on the entity to begin with.</p>
     <p>This does not mean that we cannot customize how our objects are serialized - it just means that we need to make use of an "intermediary" struct
     in order to do this. For example:</p>
-    <div class="iframely-embed wide"><div class="iframely-responsive" style="padding-bottom: 50%;"><a href="https://gist.github.com/liampulles/e84c51c77699c9c929dfdf5467202c9d" data-iframely-url="//iframely.net/RYFdhtF"></a></div></div><script async="" src="//iframely.net/embed.js" charset="utf-8"></script>
+
+<figure class="highlight"><pre><code class="language-go" data-lang="go"><span class="c">// FromInventoryItemView converts a view to JSON</span>
+<span class="k">func</span> <span class="p">(</span><span class="n">e</span> <span class="o">*</span><span class="n">EncoderServiceImpl</span><span class="p">)</span> <span class="n">FromInventoryItemView</span><span class="p">(</span><span class="n">view</span> <span class="o">*</span><span class="n">inventory</span><span class="o">.</span><span class="n">ViewVO</span><span class="p">)</span> <span class="p">([]</span><span class="kt">byte</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">intermediary</span> <span class="o">:=</span> <span class="n">mapViewIntermediary</span><span class="p">(</span><span class="n">view</span><span class="p">)</span>
+
+    <span class="n">bytes</span><span class="p">,</span> <span class="n">err</span> <span class="o">:=</span> <span class="n">json</span><span class="o">.</span><span class="n">Marshal</span><span class="p">(</span><span class="n">intermediary</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">err</span> <span class="o">!=</span> <span class="no">nil</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="no">nil</span><span class="p">,</span> <span class="n">fmt</span><span class="o">.</span><span class="n">Errorf</span><span class="p">(</span><span class="s">"could not convert inventory item view to json - marshal error: %w"</span><span class="p">,</span> <span class="n">err</span><span class="p">)</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">bytes</span><span class="p">,</span> <span class="no">nil</span>
+<span class="p">}</span>
+
+<span class="k">func</span> <span class="n">mapViewIntermediary</span><span class="p">(</span><span class="n">view</span> <span class="o">*</span><span class="n">inventory</span><span class="o">.</span><span class="n">ViewVO</span><span class="p">)</span> <span class="o">*</span><span class="n">jsonViewVO</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="o">&amp;</span><span class="n">jsonViewVO</span><span class="p">{</span>
+        <span class="n">ID</span><span class="o">:</span>        <span class="n">view</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span>
+        <span class="n">Name</span><span class="o">:</span>      <span class="n">view</span><span class="o">.</span><span class="n">Name</span><span class="p">,</span>
+        <span class="n">Location</span><span class="o">:</span>  <span class="n">view</span><span class="o">.</span><span class="n">Location</span><span class="p">,</span>
+        <span class="n">Available</span><span class="o">:</span> <span class="n">view</span><span class="o">.</span><span class="n">Available</span><span class="p">,</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">type</span> <span class="n">jsonViewVO</span> <span class="k">struct</span> <span class="p">{</span>
+    <span class="n">ID</span>        <span class="n">entity</span><span class="o">.</span><span class="n">ID</span> <span class="s">`json:"id"`</span>
+    <span class="n">Name</span>      <span class="kt">string</span>    <span class="s">`json:"name"`</span>
+    <span class="n">Location</span>  <span class="kt">string</span>    <span class="s">`json:"location"`</span>
+    <span class="n">Available</span> <span class="kt">bool</span>      <span class="s">`json:"available"`</span>
+<span class="p">}</span></code></pre></figure>
+
     <p>Here we first map our use case view (which contains the elements of the entity we want to expose) to an
     intermediary struct, and then marshal the struct. By doing this, we've decoupled the entity from concerns over how
     it is viewed externally, and we've decoupled that view from its encoding.</p>
@@ -217,7 +270,35 @@
         <li>etc.</li>
     </ul>
     <p>Here is a good example from the Inventory Item Entity:</p>
-    <div class="iframely-embed wide"><div class="iframely-responsive" style="padding-bottom: 50%;"><a href="https://gist.github.com/liampulles/dfc95496fdc6d82f489abc96e4736ad2" data-iframely-url="//iframely.net/apeCyFb"></a></div></div><script async="" src="//iframely.net/embed.js" charset="utf-8"></script>
+
+<figure class="highlight"><pre><code class="language-go" data-lang="go"><span class="c">// IsAvailable will return true if the inventory item may</span>
+<span class="c">// be checked out - false otherwise.</span>
+<span class="k">func</span> <span class="p">(</span><span class="n">i</span> <span class="o">*</span><span class="n">InventoryItemImpl</span><span class="p">)</span> <span class="n">IsAvailable</span><span class="p">()</span> <span class="kt">bool</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">i</span><span class="o">.</span><span class="n">available</span>
+<span class="p">}</span>
+
+<span class="c">// Checkout will mark the inventory item as unavilable.</span>
+<span class="c">// If the inventory item is not available,</span>
+<span class="c">// then an error is returned.</span>
+<span class="k">func</span> <span class="p">(</span><span class="n">i</span> <span class="o">*</span><span class="n">InventoryItemImpl</span><span class="p">)</span> <span class="n">Checkout</span><span class="p">()</span> <span class="kt">error</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="o">!</span><span class="n">i</span><span class="o">.</span><span class="n">available</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="n">fmt</span><span class="o">.</span><span class="n">Errorf</span><span class="p">(</span><span class="s">"cannot check out inventory item - it is unavailable"</span><span class="p">)</span>
+    <span class="p">}</span>
+    <span class="n">i</span><span class="o">.</span><span class="n">available</span> <span class="o">=</span> <span class="no">false</span>
+    <span class="k">return</span> <span class="no">nil</span>
+<span class="p">}</span>
+
+<span class="c">// CheckIn will mark the inventory item as available.</span>
+<span class="c">// If the inventory item is available, then an</span>
+<span class="c">// error is returned.</span>
+<span class="k">func</span> <span class="p">(</span><span class="n">i</span> <span class="o">*</span><span class="n">InventoryItemImpl</span><span class="p">)</span> <span class="n">CheckIn</span><span class="p">()</span> <span class="kt">error</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="n">i</span><span class="o">.</span><span class="n">available</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="n">fmt</span><span class="o">.</span><span class="n">Errorf</span><span class="p">(</span><span class="s">"cannot check in inventory item - it is already checked in"</span><span class="p">)</span>
+    <span class="p">}</span>
+    <span class="n">i</span><span class="o">.</span><span class="n">available</span> <span class="o">=</span> <span class="no">true</span>
+    <span class="k">return</span> <span class="no">nil</span>
+<span class="p">}</span></code></pre></figure>
+
     <p>Here we have not exposed the <i>available</i> field on the struct. Instead, we encapsulate access via methods,
     some of which may throw errors. This is done to protect the entity - it is the use case layer's job to deal with
     these errors.</p>

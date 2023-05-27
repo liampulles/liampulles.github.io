@@ -66,8 +66,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  jekyll (~> 4.0)
-  webrick (~> 1.7)
+  jekyll (~> 4.3.2)
 
 BUNDLED WITH
    2.3.11

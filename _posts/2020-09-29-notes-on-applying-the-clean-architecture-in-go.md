@@ -104,7 +104,31 @@ shareable: true
     <p>The <i>wire</i> layer sits outside of the other layers, and it deals with dependency injection. Basically, this
     layer contains a function which first creates the service instances which have no dependencies, then uses those to construct
     the services which rely on those services, and so-on until you've created the server, which you can then execute.</p>
-    <div class="iframely-embed wide"><div class="iframely-responsive" style="padding-bottom: 50%;"><a href="https://gist.github.com/liampulles/f62dbe42763a686df8fe1935fad4f059" data-iframely-url="//iframely.net/mTqd4MD"></a></div></div><script async src="//iframely.net/embed.js" charset="utf-8"></script>
+{% highlight go %}
+// CreateServerFactory injects all the dependencies needed to create
+// http.ServerFactory
+func CreateServerFactory(source goConfig.Source) (http.ServerFactory, error) {
+    // Each "tap" below indicates a level of dependency
+    configStore, err := config.NewStoreImpl(
+        source,
+    )
+    if err != nil {
+        return nil, err
+    }
+    errorParser := adapterDb.NewErrorParserImpl()
+
+    // --- NEXT TAP ---
+    helperService := sql.NewHelperServiceImpl(errorParser)
+    databaseService, err := db.NewDatabaseServiceImpl(
+        configStore,
+    )
+    if err != nil {
+        return nil, err
+    }
+    inventoryItemConstructor := entity.NewInventoryItemConstructorImpl()
+    muxWrapper := mux.NewWrapperImpl()
+    //...
+{% endhighlight %}
     <p>This is fairly mundane, boiler-platery code - but it is pretty easy to understand and update, and I haven't found good
     enough cause to use an external package to do it (though if you want to use an external package,
     <a href="https://github.com/google/wire"> Google's wire tool</a> seems to be a good choice).</p>
@@ -120,7 +144,34 @@ shareable: true
     touching the domain package, so clearly we cannot put any JSON tags on the entity to begin with.</p>
     <p>This does not mean that we cannot customize how our objects are serialized - it just means that we need to make use of an "intermediary" struct
     in order to do this. For example:</p>
-    <div class="iframely-embed wide"><div class="iframely-responsive" style="padding-bottom: 50%;"><a href="https://gist.github.com/liampulles/e84c51c77699c9c929dfdf5467202c9d" data-iframely-url="//iframely.net/RYFdhtF"></a></div></div><script async src="//iframely.net/embed.js" charset="utf-8"></script>
+{% highlight go %}
+// FromInventoryItemView converts a view to JSON
+func (e *EncoderServiceImpl) FromInventoryItemView(view *inventory.ViewVO) ([]byte, error) {
+    intermediary := mapViewIntermediary(view)
+
+    bytes, err := json.Marshal(intermediary)
+    if err != nil {
+        return nil, fmt.Errorf("could not convert inventory item view to json - marshal error: %w", err)
+    }
+    return bytes, nil
+}
+
+func mapViewIntermediary(view *inventory.ViewVO) *jsonViewVO {
+    return &jsonViewVO{
+        ID:        view.ID,
+        Name:      view.Name,
+        Location:  view.Location,
+        Available: view.Available,
+    }
+}
+
+type jsonViewVO struct {
+    ID        entity.ID `json:"id"`
+    Name      string    `json:"name"`
+    Location  string    `json:"location"`
+    Available bool      `json:"available"`
+}
+{% endhighlight %}
     <p>Here we first map our use case view (which contains the elements of the entity we want to expose) to an
     intermediary struct, and then marshal the struct. By doing this, we've decoupled the entity from concerns over how
     it is viewed externally, and we've decoupled that view from its encoding.</p>
@@ -144,7 +195,35 @@ shareable: true
         <li>etc.</li>
     </ul>
     <p>Here is a good example from the Inventory Item Entity:</p>
-    <div class="iframely-embed wide"><div class="iframely-responsive" style="padding-bottom: 50%;"><a href="https://gist.github.com/liampulles/dfc95496fdc6d82f489abc96e4736ad2" data-iframely-url="//iframely.net/apeCyFb"></a></div></div><script async src="//iframely.net/embed.js" charset="utf-8"></script>
+{% highlight go %}
+// IsAvailable will return true if the inventory item may
+// be checked out - false otherwise.
+func (i *InventoryItemImpl) IsAvailable() bool {
+    return i.available
+}
+
+// Checkout will mark the inventory item as unavilable.
+// If the inventory item is not available,
+// then an error is returned.
+func (i *InventoryItemImpl) Checkout() error {
+    if !i.available {
+        return fmt.Errorf("cannot check out inventory item - it is unavailable")
+    }
+    i.available = false
+    return nil
+}
+
+// CheckIn will mark the inventory item as available.
+// If the inventory item is available, then an
+// error is returned.
+func (i *InventoryItemImpl) CheckIn() error {
+    if i.available {
+        return fmt.Errorf("cannot check in inventory item - it is already checked in")
+    }
+    i.available = true
+    return nil
+}
+{% endhighlight %}
     <p>Here we have not exposed the <i>available</i> field on the struct. Instead, we encapsulate access via methods,
     some of which may throw errors. This is done to protect the entity - it is the use case layer's job to deal with
     these errors.</p>
