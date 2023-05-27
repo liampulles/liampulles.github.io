@@ -25,12 +25,15 @@
     <span class=n>inventoryItemConstructor</span> <span class=o>:=</span> <span class=n>entity</span><span class=o>.</span><span class=n>NewInventoryItemConstructorImpl</span><span class=p>()</span>
     <span class=n>muxWrapper</span> <span class=o>:=</span> <span class=n>mux</span><span class=o>.</span><span class=n>NewWrapperImpl</span><span class=p>()</span>
     <span class=c>//...</span></code></pre></figure><p>This is fairly mundane, boiler-platery code - but it is pretty easy to understand and update, and I haven't found good enough cause to use an external package to do it (though if you want to use an external package, <a href=https://github.com/google/wire>Google's wire tool</a> seems to be a good choice).<p>What IS important is that you make a separate package (and layer) for wiring, as it is going to be importing code from all over your project, and you want to make sure that there aren't circular dependencies.</section><section><h2>JSON struct tags</h2><p>One might be compelled to put JSON struct tags (as well as ORM stuct tags, etc.) on your entities in the domain package, but this of course would be a violation of our segregation rules: application communication does not form part of the business rules. If we go back to our thought experiment to reinforce this point: what if we wanted to use GRPC instead? This should not require us touching the domain package, so clearly we cannot put any JSON tags on the entity to begin with.<p>This does not mean that we cannot customize how our objects are serialized - it just means that we need to make use of an "intermediary" struct in order to do this. For example:<figure class=highlight><pre><code class=language-go data-lang=go><span class=c>// FromInventoryItemView converts a view to JSON</span>
-<span class=k>func</span> <span class=p>(</span><span class=n>e</span> <span class=o>*</span><span class=n>EncoderServiceImpl</span><span class=p>)</span> <span class=n>FromInventoryItemView</span><span class=p>(</span><span class=n>view</span> <span class=o>*</span><span class=n>inventory</span><span class=o>.</span><span class=n>ViewVO</span><span class=p>)</span> <span class=p>([]</span><span class=kt>byte</span><span class=p>,</span> <span class=kt>error</span><span class=p>)</span> <span class=p>{</span>
+<span class=k>func</span> <span class=p>(</span><span class=n>e</span> <span class=o>*</span><span class=n>EncoderServiceImpl</span><span class=p>)</span> <span class=n>FromInventoryItemView</span><span class=p>(</span>
+    <span class=n>view</span> <span class=o>*</span><span class=n>inventory</span><span class=o>.</span><span class=n>ViewVO</span><span class=p>,</span>
+<span class=p>)</span> <span class=p>([]</span><span class=kt>byte</span><span class=p>,</span> <span class=kt>error</span><span class=p>)</span> <span class=p>{</span>
     <span class=n>intermediary</span> <span class=o>:=</span> <span class=n>mapViewIntermediary</span><span class=p>(</span><span class=n>view</span><span class=p>)</span>
 
     <span class=n>bytes</span><span class=p>,</span> <span class=n>err</span> <span class=o>:=</span> <span class=n>json</span><span class=o>.</span><span class=n>Marshal</span><span class=p>(</span><span class=n>intermediary</span><span class=p>)</span>
     <span class=k>if</span> <span class=n>err</span> <span class=o>!=</span> <span class=no>nil</span> <span class=p>{</span>
-        <span class=k>return</span> <span class=no>nil</span><span class=p>,</span> <span class=n>fmt</span><span class=o>.</span><span class=n>Errorf</span><span class=p>(</span><span class=s>"could not convert inventory item view to json - marshal error: %w"</span><span class=p>,</span> <span class=n>err</span><span class=p>)</span>
+        <span class=k>return</span> <span class=no>nil</span><span class=p>,</span> <span class=n>fmt</span><span class=o>.</span><span class=n>Errorf</span><span class=p>(</span><span class=s>"could not convert inventory"</span><span class=o>+</span>
+        <span class=s>" item view to json - marshal error: %w"</span><span class=p>,</span> <span class=n>err</span><span class=p>)</span>
     <span class=p>}</span>
     <span class=k>return</span> <span class=n>bytes</span><span class=p>,</span> <span class=no>nil</span>
 <span class=p>}</span>
@@ -62,7 +65,8 @@ it is viewed externally, and we've decoupled that view from its encoding.</secti
 <span class=c>// then an error is returned.</span>
 <span class=k>func</span> <span class=p>(</span><span class=n>i</span> <span class=o>*</span><span class=n>InventoryItemImpl</span><span class=p>)</span> <span class=n>Checkout</span><span class=p>()</span> <span class=kt>error</span> <span class=p>{</span>
     <span class=k>if</span> <span class=o>!</span><span class=n>i</span><span class=o>.</span><span class=n>available</span> <span class=p>{</span>
-        <span class=k>return</span> <span class=n>fmt</span><span class=o>.</span><span class=n>Errorf</span><span class=p>(</span><span class=s>"cannot check out inventory item - it is unavailable"</span><span class=p>)</span>
+        <span class=k>return</span> <span class=n>fmt</span><span class=o>.</span><span class=n>Errorf</span><span class=p>(</span><span class=s>"cannot check out inventory"</span><span class=o>+</span>
+        <span class=s>" item - it is unavailable"</span><span class=p>)</span>
     <span class=p>}</span>
     <span class=n>i</span><span class=o>.</span><span class=n>available</span> <span class=o>=</span> <span class=no>false</span>
     <span class=k>return</span> <span class=no>nil</span>
@@ -73,7 +77,8 @@ it is viewed externally, and we've decoupled that view from its encoding.</secti
 <span class=c>// error is returned.</span>
 <span class=k>func</span> <span class=p>(</span><span class=n>i</span> <span class=o>*</span><span class=n>InventoryItemImpl</span><span class=p>)</span> <span class=n>CheckIn</span><span class=p>()</span> <span class=kt>error</span> <span class=p>{</span>
     <span class=k>if</span> <span class=n>i</span><span class=o>.</span><span class=n>available</span> <span class=p>{</span>
-        <span class=k>return</span> <span class=n>fmt</span><span class=o>.</span><span class=n>Errorf</span><span class=p>(</span><span class=s>"cannot check in inventory item - it is already checked in"</span><span class=p>)</span>
+        <span class=k>return</span> <span class=n>fmt</span><span class=o>.</span><span class=n>Errorf</span><span class=p>(</span><span class=s>"cannot check in inventory"</span><span class=o>+</span>
+        <span class=s>" item - it is already checked in"</span><span class=p>)</span>
     <span class=p>}</span>
     <span class=n>i</span><span class=o>.</span><span class=n>available</span> <span class=o>=</span> <span class=no>true</span>
     <span class=k>return</span> <span class=no>nil</span>

@@ -105,12 +105,15 @@ func CreateServerFactory(
     <p>This does not mean that we cannot customize how our objects are serialized - it just means that we need to make use of an "intermediary" struct in order to do this. For example:</p>
 {% highlight go %}
 // FromInventoryItemView converts a view to JSON
-func (e *EncoderServiceImpl) FromInventoryItemView(view *inventory.ViewVO) ([]byte, error) {
+func (e *EncoderServiceImpl) FromInventoryItemView(
+    view *inventory.ViewVO,
+) ([]byte, error) {
     intermediary := mapViewIntermediary(view)
 
     bytes, err := json.Marshal(intermediary)
     if err != nil {
-        return nil, fmt.Errorf("could not convert inventory item view to json - marshal error: %w", err)
+        return nil, fmt.Errorf("could not convert inventory"+
+        " item view to json - marshal error: %w", err)
     }
     return bytes, nil
 }
@@ -166,7 +169,8 @@ func (i *InventoryItemImpl) IsAvailable() bool {
 // then an error is returned.
 func (i *InventoryItemImpl) Checkout() error {
     if !i.available {
-        return fmt.Errorf("cannot check out inventory item - it is unavailable")
+        return fmt.Errorf("cannot check out inventory"+
+        " item - it is unavailable")
     }
     i.available = false
     return nil
@@ -177,7 +181,8 @@ func (i *InventoryItemImpl) Checkout() error {
 // error is returned.
 func (i *InventoryItemImpl) CheckIn() error {
     if i.available {
-        return fmt.Errorf("cannot check in inventory item - it is already checked in")
+        return fmt.Errorf("cannot check in inventory"+
+        " item - it is already checked in")
     }
     i.available = true
     return nil
