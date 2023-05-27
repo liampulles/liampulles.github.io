@@ -217,6 +217,7 @@ b {
 }
 
 /* Mobile (keep at bottom to override) */
+/* -> Tablet and below */
 @media only screen and (max-width: 768px) {
     .optional {
         display: none !important;
@@ -246,6 +247,26 @@ b {
 
     svg {
         padding-left: 0.5em;
+    }
+}
+
+/* -> Mobile and below */
+@media only screen and (max-width: 600px) {
+    /* -> Bring header sizes down a bit */
+    h1 {
+        font-size: 1.8em;
+    }
+    h2 {
+        font-size: 1.4em;
+    }
+    h3 {
+        font-size: 1.2em;
+    }
+    .site-header p {
+        font-size: 1.4em;
+    }
+    .site-header ul {
+        font-size: 1em;
     }
 }
 
