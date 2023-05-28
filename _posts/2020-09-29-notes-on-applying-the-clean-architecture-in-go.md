@@ -12,7 +12,7 @@ shareable: true
     <h2>So, what is this "Clean Architecture" thing anyway?</h2>
     <aside>
         <figure>
-            <img src="/images/clean-architecture-diagram.png" height="731">
+            <img src="/images/clean-architecture-diagram.png" height="731" width="731">
             <figcaption><i>The Layers of The Clean Architecture.</i></figcaption>
         </figure>
     </aside>
@@ -56,7 +56,7 @@ shareable: true
     <h2>How do I structure my packages?</h2>
     <aside>
         <figure>
-            <img src="/images/matchstick-video-package-structure.png" height="414">
+            <img src="/images/matchstick-video-package-structure.png" height="414" width="232">
             <figcaption><i>Package structure for</i> <a href="https://github.com/liampulles/matchstick-video">Matchstick Video!</a></figcaption>
         </figure>
     </aside>
@@ -143,7 +143,7 @@ type jsonViewVO struct {
     <h2>Entities</h2>
     <aside>
         <figure>
-            <img src="/images/my-super-sweet-16.jpg" height="375">
+            <img src="/images/my-super-sweet-16.jpg" height="375" width="500">
             <figcaption><i>The Entity is King, and treats itself as such.</i></figcaption>
         </figure>
     </aside>
