@@ -21,40 +21,6 @@ hr {
     display: none;
 }
 
-/* Dark/Light mode */
-
-:root[color-mode="light"] {
-    --text: #000000;
-    --header: #000000;
-    --background: #ffffff;
-    --link: #0000EE;
-    --visited: #551A8B;
-}
-
-:root[color-mode="dark"] {
-    --text: #d1d5db;
-    --header: #eaebee;
-    --background: #202020;
-    --link: #6d8fff;
-    --visited: #8a63ad;
-}
-
-:root[color-mode="light"] .light--hidden {
-    display: none;
-}
-
-:root[color-mode="dark"] .dark--hidden {
-    display: none;
-}
-
-svg {
-    stroke: var(--header);
-    fill: var(--header);
-    width: 1.4em;
-    height: 1.4em;
-    padding-left: 1.2em;
-}
-
 /* Links */
 
 a {
@@ -185,12 +151,12 @@ figure.highlight {
     margin: 0 0;
     max-width: 90vw;
     display: grid;
-    background-color: var(--background);
 }
 pre {
     margin: 0 0;
     overflow-x:auto;
     padding: 0.5em;
+    border: 1px solid var(--border);
 }
 code {
     font-size: 0.8em;
@@ -289,4 +255,40 @@ code {
 
 .wide {
     width: 100%;
+}
+
+/* Dark/Light mode */
+
+:root[color-mode="light"] {
+    --text: #000000;
+    --header: #000000;
+    --background: #ffffff;
+    --border: #d4d4d4;
+    --link: #0000EE;
+    --visited: #551A8B;
+}
+
+:root[color-mode="dark"] {
+    --text: #d1d5db;
+    --header: #eaebee;
+    --background: #202020;
+    --border: #353535;
+    --link: #6d8fff;
+    --visited: #8a63ad;
+}
+
+:root[color-mode="light"] .light--hidden {
+    display: none;
+}
+
+:root[color-mode="dark"] .dark--hidden {
+    display: none;
+}
+
+svg {
+    stroke: var(--header);
+    fill: var(--header);
+    width: 1.4em;
+    height: 1.4em;
+    padding-left: 1.2em;
 }

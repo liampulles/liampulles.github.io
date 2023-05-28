@@ -1,0 +1,309 @@
+:root[color-mode="dark"] .highlight .c {
+    color: #75715e
+}
+
+/* Comment */
+:root[color-mode="dark"] .highlight .err {
+    color: #960050;
+}
+
+/* Error */
+:root[color-mode="dark"] .highlight .k {
+    color: #66d9ef
+}
+
+/* Keyword */
+:root[color-mode="dark"] .highlight .l {
+    color: #ae81ff
+}
+
+/* Literal */
+:root[color-mode="dark"] .highlight .n {
+    color: #f8f8f2
+}
+
+/* Name */
+:root[color-mode="dark"] .highlight .o {
+    color: #f92672
+}
+
+/* Operator */
+:root[color-mode="dark"] .highlight .p {
+    color: #f8f8f2
+}
+
+/* Punctuation */
+:root[color-mode="dark"] .highlight .cm {
+    color: #75715e
+}
+
+/* Comment.Multiline */
+:root[color-mode="dark"] .highlight .cp {
+    color: #75715e
+}
+
+/* Comment.Preproc */
+:root[color-mode="dark"] .highlight .c1 {
+    color: #75715e
+}
+
+/* Comment.Single */
+:root[color-mode="dark"] .highlight .cs {
+    color: #75715e
+}
+
+/* Comment.Special */
+:root[color-mode="dark"] .highlight .ge {
+    font-style: italic
+}
+
+/* Generic.Emph */
+:root[color-mode="dark"] .highlight .gs {
+    font-weight: bold
+}
+
+/* Generic.Strong */
+:root[color-mode="dark"] .highlight .kc {
+    color: #66d9ef
+}
+
+/* Keyword.Constant */
+:root[color-mode="dark"] .highlight .kd {
+    color: #66d9ef
+}
+
+/* Keyword.Declaration */
+:root[color-mode="dark"] .highlight .kn {
+    color: #f92672
+}
+
+/* Keyword.Namespace */
+:root[color-mode="dark"] .highlight .kp {
+    color: #66d9ef
+}
+
+/* Keyword.Pseudo */
+:root[color-mode="dark"] .highlight .kr {
+    color: #66d9ef
+}
+
+/* Keyword.Reserved */
+:root[color-mode="dark"] .highlight .kt {
+    color: #66d9ef
+}
+
+/* Keyword.Type */
+:root[color-mode="dark"] .highlight .ld {
+    color: #e6db74
+}
+
+/* Literal.Date */
+:root[color-mode="dark"] .highlight .m {
+    color: #ae81ff
+}
+
+/* Literal.Number */
+:root[color-mode="dark"] .highlight .s {
+    color: #e6db74
+}
+
+/* Literal.String */
+:root[color-mode="dark"] .highlight .na {
+    color: #a6e22e
+}
+
+/* Name.Attribute */
+:root[color-mode="dark"] .highlight .nb {
+    color: #f8f8f2
+}
+
+/* Name.Builtin */
+:root[color-mode="dark"] .highlight .nc {
+    color: #a6e22e
+}
+
+/* Name.Class */
+:root[color-mode="dark"] .highlight .no {
+    color: #66d9ef
+}
+
+/* Name.Constant */
+:root[color-mode="dark"] .highlight .nd {
+    color: #a6e22e
+}
+
+/* Name.Decorator */
+:root[color-mode="dark"] .highlight .ni {
+    color: #f8f8f2
+}
+
+/* Name.Entity */
+:root[color-mode="dark"] .highlight .ne {
+    color: #a6e22e
+}
+
+/* Name.Exception */
+:root[color-mode="dark"] .highlight .nf {
+    color: #a6e22e
+}
+
+/* Name.Function */
+:root[color-mode="dark"] .highlight .nl {
+    color: #f8f8f2
+}
+
+/* Name.Label */
+:root[color-mode="dark"] .highlight .nn {
+    color: #f8f8f2
+}
+
+/* Name.Namespace */
+:root[color-mode="dark"] .highlight .nx {
+    color: #a6e22e
+}
+
+/* Name.Other */
+:root[color-mode="dark"] .highlight .py {
+    color: #f8f8f2
+}
+
+/* Name.Property */
+:root[color-mode="dark"] .highlight .nt {
+    color: #f92672
+}
+
+/* Name.Tag */
+:root[color-mode="dark"] .highlight .nv {
+    color: #f8f8f2
+}
+
+/* Name.Variable */
+:root[color-mode="dark"] .highlight .ow {
+    color: #f92672
+}
+
+/* Operator.Word */
+:root[color-mode="dark"] .highlight .w {
+    color: #f8f8f2
+}
+
+/* Text.Whitespace */
+:root[color-mode="dark"] .highlight .mf {
+    color: #ae81ff
+}
+
+/* Literal.Number.Float */
+:root[color-mode="dark"] .highlight .mh {
+    color: #ae81ff
+}
+
+/* Literal.Number.Hex */
+:root[color-mode="dark"] .highlight .mi {
+    color: #ae81ff
+}
+
+/* Literal.Number.Integer */
+:root[color-mode="dark"] .highlight .mo {
+    color: #ae81ff
+}
+
+/* Literal.Number.Oct */
+:root[color-mode="dark"] .highlight .sb {
+    color: #e6db74
+}
+
+/* Literal.String.Backtick */
+:root[color-mode="dark"] .highlight .sc {
+    color: #e6db74
+}
+
+/* Literal.String.Char */
+:root[color-mode="dark"] .highlight .sd {
+    color: #e6db74
+}
+
+/* Literal.String.Doc */
+:root[color-mode="dark"] .highlight .s2 {
+    color: #e6db74
+}
+
+/* Literal.String.Double */
+:root[color-mode="dark"] .highlight .se {
+    color: #ae81ff
+}
+
+/* Literal.String.Escape */
+:root[color-mode="dark"] .highlight .sh {
+    color: #e6db74
+}
+
+/* Literal.String.Heredoc */
+:root[color-mode="dark"] .highlight .si {
+    color: #e6db74
+}
+
+/* Literal.String.Interpol */
+:root[color-mode="dark"] .highlight .sx {
+    color: #e6db74
+}
+
+/* Literal.String.Other */
+:root[color-mode="dark"] .highlight .sr {
+    color: #e6db74
+}
+
+/* Literal.String.Regex */
+:root[color-mode="dark"] .highlight .s1 {
+    color: #e6db74
+}
+
+/* Literal.String.Single */
+:root[color-mode="dark"] .highlight .ss {
+    color: #e6db74
+}
+
+/* Literal.String.Symbol */
+:root[color-mode="dark"] .highlight .bp {
+    color: #f8f8f2
+}
+
+/* Name.Builtin.Pseudo */
+:root[color-mode="dark"] .highlight .vc {
+    color: #f8f8f2
+}
+
+/* Name.Variable.Class */
+:root[color-mode="dark"] .highlight .vg {
+    color: #f8f8f2
+}
+
+/* Name.Variable.Global */
+:root[color-mode="dark"] .highlight .vi {
+    color: #f8f8f2
+}
+
+/* Name.Variable.Instance */
+:root[color-mode="dark"] .highlight .il {
+    color: #ae81ff
+}
+
+/* Literal.Number.Integer.Long */
+
+:root[color-mode="dark"] .highlight .gh {}
+
+/* Generic Heading & Diff Header */
+:root[color-mode="dark"] .highlight .gu {
+    color: #75715e;
+}
+
+/* Generic.Subheading & Diff Unified/Comment? */
+:root[color-mode="dark"] .highlight .gd {
+    color: #f92672;
+}
+
+/* Generic.Deleted & Diff Deleted */
+:root[color-mode="dark"] .highlight .gi {
+    color: #a6e22e;
+}
+
+/* Generic.Inserted & Diff Inserted */
