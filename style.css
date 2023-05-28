@@ -101,12 +101,15 @@ h3 {
     font-size: 1.3em;
 }
 
-.site-header {
+header.site-header {
     display: flex;
     flex-direction: row;
     align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
     padding-top: 0.7rem;
     padding-bottom: 1rem;
+    width: 100%;
     font-family: 'Fraunces', serif, 'Font Awesome';
 }
 
@@ -114,12 +117,12 @@ h3 {
     font-size: 1.6rem;
     font-weight: bold;
     display: inline-block;
-    margin: 0 auto;
+    margin: 0;
 }
 
 .site-header ul {
     padding-left: 0;
-    margin: 0 auto;
+    margin: 0;
 }
 
 .site-header nav li {
@@ -129,10 +132,7 @@ h3 {
     display: inline-block;
     padding-top: 0.3rem;
     padding-left: 1.2rem;
-}
-
-.site-header a {
-    margin: 0 auto; 
+    text-align: right;
 }
 
 main header p {
@@ -217,7 +217,7 @@ code {
 
 /* Mobile responsiveness (keep at bottom to override) */
 /* -> Tablet and below */
-@media only screen and (max-width: 768px) {
+@media only screen and (max-width: 630px) {
     .optional {
         display: none !important;
     }
@@ -231,7 +231,7 @@ code {
         padding-left: 0;
     }
 
-    .toc h1, .toc h2 {
+    .toc h1, .toc h3 {
         text-align: center;
     }
 
@@ -264,11 +264,24 @@ code {
 
 /* -> Smaller width */
 @media only screen and (max-width:385px) {
+    header.site-header {
+        justify-content: space-between;
+    }
     .site-header p {
         font-size: 1.4rem;
     }
+    .site-header nav {
+        order: 99;
+    }
     .site-header nav li {
         font-size: 1.1rem;
+    }
+    .site-header ul {
+        display: flex;
+        flex-direction: column;
+    }
+    .toc-date {
+        display: none;
     }
 }
 
