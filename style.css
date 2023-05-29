@@ -226,10 +226,6 @@ code {
     h3 {
         font-size: 1.2em;
     }
-
-    svg {
-        padding-left: 0.5em;
-    }
 }
 
 /* -> Smaller width */
@@ -289,10 +285,6 @@ code {
     display: none;
 }
 
-svg {
-    stroke: var(--header);
-    fill: var(--header);
-    width: 1.4em;
-    height: 1.4em;
+.color-mode__header {
     padding-left: 1.2em;
 }
