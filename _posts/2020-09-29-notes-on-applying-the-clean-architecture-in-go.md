@@ -1,18 +1,19 @@
 ---
 layout: post
 title: Notes on applying "The Clean Architecture" in Go
+description: This article introduces Clean Architecture in Go. It discusses the layers involved, provides guidance on code placement, and suggests package structuring.
 shareable: true
 ---
 <section>
     <p>Having had an appetite for experimenting with a REST API in Go, my research indicated that Robert "Uncle Bob" Martin's <i>Clean Architecture</i> is something like the "architecture of choice" among Gophers. However, I have found that there is a lack of good resources out there for applying it in Go. So here is my attempt to fill that gap...</p>
-    <p><i><b>Note:</b> I am not an Architect, and I've only applied this pattern on one application - so please take everything I'm about to say with a big pinch of salt. You can find the example REST API I implemented <b><a href="https://github.com/liampulles/matchstick-video">here</a></b></i></p>
+    <p><i><b>Note:</b> I am not an Architect, and I've only applied this pattern on one application - so please take everything I'm about to say with a big pinch of salt. You can find the example REST API I implemented <b><a href="https://github.com/liampulles/matchstick-video" aria-label="Github repo for the app described in this article">here</a></b></i></p>
 </section>
 
 <section>
     <h2>So, what is this "Clean Architecture" thing anyway?</h2>
     <aside>
         <figure>
-            <img src="/images/clean-architecture-diagram.png" height="731" width="731">
+            <img src="/images/clean-architecture-diagram.png" height="731" width="731" alt="Diagram of the clean architecture">
             <figcaption><i>The Layers of The Clean Architecture.</i></figcaption>
         </figure>
     </aside>
@@ -30,13 +31,13 @@ shareable: true
     <h2>How do I know where to put my Code?</h2>
     <aside class="optional">
         <figure>
-            <img src="/images/postgresql-icon.png" width="50%" height="256">
-            <img src="/images/gorilla-icon.jpeg" width="50%" height="225">
+            <img src="/images/postgresql-icon.png" width="110px" height="110px" alt="PostgreSQL logo">
+            <img src="/images/gorilla-icon.jpeg" width="110px" height="110px" alt="Gorilla mux logo">
             <figcaption><i>Any notion of a specific DB implementation or router framework certainly belongs in the Drivers and Frameworks layer.</i></figcaption>
         </figure>
         <figure>
-            <img src="/images/mongodb-icon.png" width="50%" height="512">
-            <img src="/images/grpc-icon.png" width="50%" height="1500">
+            <img src="/images/mongodb-icon.png" width="110px" height="110px" alt="MongoDB logo">
+            <img src="/images/grpc-icon.png" width="110px" height="110px" alt=>
             <figcaption><i>A helpful way to think through your layers is to imagine radically changing the DB and web frameworks.</i></figcaption>
         </figure>
     </aside>
@@ -56,7 +57,7 @@ shareable: true
     <h2>How do I structure my packages?</h2>
     <aside>
         <figure>
-            <img src="/images/matchstick-video-package-structure.png" height="414" width="232">
+            <img src="/images/matchstick-video-package-structure.png" height="414" width="232" alt="Screenshot of a folder tree view for the app">
             <figcaption><i>Package structure for</i> <a href="https://github.com/liampulles/matchstick-video">Matchstick Video!</a></figcaption>
         </figure>
     </aside>
@@ -143,7 +144,7 @@ type jsonViewVO struct {
     <h2>Entities</h2>
     <aside>
         <figure>
-            <img src="/images/my-super-sweet-16.jpg" height="375" width="500">
+            <img src="/images/my-super-sweet-16.jpg" height="375" width="500" alt="A boy dressed as a king on a throne in a super sweet 16 reality show">
             <figcaption><i>The Entity is King, and treats itself as such.</i></figcaption>
         </figure>
     </aside>

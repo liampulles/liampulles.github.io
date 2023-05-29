@@ -4,6 +4,7 @@ title: "Woodstock: 3 Days of Peace and Music"
 image: "/images/3-days-of-peace-and-music.png"
 small_thumb: "/images/3-days-of-peace-and-music.png.small-thumb.webp"
 medium_thumb: "/images/3-days-of-peace-and-music.png.medium-thumb.webp"
+description: Presents a restored version of an old Woodstock festival poster. Describes the restoration process.
 shareable: true
 ---
 <section>

@@ -112,6 +112,10 @@ footer {
     text-align: center;
 }
 
+footer i {
+    padding-right: 0.2em;
+}
+
 /* Article */
 
 section {

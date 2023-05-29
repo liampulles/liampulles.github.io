@@ -1,6 +1,6 @@
 ---
 title: Liam Pulles - Biography
-description: Biography
+description: Biography of Liam Pulles, speaking to key experience and giving contact links.
 connect: True
 ---
 <article>

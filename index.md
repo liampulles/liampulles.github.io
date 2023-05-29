@@ -1,6 +1,6 @@
 ---
 title: Liam Pulles
-description: Home
+description: Homepage for Liam Pulles's blog.
 ---
 <article>
     <hr>
@@ -10,7 +10,7 @@ description: Home
     </section>
     <hr>
     <section class="toc">
-        <h3>Blog posts</h2>
+        <h3>Blog posts</h3>
         <table>
         {% for post in site.posts %}
             <tr>
@@ -22,7 +22,7 @@ description: Home
     </section>
     <hr>
     <section class="toc">
-        <h3>Digital restorations</h2>
+        <h3>Digital restorations</h3>
         <table>
         {% for post in site.digital_restorations %}
             <tr>

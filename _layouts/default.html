@@ -30,7 +30,7 @@
         <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap" rel="stylesheet">        
         <link href="https://fonts.googleapis.com/css2?family=Fraunces&display=swap" rel="stylesheet"> 
         <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@500&display=swap" rel="stylesheet">
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
         <!-- ...Code styles -->
         <link href="/style.css" rel="stylesheet" >
@@ -92,24 +92,25 @@
             {% endif %}
             {% if page.shareable %}
             <p>
-                <b>Comments? Send me an <a href="mailto:{{site.email}}?subject=With regards to your %22{{page.title}}%22 page">email</a>. Or, share this piece:</b>
-                <a href="http://www.facebook.com/sharer.php?u={{site.url | url_encode}}{{page.url | url_encode}}" target="_blank">
-                    <i class="fa fa-facebook-square"></i>
+                <b>Comments? Send me an <a href="mailto:{{site.email}}?subject=With regards to your %22{{page.title}}%22 page">email</a>. Or, share this piece:</b></p>
+            <p>
+                <a href="https://twitter.com/intent/tweet?url={{site.url | url_encode}}{{page.url | url_encode}}" aria-label="Share on Twitter" target="_blank">
+                    <i class="fa-brands fa-square-twitter fa-xl"></i>
                 </a>
-                <a href="https://twitter.com/intent/tweet?url={{site.url | url_encode}}{{page.url | url_encode}}" target="_blank">
-                    <i class="fa fa-twitter-square"></i>
+                <a href="http://www.linkedin.com/shareArticle?mini=true&amp;url={{site.url | url_encode}}{{page.url | url_encode}}" aria-label="Share on LinkedIn" target="_blank">
+                    <i class="fa-brands fa-linkedin fa-xl"></i>
                 </a>
-                <a href="http://www.linkedin.com/shareArticle?mini=true&amp;url={{site.url | url_encode}}{{page.url | url_encode}}" target="_blank">
-                    <i class="fa fa-linkedin-square"></i>
+                <a href="https://news.ycombinator.com/submitlink?u={{site.url | url_encode}}{{page.url | url_encode}}" aria-label="Share on Hacker News" target="_blank">
+                    <i class="fa-brands fa-square-hacker-news fa-xl"></i>
                 </a>
-                <a href="https://news.ycombinator.com/submitlink?u={{site.url | url_encode}}{{page.url | url_encode}}" target="_blank">
-                    <i class="fa fa-hacker-news"></i>
+                <a href="http://reddit.com/submit?url={{site.url | url_encode}}{{page.url | url_encode}}" aria-label="Share on Reddit" target="_blank">
+                    <i class="fa-brands fa-square-reddit fa-xl"></i>
                 </a>
-                <a href="http://reddit.com/submit?url={{site.url | url_encode}}{{page.url | url_encode}}" target="_blank">
-                    <i class="fa fa-reddit-square"></i>
+                <a href="http://www.facebook.com/sharer.php?u={{site.url | url_encode}}{{page.url | url_encode}}" aria-label="Share on Facebook" target="_blank">
+                    <i class="fa-brands fa-square-facebook fa-xl"></i>
                 </a>
-                <a href="mailto:someone@somewhere.com?subject=Check out this article&body={{site.url}}{{page.url}}">
-                    <i class="fa fa-envelope-square"></i>
+                <a href="mailto:someone@somewhere.com?subject=Check out this article&body={{site.url}}{{page.url}}" aria-label="Share via Email">
+                    <i class="fa-solid fa-square-envelope fa-xl"></i>
                 </a>
             </p>
             {% endif %}
