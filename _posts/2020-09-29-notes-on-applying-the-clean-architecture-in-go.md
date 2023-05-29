@@ -37,7 +37,7 @@ shareable: true
         </figure>
         <figure>
             <img src="/images/mongodb-icon.png" width="110px" height="110px" alt="MongoDB logo">
-            <img src="/images/grpc-icon.png" width="110px" height="110px" alt=>
+            <img src="/images/grpc-icon.png" width="110px" height="110px" alt="gRPC logo">
             <figcaption><i>A helpful way to think through your layers is to imagine radically changing the DB and web frameworks.</i></figcaption>
         </figure>
     </aside>
