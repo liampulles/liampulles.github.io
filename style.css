@@ -8,7 +8,7 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    max-width: 800px;
+    max-width: 630px;
     margin: auto;
     font-size: 17px;
     padding-left: 1em;
@@ -262,7 +262,7 @@ code {
 :root[color-mode="light"] {
     --text: #000000;
     --header: #000000;
-    --background: #ffffff;
+    --background: #fbfbfb;
     --border: #d4d4d4;
     --link: #0000EE;
     --visited: #551A8B;
@@ -271,7 +271,7 @@ code {
 :root[color-mode="dark"] {
     --text: #d1d5db;
     --header: #eaebee;
-    --background: #202020;
+    --background: #14181c;
     --border: #353535;
     --link: #6d8fff;
     --visited: #8a63ad;
