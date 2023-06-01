@@ -133,6 +133,7 @@ figure {
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: center;
+    margin: 1em;
 }
 
 img {
@@ -165,6 +166,10 @@ pre {
 code {
     font-size: 0.8em;
     font-family: 'Source Code Pro', monospace;
+}
+
+section li {
+    margin-top: 0.5em;
 }
 
 /* Digital restorations */
