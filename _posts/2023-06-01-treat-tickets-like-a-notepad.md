@@ -29,7 +29,7 @@ permalink: /blog/jira-tickets
         <li>I think this has made me better at seeing what is involved in a ticket off the cuff. This helps immensely during stand up and sprint planning.</li>
         <li>My ability to estimate tasks has improved. And if the task does go over, this TODO list serves as a good resource for me to explain <i>why</i> I need to go over.</li>
         <li>If I see any tasks that need to be done first, I'll action those upfront. For example, I might talk with another team to update their API so they can do that while I am busy. This obviously helps avoid blocks/stucks.</li>
-        <li>TODOs immensely with context switching. When I switch tickets, I can read my TODOs and jump back in to coding. Also if I am waiting on something (e.g. a deployment), then I can easily find something small from these lists to action.</li>
+        <li>TODOs help immensely with context switching. When I switch tickets, I can read my TODOs and jump back in to coding. Also if I am waiting on something (e.g. a deployment), then I can easily find something small from these lists to action.</li>
         <li>I am hoping that these TODOs act as a historical artifact for future devs (they can see my reasons for writing such bad code. 😉) </li>
         <li>I've gotten feedback from my manager and colleagues that these help a lot to get a sense of my progress (particularly when there are tasks dependent on my work). This pre-sight helps them to plan and for me explain my work.</li>
     </ol>
