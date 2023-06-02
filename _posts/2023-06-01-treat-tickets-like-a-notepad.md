@@ -31,7 +31,7 @@ permalink: /blog/jira-tickets
         <li>If I see any tasks that need to be done first, I'll action those upfront. For example, I might talk with another team to update their API so they can do that while I am busy. This obviously helps avoid blocks/stucks.</li>
         <li>TODOs help immensely with context switching. When I switch tickets, I can read my TODOs and jump back in to coding. Also if I am waiting on something (e.g. a deployment), then I can easily find something small from these lists to action.</li>
         <li>I am hoping that these TODOs act as a historical artifact for future devs (they can see my reasons for writing such bad code. 😉) </li>
-        <li>I've gotten feedback from my manager and colleagues that these help a lot to get a sense of my progress (particularly when there are tasks dependent on my work). This pre-sight helps them to plan and for me explain my work.</li>
+        <li>I've gotten feedback from my manager and colleagues that these TODOs help a lot to get a sense of my progress (particularly when there are tasks dependent on my work). This pre-sight helps them to plan and for me to explain my work.</li>
     </ol>
     <p>Note that this does not stop unexpected things from coming up during coding, but it does help reduce them. And when those moments do come up I try to go plan again before coding.</p>
 </section>
