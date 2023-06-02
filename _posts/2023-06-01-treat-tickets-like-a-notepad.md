@@ -33,7 +33,7 @@ permalink: /blog/jira-tickets
         <li>I am hoping that these TODOs act as a historical artifact for future devs (they can see my reasons for writing such bad code. 😉) </li>
         <li>I've gotten feedback from my manager and colleagues that these TODOs help a lot to get a sense of my progress (particularly when there are tasks dependent on my work). This pre-sight helps them to plan and for me to explain my work.</li>
     </ol>
-    <p>Note that this does not stop unexpected things from coming up during coding, but it does help reduce them. And when those moments do come up I try to go plan again before coding.</p>
+    <p>Note that this does not stop unexpected things from coming up during coding, but it does help reduce them. And when those moments do come up I try to go and plan again before coding.</p>
 </section>
 
 <section>
