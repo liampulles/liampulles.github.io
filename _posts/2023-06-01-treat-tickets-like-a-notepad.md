@@ -55,13 +55,13 @@ permalink: /blog/jira-tickets
             <img src="/images/thinking-cyberpunk.webp" height="512" width="512" alt="A man sitting in his chair hacking into the matrix.">
         </figure>
     </aside>
-    <p>I work at a fully remote company, and so good asynchronous communication is vital. If I have a ticket-related question then I will sometimes ping colleagues on a ticket rather than Slacking them. My rationale being:</p>
+    <p>I work at a fully remote company, and so good asynchronous communication is vital. If I have a ticket-related question then I will sometimes ping colleagues on a ticket rather than slack them. My rationale being:</p>
     <ul>
         <li>They get the notification via email and so are not interrupted (by a slack notification bell).</li>
         <li>The context for the question is on the ticket itself.</li>
         <li>That conversation, and all other relevant conversations, are all available on the ticket.</li>
     </ul>
-    <p>Although having said that, people's preferences differ. One should respect the communication channels others prefer, especially when asking them for help.</p>
+    <p>Although having said that, people's preferences differ, and one should respect the communication channels others prefer (especially when asking them for help).</p>
 </section>
 
 <section>
