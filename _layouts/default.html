@@ -71,19 +71,19 @@
             <p>
                 <b>Comments? Send me an <a href="mailto:{{site.email}}?subject=With regards to your %22{{page.title}}%22 page">email</a>. Or, share this piece:</b></p>
             <p>
-                <a href="https://twitter.com/intent/tweet?url={{site.url | url_encode}}{{page.url | url_encode}}" aria-label="Share on Twitter" target="_blank">
+                <a href="https://twitter.com/intent/tweet?url={{ page.url | absolute_url | url_encode}}" aria-label="Share on Twitter" target="_blank">
                     <i class="fa-brands fa-square-twitter fa-xl"></i>
                 </a>
-                <a href="http://www.linkedin.com/shareArticle?mini=true&amp;url={{site.url | url_encode}}{{page.url | url_encode}}" aria-label="Share on LinkedIn" target="_blank">
+                <a href="http://www.linkedin.com/shareArticle?mini=true&amp;url={{ page.url | absolute_url | url_encode}}" aria-label="Share on LinkedIn" target="_blank">
                     <i class="fa-brands fa-linkedin fa-xl"></i>
                 </a>
-                <a href="https://news.ycombinator.com/submitlink?u={{site.url | url_encode}}{{page.url | url_encode}}" aria-label="Share on Hacker News" target="_blank">
+                <a href="https://news.ycombinator.com/submitlink?u={{ page.url | absolute_url | url_encode}}" aria-label="Share on Hacker News" target="_blank">
                     <i class="fa-brands fa-square-hacker-news fa-xl"></i>
                 </a>
-                <a href="http://reddit.com/submit?url={{site.url | url_encode}}{{page.url | url_encode}}" aria-label="Share on Reddit" target="_blank">
+                <a href="http://reddit.com/submit?url={{ page.url | absolute_url | url_encode}}" aria-label="Share on Reddit" target="_blank">
                     <i class="fa-brands fa-square-reddit fa-xl"></i>
                 </a>
-                <a href="http://www.facebook.com/sharer.php?u={{site.url | url_encode}}{{page.url | url_encode}}" aria-label="Share on Facebook" target="_blank">
+                <a href="http://www.facebook.com/sharer.php?u={{ page.url | absolute_url | url_encode}}" aria-label="Share on Facebook" target="_blank">
                     <i class="fa-brands fa-square-facebook fa-xl"></i>
                 </a>
                 <a href="mailto:someone@somewhere.com?subject=Check out this article&body={{site.url}}{{page.url}}" aria-label="Share via Email">
