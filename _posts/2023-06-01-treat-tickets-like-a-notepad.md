@@ -23,8 +23,8 @@ permalink: /blog/jira-tickets
     <p>Some notes on this:</p>
     <ol>
         <li>Planning upfront like this inevitably leads to better design and less rework. I'll see that steps conflict and rewrite the plan before rewriting the code.</li>
-        <li>Since I've the thinking upfront, when I do get to coding, I can get into "flow" more easily and hold on to it for longer.</li>
-        <li>And since I'm in flow longer, I find that I complete my work more quickly (even with the added planning time).</li>
+        <li>Since I've done the thinking upfront, when I do get to coding, I can get into "flow" more easily and hold on to it for longer.</li>
+        <li>And since I'm in flow for longer, I find that I complete my work more quickly (even with the added planning time).</li>
         <li>As I progress through my TODOs, I mark the individual pieces as <code>[DONE]</code>. This keeps me motivated, and gives me an accurate indication of progress.</li>
         <li>I think this has made me better at seeing what is involved in a ticket off the cuff. This helps immensely during stand up and sprint planning.</li>
         <li>My ability to estimate tasks has improved. And if the task does go over, this TODO list serves as a good resource for me to explain <i>why</i> I need to go over.</li>
