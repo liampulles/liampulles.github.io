@@ -17,3 +17,8 @@ collections:
   digital_restorations:
     output: true
     permalink: /digital_restorations/:title
+last-modified-at:
+    date-format: '%d-%b-%y'
+plugins:
+  - jekyll-last-modified-at
+  - jekyll-sitemap
