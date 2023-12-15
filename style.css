@@ -112,7 +112,7 @@ header.site-header {
 }
 
 .site-header nav li {
-    font-family: 'Source Sans Pro', arial;
+    font-family: 'Source Sans Pro';
     font-size: 1.2rem;
     font-weight: bold;
     display: inline-block;
