@@ -1,5 +1,25 @@
+/* We declare the font faces here, so we can preload the woff2s, and avoid loading the css from google */
+
+/* https://fonts.googleapis.com/css2?family=Source%20Sans%20Pro */
+@font-face {
+    font-family: 'Source Sans Pro';
+    font-style: normal;
+    font-weight: 400;
+    src: url(https://fonts.gstatic.com/s/sourcesanspro/v22/6xK3dSBYKcSV-LCoeQqfX1RYOo3qOK7l.woff2) format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* https://fonts.googleapis.com/css2?family=Fraunces */
+@font-face {
+    font-family: 'Fraunces';
+    font-style: normal;
+    font-weight: 400;
+    src: url(https://fonts.gstatic.com/s/fraunces/v31/6NUh8FyLNQOQZAnv9bYEvDiIdE9Ea92uemAk_WBq8U_9v0c2Wa0K7iN7hzFUPJH58nib1603gg7S2nfgRYIctxuTCf7T.woff2) format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
 html {
-    font-family: 'Source Sans Pro', arial, sans-serif, 'Font Awesome';
+    font-family: 'Source Sans Pro', 'Font Awesome';
     text-underline-offset: 0.1em;
 }
 
@@ -47,7 +67,7 @@ nav a, nav a:hover, nav a:visited, footer a, footer a:hover, footer a:visited {
 /* Headers */
 
 h1, h2, h3 {
-    font-family: 'Fraunces', serif, 'Font Awesome';
+    font-family: 'Fraunces', 'Font Awesome';
 }
 
 h1, h2 {
@@ -76,7 +96,7 @@ header.site-header {
     padding-top: 0.7rem;
     padding-bottom: 1rem;
     width: 100%;
-    font-family: 'Fraunces', serif, 'Font Awesome';
+    font-family: 'Fraunces', 'Font Awesome';
 }
 
 .site-header p {
@@ -165,7 +185,7 @@ pre {
 }
 code {
     font-size: 0.8em;
-    font-family: 'Source Code Pro', monospace;
+    font-family: monospace;
 }
 
 section li {
