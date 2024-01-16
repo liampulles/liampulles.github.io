@@ -46,7 +46,7 @@ func run(
 	if err != nil {
 		return err
 	}
-	log.Debug().Interface("view", projectView).Msg("read project view")
+	projectView.Log()
 
 	return nil
 }
