@@ -13,7 +13,7 @@ pre-commit: gen-proverbs bundle-install ${GOBIN}/minify
 
 htmlgen-test:
 	$(MAKE) -C htmlgen install
-	htmlgen-cli -root=. -output=_site_test
+	htmlgen-cli -root=root_test -output=_site_test
 
 gen-proverbs:
 	proverb-gen > proverbs.html
