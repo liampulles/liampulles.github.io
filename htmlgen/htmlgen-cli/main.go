@@ -48,5 +48,14 @@ func run(
 	}
 	projectView.Log()
 
+	// Generate the site
+	err = htmlgen.GenSite(projectView, outputFolder)
+	if err != nil {
+		return err
+	}
+
+	log.Info().
+		Str("output_folder", outputFolder).
+		Msg("site generated!")
 	return nil
 }
