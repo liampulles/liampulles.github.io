@@ -7,13 +7,13 @@ type Tree[T any] struct {
 
 // Iterate the tree in breadth first order, i..e. level-by-level.
 // If the func parameter returns true, then we stop iterating.
-func (t *Tree[T]) IterateBreadthFirst(doWith func(*Tree[T]) bool) {
+func (t *Tree[T]) IterateBreadthFirst(doWith func(node *Tree[T]) (stop bool)) {
 	// We process the front of the queue, but add children to the back.
 	queue := &DoubleLinkedList[*Tree[T]]{}
 	queue.PushBack(t)
 
 	for item, ok := queue.PopFront(); ok; item, ok = queue.PopFront() {
-		if done := doWith(item); done {
+		if stop := doWith(item); stop {
 			return
 		}
 		for _, child := range item.children {
