@@ -7,7 +7,7 @@ import (
 	"unicode"
 )
 
-// Good high level ref: https://spec.commonmark.org/0.30/#appendix-a-parsing-strategy
+// Good high level ref: https://spec.commonmark.org/current/
 
 // I aim for simplicity and readability here rather then performance. I also don't try to
 // cater for the full spec or edge-cases - this only needs to parse my markdown.
@@ -15,63 +15,103 @@ import (
 type Document struct{}
 
 func ParseMarkdownish(in []byte) (Document, error) {
-	// Roughly, a markdown file consists of blocks (at the highest level, separated by a blank lines).
-	// Each block consists of child blocks recursively, and ultimately some text.
-	// The text then consists of inline elements.
+	// Markdownish consists of line-level block elements and inline elements. I don't allow
+	// lazy continuations, which makes parsing simpler.
 
 	// So lets identify the blocks, then identify the inline elements.
 
 	// We can go line-by-line, so let us convert to lines first
 	byteLines := bytes.Split(in, []byte{'\n'})
-	lines := make([]line, len(byteLines))
+	lines := make([]string, len(byteLines))
 	for i, byteLine := range byteLines {
-		lines[i] = line(byteLine)
+		lines[i] = string(byteLine)
 	}
 
-	// Parse the blocks
-	root := parseLinesToBlockTree(lines)
+	// Now parse
+	parsedLines := parseLines(lines)
+	sections := splitSections(parsedLines)
+	root := Tree[blockNode]{}
+	for _, section := range sections {
+		sectionTree := parseBlockTree(section)
+		root.children = append(root.children, &sectionTree)
+	}
 
 	return Document{}, nil
 }
 
-func parseLinesToBlockTree(lines []line) *block {
-	// We can do this in one pass of the lines (though many passes of the blocks).
-	// Block identifiers are always at the front of the line, which will help.
-	//
-	// First we "consume continuation markers" from the front of the line. E.g.
-	// if we are currently adding on to a list inside of a block-quote, we'll chomp
-	// of a leading > and -. We do this by matching markers against our tree in
-	// a breadth first order. We keep track of the last one matched.
-	//
-	// If there are any special markers left, then it indicates the need for a
-	// new block. We add it as a child of the last matched block identified above,
-	// and move the parent's text over to it. We also close any open blocks in the tree.
-	root := &Tree[block]{
-		item: block{typ: document},
+func parseLines(lines []string) []parsedLine {
+	allLineBlocks := make([]parsedLine, len(lines))
+	for i, l := range lines {
+		allLineBlocks[i] = parseLine(l)
 	}
-	for _, l := range lines {
-		// Check to close first, then check to open.
-		// We need to keep track of the last one closed (if any)
-		// because that is where new blocks will be added.
-		lastMatched := consumeContinuationMarkers(root, l)
-	}
+	return allLineBlocks
 }
 
-func consumeContinuationMarkers(t *Tree[block], l line) (lastMatched *Tree[block]) {
-	indent, rem := splitLine(l)
-	t.IterateBreadthFirst(func(blockNode *Tree[block]) (stop bool) {
-		// Only interested in open blocks
-		if blockNode.item.closed {
-			return false
+type parsedLine struct {
+	offset  uint
+	markers []marker
+	rem     string
+}
+
+func parseLine(l string) parsedLine {
+	// Pull start-of-line marker
+	m, keepPulling, offset := tryPullMarker(l, 0)
+	initialOffset := offset
+	var markers []marker
+	markers = append(markers, m)
+
+	// Pull any remaining markers
+	for keepPulling {
+		m, keepPulling, offset = tryPullMarker(l, offset)
+		if keepPulling {
+			markers = append(markers, m)
 		}
+	}
 
-		//
-	})
+	return parsedLine{
+		offset:  initialOffset,
+		markers: markers,
+		rem:     l[offset:],
+	}
 }
 
-type line string
+func tryPullMarker(line string, offset uint) (marker, bool, uint) {
+	cut := splitLine(line[offset:])
+	offset += cut
+	rem := line[offset:]
 
-func lineIsBlank(l line) bool {
+	// Different block markers:
+	// -> Blank line
+	if offset == 0 && rem == "" {
+		return blankLineMarker{}, true, uint(len(line))
+	}
+	// -> Bullet list item
+	if elem := bulletListRegex.FindStringSubmatch(rem); len(elem) == 3 {
+		return bulletListItemMarker{
+			offset: offset,
+			bullet: elem[1],
+		}, true, offset
+	}
+	// -> Ordered list item
+	if elem := orderedListRegex.FindStringSubmatch(rem); len(elem) == 3 {
+		idx, _ := strconv.ParseUint(elem[1], 10, 0)
+		return orderedListItemMarker{
+			offset: offset + cut,
+			idx:    uint(idx),
+		}, true, offset
+	}
+	// -> Code fence
+	if elem := codeFenceRegex.FindStringSubmatch(rem); len(elem) == 2 {
+		return codeFenceMarker{
+			info: elem[1],
+		}, true, uint(len(line)) // The rest of the line is chewed up by the info string.
+	}
+
+	// Nope, no block elements left.
+	return nil, false, offset
+}
+
+func lineIsBlank(l string) bool {
 	for _, r := range l {
 		if !unicode.IsSpace(r) {
 			return false
@@ -80,135 +120,66 @@ func lineIsBlank(l line) bool {
 	return true
 }
 
-func splitLine(l line) (indent string, rem string) {
-	var indentRunes []rune
-	var remRunes []rune
-	splitPointReached := false
+func splitLine(l string) (cut uint) {
+	i := uint(0)
 	for _, r := range l {
-		if !splitPointReached && unicode.IsSpace(r) {
-			indentRunes = append(indentRunes, r)
+		if !unicode.IsSpace(r) {
+			return i
+		}
+		i++
+	}
+	// All spaces or empty line
+	return i
+}
+
+type marker interface{}
+
+type bulletListItemMarker struct {
+	offset uint
+	bullet string
+}
+
+type orderedListItemMarker struct {
+	offset uint
+	idx    uint
+}
+
+type codeFenceMarker struct {
+	info string
+}
+
+type blankLineMarker struct{}
+
+var bulletListRegex = regexp.MustCompile(`^([\*+-]) (.*)$`)
+var orderedListRegex = regexp.MustCompile(`^([0-9]+). (.*)$`)
+var codeFenceRegex = regexp.MustCompile(`\x60\x60\x60\s*(.*)`)
+
+// Blank lines close all potential container blocks in Markdownish, so we can split by
+// these first to speed things up
+func splitSections(parsedLines []parsedLine) [][]parsedLine {
+	var sections [][]parsedLine
+	var currSection []parsedLine
+	for _, pl := range parsedLines {
+		if _, isBlankLine := pl.markers[0].(blankLineMarker); isBlankLine && len(currSection) > 0 {
+			sections = append(sections, currSection)
+			currSection = nil
 			continue
 		}
-		splitPointReached = true
-		remRunes = append(remRunes, r)
-	}
-	return string(indentRunes), string(remRunes)
-}
-
-func blockShouldRemainOpen(typ blockType, rem string) bool {
-
-}
-
-type block[T any] struct {
-	blockType
-	closed bool
-}
-
-type blockType interface {
-	matchesLine(rem string) bool
-}
-
-type document struct{}
-
-func (document) matchesLine(rem string) bool {
-	// Document stays open as long as there are lines
-	return true
-}
-
-type paragraph []string
-
-func (paragraph) matchesLine(rem string) bool {
-	// Must be some text
-	return len(rem) > 0
-}
-
-type list struct {
-	isOrdered bool
-	bullet    string
-}
-
-func (l list) matchesLine(rem string) bool {
-	// Only matches if it is a list item of the same type
-	listMarker, _, isList := splitListMarker(rem)
-	// -> Not a list marker at all
-	if !isList {
-		return false
-	}
-	// -> Also an ordered list
-	if l.isOrdered && listMarker.isOrdered {
-		return true
-	}
-	// -> Matching bullet
-	if l.bullet == listMarker.bullet {
-		return true
-	}
-	// Ok, not matching lists
-	return false
-}
-
-type listItem struct{}
-
-func (listItem) matchesLine(rem string) bool {
-	// Never matches
-	return false
-}
-
-type blockQuote struct{}
-
-func (blockQuote) matchesLine(rem string) bool {
-	// Must be some text
-	return len(rem) > 0
-}
-
-type code struct{}
-
-func (code) matchesLine(rem string) bool {
-	// If we hit a code fence marker, then se should close
-	_, isCode := splitFencedCodeMarker(rem)
-	if isCode {
-		return false
-	}
-	return true
-}
-
-type listMarker struct {
-	isOrdered bool
-	bullet    string
-	idx       uint
-}
-
-func splitListMarker(rem string) (listMarker, string, bool) {
-	// Try bullets
-	if bulletElem := bulletListMarkerRegex.FindStringSubmatch(rem); len(bulletElem) >= 3 {
-		bullet, rest := bulletElem[1], bulletElem[2]
-		return listMarker{
-			bullet: bullet,
-		}, rest, true
+		currSection = append(currSection, pl)
 	}
 
-	// Try ordered
-	if orderedElem := orderedListMarkerRegex.FindStringSubmatch(rem); len(orderedElem) >= 3 {
-		idxStr, rest := orderedElem[1], orderedElem[2]
-		idx, _ := strconv.ParseUint(idxStr, 10, 0)
-		return listMarker{
-			isOrdered: true,
-			idx:       uint(idx),
-		}, rest, true
+	if len(currSection) > 0 {
+		sections = append(sections, currSection)
 	}
-
-	// Ok, its not a list item
-	return listMarker{}, rem, false
+	return sections
 }
 
-func splitFencedCodeMarker(rem string) (string, bool) {
-	if infoElem := codeFenceRegex.FindStringSubmatch(rem); len(infoElem) >= 2 {
-		info := infoElem[1]
-		return info, true
+func parseBlockTree(parsedLines []parsedLine) Tree[blockNode] {
+	for _, pl := range parsedLines {
+		
 	}
-
-	return rem, false
 }
 
-var bulletListMarkerRegex = regexp.MustCompile(`^([\*+-]) (.*)$`)
-var orderedListMarkerRegex = regexp.MustCompile(`^([0-9]+). (.*)$`)
-var codeFenceRegex = regexp.MustCompile(`\x60\x60\x60\s*(.*)`)
+func 
+
+type blockNode interface{}
