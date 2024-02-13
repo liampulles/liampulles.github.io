@@ -3,7 +3,6 @@ package main
 import (
 	"errors"
 	"html/template"
-	"io"
 	"os"
 	"path"
 	"path/filepath"
@@ -58,12 +57,19 @@ func mergeData(data map[string]any, from ...map[string]any) map[string]any {
 // ---
 
 func GenSite(outputFolder string) error {
-	// Delete the output folder, to start from scratch.
+	// Recreate the output folder, to start from scratch.
 	err := os.RemoveAll(outputFolder)
 	if err != nil {
 		log.Err(err).
 			Str("output_folder", outputFolder).
 			Msg("could not clear and delete output folder, failing")
+		return err
+	}
+	err = os.MkdirAll(outputFolder, os.ModePerm)
+	if err != nil {
+		log.Err(err).
+			Str("dir", outputFolder).
+			Msg("could not make output dir, failing")
 		return err
 	}
 
@@ -74,32 +80,8 @@ func GenSite(outputFolder string) error {
 }
 
 func gen(tmpl *template.Template, outputFolder, file, title string, extraData ...map[string]any) error {
-	p := path.Join(outputFolder, file)
-	data := mergeData(nil, rootData(title, title))
-	data = mergeData(data, extraData...)
-	err := withFile(p, func(w io.Writer) error {
-		return tmpl.ExecuteTemplate(w, "root", data)
-	})
-	if err != nil {
-		return err
-	}
-
-	log.Debug().Str("file", p).Msg("generated")
-	return nil
-}
-
-func withFile(loc string, do func(w io.Writer) error) (err error) {
-	// Ensure path exists
-	dir := filepath.Dir(loc)
-	err = os.MkdirAll(dir, os.ModePerm)
-	if err != nil {
-		log.Err(err).
-			Str("dir", dir).
-			Msg("could not make output dir, failing")
-		return err
-	}
-
 	// Open the file
+	loc := path.Join(outputFolder, file)
 	w, err := os.Create(loc)
 	if err != nil {
 		log.Err(err).
@@ -118,6 +100,16 @@ func withFile(loc string, do func(w io.Writer) error) (err error) {
 		err = errors.Join(err, cErr)
 	}()
 
-	// Use the file
-	return do(w)
+	// Define data
+	data := mergeData(nil, rootData(title, title))
+	data = mergeData(data, extraData...)
+
+	// Template the HTML out to the file
+	err = tmpl.ExecuteTemplate(w, "root", data)
+	if err != nil {
+		return err
+	}
+
+	log.Debug().Str("file", loc).Msg("generated")
+	return nil
 }
