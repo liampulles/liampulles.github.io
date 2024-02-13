@@ -23,7 +23,6 @@ func main() {
 
 	// Parse flags
 	fs := flag.NewFlagSet("htmlgen", flag.ContinueOnError)
-	rootFlag := fs.String("root", ".", "root folder of the site tree")
 	outputFlag := fs.String("output", "_site_test", "folder to render the outputted \"site\" to")
 	if err := fs.Parse(os.Args[1:]); err != nil {
 		log.Err(err).Msg("arg parse fail")
@@ -31,25 +30,17 @@ func main() {
 	}
 
 	// Run the program
-	err := run(*rootFlag, *outputFlag)
+	err := run(*outputFlag)
 	if err != nil {
 		os.Exit(2)
 	}
 }
 
 func run(
-	rootFolder string,
 	outputFolder string,
 ) error {
-	// Read the project
-	projectView, err := htmlgen.ReadProjectView(rootFolder)
-	if err != nil {
-		return err
-	}
-	projectView.Log()
-
 	// Generate the site
-	err = htmlgen.GenSite(projectView, outputFolder)
+	err := htmlgen.GenSite(outputFolder)
 	if err != nil {
 		return err
 	}
