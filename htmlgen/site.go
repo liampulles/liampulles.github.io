@@ -1,4 +1,4 @@
-package htmlgen
+package main
 
 // This file is essentially a blueprint for the site. What is defined here
 // eventually makes its way into HTML.
@@ -17,3 +17,13 @@ const (
 	DigitalRestorationsHeader InlineMarkdown = "Digital restorations"
 	PostTimeFormat                           = "2006-01-02"
 )
+
+// Navigation header config
+var NavElems = []struct {
+	Link string
+	Text string
+}{
+	{"biography", "Biography"},
+	{"proverbs", "Proverbs"},
+	{"code", "Code"},
+}

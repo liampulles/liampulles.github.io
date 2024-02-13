@@ -1,5 +1,1 @@
-.jekyll-cache/
-.sass-cache/
-_site_test/
-_site_test_min/
-root_test/
+_site_gen/

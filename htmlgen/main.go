@@ -4,7 +4,6 @@ import (
 	"flag"
 	"os"
 
-	"github.com/liampulles/liampulles.github.io/htmlgen"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 )
@@ -40,7 +39,7 @@ func run(
 	outputFolder string,
 ) error {
 	// Generate the site
-	err := htmlgen.GenSite(outputFolder)
+	err := GenSite(outputFolder)
 	if err != nil {
 		return err
 	}

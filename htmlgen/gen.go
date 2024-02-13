@@ -1,4 +1,4 @@
-package htmlgen
+package main
 
 import (
 	"errors"
@@ -7,6 +7,7 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"time"
 
 	"github.com/rs/zerolog/log"
 )
@@ -19,8 +20,8 @@ var indexTmpl = loadTemplate("index.html")
 
 func loadTemplate(file string) *template.Template {
 	return template.Must(template.ParseFiles(
-		filepath.Join("htmlgen", "templates", "_elem.html"),
-		filepath.Join("htmlgen", "templates", file),
+		filepath.Join("templates", "_elem.html"),
+		filepath.Join("templates", file),
 	))
 }
 
@@ -28,16 +29,28 @@ func loadTemplate(file string) *template.Template {
 // --- Data funcs
 // ---
 
-func indexData() any {
+func rootData(
+	pageTitle string,
+	pageDescription string,
+) map[string]any {
 	return map[string]any{
-		"PageTitle":       "test page",
-		"PageDescription": "test description",
-		"NavElem": []map[string]any{
-			{"Link": "/some-link", "Text": "Some Link"},
-			{"Link": "/some-link2", "Text": "Some Link 2"},
-		},
-		"Year": "Some year",
+		"PageTitle":       pageTitle,
+		"PageDescription": pageDescription,
+		"NavElem":         NavElems,
+		"Year":            time.Now().Year(),
 	}
+}
+
+func mergeData(data map[string]any, from ...map[string]any) map[string]any {
+	if data == nil {
+		data = make(map[string]any)
+	}
+	for _, m := range from {
+		for k, v := range m {
+			data[k] = v
+		}
+	}
+	return data
 }
 
 // ---
@@ -56,15 +69,23 @@ func GenSite(outputFolder string) error {
 
 	// Gen files
 	return errors.Join(
-		gen(outputFolder, "index.html", indexTmpl, indexData()),
+		gen(indexTmpl, outputFolder, "index.html", "Liam Pulles"),
 	)
 }
 
-func gen(outputFolder, name string, tmpl *template.Template, data any) error {
-	p := path.Join(outputFolder, name)
-	return withFile(p, func(w io.Writer) error {
+func gen(tmpl *template.Template, outputFolder, file, title string, extraData ...map[string]any) error {
+	p := path.Join(outputFolder, file)
+	data := mergeData(nil, rootData(title, title))
+	data = mergeData(data, extraData...)
+	err := withFile(p, func(w io.Writer) error {
 		return tmpl.ExecuteTemplate(w, "root", data)
 	})
+	if err != nil {
+		return err
+	}
+
+	log.Debug().Str("file", p).Msg("generated")
+	return nil
 }
 
 func withFile(loc string, do func(w io.Writer) error) (err error) {
