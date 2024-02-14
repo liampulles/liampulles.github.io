@@ -4,8 +4,8 @@
     <meta charset=utf-8>
 
     <!-- Page metadata -->
-    <title>{{.PageTitle}}</title>
-    <meta name=description content="{{.PageDescription}}">
+    <title>{{.Title}}</title>
+    <meta name=description content="{{.SEODescription}}">
     <meta name=author content="Liam Pulles">
     <meta name=viewport content="width=device-width,initial-scale=1">
 
@@ -35,7 +35,7 @@
         <nav>
             <ul>
                 {{range .NavElem}}
-                <li><a href=/{{.Link}}>{{.Text}}</a>
+                <li><a href=/{{.Short}}>{{.Text}}</a>
                 {{end}}
             </ul>
         </nav>

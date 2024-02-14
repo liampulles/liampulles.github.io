@@ -4,7 +4,6 @@ import (
 	"errors"
 	"html/template"
 	"os"
-	"path"
 	"path/filepath"
 	"time"
 
@@ -15,7 +14,10 @@ import (
 // --- Templates
 // ---
 
-var indexTmpl = loadTemplate("index.html")
+var (
+	indexTmpl = loadTemplate("index.html")
+	blogTmpl  = loadTemplate("blog.html")
+)
 
 func loadTemplate(file string) *template.Template {
 	return template.Must(template.ParseFiles(
@@ -24,40 +26,22 @@ func loadTemplate(file string) *template.Template {
 	))
 }
 
-// ---
-// --- Data funcs
-// ---
-
-func rootData(
-	pageTitle string,
-	pageDescription string,
-) map[string]any {
-	return map[string]any{
-		"PageTitle":       pageTitle,
-		"PageDescription": pageDescription,
-		"NavElem":         NavElems,
-		"Year":            time.Now().Year(),
-	}
-}
-
-func mergeData(data map[string]any, from ...map[string]any) map[string]any {
-	if data == nil {
-		data = make(map[string]any)
-	}
-	for _, m := range from {
-		for k, v := range m {
-			data[k] = v
-		}
-	}
-	return data
-}
-
-// ---
-// --- Generating
-// ---
-
 func GenSite(outputFolder string) error {
-	// Recreate the output folder, to start from scratch.
+	err := recreateFolder(outputFolder)
+	if err != nil {
+		return err
+	}
+
+	pages := wirePages(outputFolder)
+
+	for _, page := range pages {
+		gErr := gen(page)
+		err = errors.Join(err, gErr)
+	}
+	return err
+}
+
+func recreateFolder(outputFolder string) error {
 	err := os.RemoveAll(outputFolder)
 	if err != nil {
 		log.Err(err).
@@ -65,6 +49,7 @@ func GenSite(outputFolder string) error {
 			Msg("could not clear and delete output folder, failing")
 		return err
 	}
+
 	err = os.MkdirAll(outputFolder, os.ModePerm)
 	if err != nil {
 		log.Err(err).
@@ -73,19 +58,84 @@ func GenSite(outputFolder string) error {
 		return err
 	}
 
-	// Gen files
-	return errors.Join(
-		gen(indexTmpl, outputFolder, "index.html", "Liam Pulles"),
-	)
+	return nil
 }
 
-func gen(tmpl *template.Template, outputFolder, file, title string, extraData ...map[string]any) error {
+func wirePages(outputFolder string) []wiredPage {
+	// Wire site context
+	site := siteContext{}
+	for _, blog := range BlogPosts {
+		site.blogs = append(site.blogs, blogElem{
+			Date:  blog.ExtraData["Date"].(time.Time),
+			Short: blog.Short,
+			Title: string(blog.Title),
+		})
+	}
+
+	// Ok, now we can create wired pages
+	var wired []wiredPage
+	wired = append(wired, wirePage(outputFolder, indexTmpl, IndexPage, site))
+	for _, blog := range BlogPosts {
+		wired = append(wired, wirePage(outputFolder, blogTmpl, blog, site))
+	}
+
+	return wired
+}
+
+type wiredPage struct {
+	tmpl *template.Template
+	loc  string
+	data map[string]any
+}
+
+func wirePage(
+	outputFolder string,
+	tmpl *template.Template,
+	page PageDefinition,
+	site siteContext,
+) wiredPage {
+	// Construct data
+	// -> Root
+	data := make(map[string]any)
+	data["Title"] = page.Title
+	data["SEODescription"] = page.SEODescription
+	data["NavElem"] = site.nav
+	data["BlogPosts"] = site.blogs
+	data["Year"] = time.Now().Year()
+	// -> Extra
+	for k, v := range page.ExtraData {
+		data[k] = v
+	}
+
+	return wiredPage{
+		tmpl: tmpl,
+		loc:  filepath.Join(outputFolder, page.Short+".html"),
+		data: data,
+	}
+}
+
+type siteContext struct {
+	nav   []navElem
+	blogs []blogElem
+}
+
+type navElem struct {
+	Short string
+	Text  string
+}
+
+type blogElem struct {
+	Date  time.Time
+	Short string
+	Title string
+}
+
+func gen(page wiredPage) error {
 	// Open the file
-	loc := path.Join(outputFolder, file)
-	w, err := os.Create(loc)
+	w, err := os.Create(page.loc)
 	if err != nil {
 		log.Err(err).
-			Str("loc", loc).
+			Str("loc", page.loc).
 			Msg("could not create output file, failing")
 		return err
 	}
@@ -94,22 +144,21 @@ func gen(tmpl *template.Template, outputFolder, file, title string, extraData ..
 		cErr := w.Close()
 		if cErr != nil {
 			log.Err(cErr).
-				Str("loc", loc).
+				Str("loc", page.loc).
 				Msg("could not close output file, failing")
 		}
 		err = errors.Join(err, cErr)
 	}()
 
-	// Define data
-	data := mergeData(nil, rootData(title, title))
-	data = mergeData(data, extraData...)
-
 	// Template the HTML out to the file
-	err = tmpl.ExecuteTemplate(w, "root", data)
+	err = page.tmpl.ExecuteTemplate(w, "root", page.data)
 	if err != nil {
+		log.Err(err).
+			Str("loc", page.loc).
+			Msg("templating failed")
 		return err
 	}
 
-	log.Debug().Str("file", loc).Msg("generated")
+	log.Debug().Str("file", page.loc).Msg("generated")
 	return nil
 }

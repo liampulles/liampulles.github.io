@@ -1,0 +1,11 @@
+{{define "main"}}
+<main>
+    <article>
+        <hr>
+        <header>
+            <h1>{{.Title}}</h1>
+            <p>Written <time datetime="{{.Date.String}}">{{.Date.Format "2 January 2006"}}</time>
+        </header>
+    </article>
+</main>
+{{end}}
