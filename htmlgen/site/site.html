@@ -1,3 +1,57 @@
+
+{{define "element"}}
+    {{if eq .Type "Paragraph"}}
+        <p>{{.Text}}</p>
+    {{else if eq .Type "UnorderedList"}}
+        <ul>
+        {{range .Items}}
+            <li>{{.}}</li>
+        {{end}}
+        </ul>
+    {{else if eq .Type "OrderedList"}}
+        <ol>
+        {{range .Items}}
+            <li>{{.}}</li>
+        {{end}}
+        </ol>
+    {{end}}
+{{end}}
+
+{{define "section"}}
+<section>
+    <h3>{{.Header}}</h3>
+    {{if .Aside}}
+    <aside>
+        {{range .Aside.Figures}}
+        <figure>
+            {{range .Images}}
+            <img src="{{.Src}}" width="{{.Width}}" height="{{.Height}}" alt="{{.Alt}}">
+            {{end}}
+            <figcaption><i>{{.Caption}}</i></figcaption>
+        </figure>
+        {{end}}
+    </aside>
+    {{end}}
+    {{range .Elements}}
+        {{template "element" .}}
+    {{end}}
+</section>
+{{end}}
+
+{{define "article"}}
+<article>
+    <header>
+        <h1>{{.Header}}</h1>
+        {{range .Elements}}
+            {{template "element" .}}
+        {{end}}
+    </header>
+    {{range .Sections}}
+        {{template "section" .}}
+    {{end}}
+</article>
+{{end}}
+
 {{define "root"}}
     <!doctype html>
     <html lang=en color-mode=light>
@@ -45,7 +99,7 @@
 
     <!-- Main content -->
     <main>
-        {{template "main" .}}
+        {{template "article" .Article}}
     </main>
 
     <!-- Footer -->
