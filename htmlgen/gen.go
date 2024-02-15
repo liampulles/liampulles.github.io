@@ -7,24 +7,9 @@ import (
 	"path/filepath"
 	"time"
 
+	"github.com/liampulles/liampulles.github.io/htmlgen/site"
 	"github.com/rs/zerolog/log"
 )
-
-// ---
-// --- Templates
-// ---
-
-var (
-	indexTmpl = loadTemplate("index.html")
-	blogTmpl  = loadTemplate("blog.html")
-)
-
-func loadTemplate(file string) *template.Template {
-	return template.Must(template.ParseFiles(
-		filepath.Join("templates", "_elem.html"),
-		filepath.Join("templates", file),
-	))
-}
 
 func GenSite(outputFolder string) error {
 	err := recreateFolder(outputFolder)
@@ -63,9 +48,9 @@ func recreateFolder(outputFolder string) error {
 
 func wirePages(outputFolder string) []wiredPage {
 	// Wire site context
-	site := siteContext{}
-	for _, blog := range BlogPosts {
-		site.blogs = append(site.blogs, blogElem{
+	sc := siteContext{}
+	for _, blog := range site.BlogPosts {
+		sc.blogs = append(sc.blogs, blogElem{
 			Date:  blog.ExtraData["Date"].(time.Time),
 			Short: blog.Short,
 			Title: string(blog.Title),
@@ -74,9 +59,9 @@ func wirePages(outputFolder string) []wiredPage {
 
 	// Ok, now we can create wired pages
 	var wired []wiredPage
-	wired = append(wired, wirePage(outputFolder, indexTmpl, IndexPage, site))
-	for _, blog := range BlogPosts {
-		wired = append(wired, wirePage(outputFolder, blogTmpl, blog, site))
+	wired = append(wired, wirePage(outputFolder, site.IndexPage, sc))
+	for _, blog := range site.BlogPosts {
+		wired = append(wired, wirePage(outputFolder, blog, sc))
 	}
 
 	return wired
@@ -90,8 +75,7 @@ type wiredPage struct {
 
 func wirePage(
 	outputFolder string,
-	tmpl *template.Template,
-	page PageDefinition,
+	page site.PageDefinition,
 	site siteContext,
 ) wiredPage {
 	// Construct data
@@ -108,7 +92,7 @@ func wirePage(
 	}
 
 	return wiredPage{
-		tmpl: tmpl,
+		tmpl: page.Template,
 		loc:  filepath.Join(outputFolder, page.Short+".html"),
 		data: data,
 	}

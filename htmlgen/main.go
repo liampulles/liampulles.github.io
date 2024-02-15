@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"os"
+	"time"
 
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
@@ -15,10 +16,18 @@ import (
 //   in markdownish.
 
 func main() {
+	// Measure time
+	start := time.Now()
+	defer func() {
+		log.Debug().Msgf("%v start to finish", time.Since(start))
+		log.Debug().Msg("--------------------------------------")
+	}()
+
 	// Setup logging
 	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
 	zerolog.SetGlobalLevel(zerolog.DebugLevel)
 	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
+	log.Debug().Msg("--------------------------------------")
 
 	// Parse flags
 	fs := flag.NewFlagSet("htmlgen", flag.ContinueOnError)
