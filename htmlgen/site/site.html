@@ -1,26 +1,7 @@
-
-{{define "element"}}
-    {{if eq .Type "Paragraph"}}
-        <p>{{.Text}}</p>
-    {{else if eq .Type "UnorderedList"}}
-        <ul>
-        {{range .Items}}
-            <li>{{.}}</li>
-        {{end}}
-        </ul>
-    {{else if eq .Type "OrderedList"}}
-        <ol>
-        {{range .Items}}
-            <li>{{.}}</li>
-        {{end}}
-        </ol>
-    {{end}}
-{{end}}
-
 {{define "section"}}
 <section>
-    <h3>{{.Header}}</h3>
-    {{if .Aside}}
+    {{if .Header}}<h3>{{.Header}}</h3>{{end}}
+    {{if .Aside.Figures}}
     <aside>
         {{range .Aside.Figures}}
         <figure>
@@ -32,9 +13,7 @@
         {{end}}
     </aside>
     {{end}}
-    {{range .Elements}}
-        {{template "element" .}}
-    {{end}}
+    {{.Content}}
 </section>
 {{end}}
 
@@ -42,9 +21,7 @@
 <article>
     <header>
         <h1>{{.Header}}</h1>
-        {{range .Elements}}
-            {{template "element" .}}
-        {{end}}
+        {{.Content}}
     </header>
     {{range .Sections}}
         {{template "section" .}}
@@ -107,4 +84,16 @@
         <p>© {{.Year}} Liam Pulles.</p>
     </footer>
     <script src=/script.js></script>
+{{end}}
+
+{{define "table"}}
+    <table>
+    {{range .}}
+        <tr>
+        {{range .}}
+            <td>{{.}}</td>
+        {{end}}
+        </tr>
+    {{end}}
+    </table>
 {{end}}

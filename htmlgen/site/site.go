@@ -6,6 +6,9 @@ import (
 	"path/filepath"
 	"strings"
 	"time"
+
+	"github.com/rs/zerolog/log"
+	"github.com/yuin/goldmark"
 )
 
 // The site files are essentially a blueprint for the site. What is defined here
@@ -49,7 +52,7 @@ type PageType int
 const (
 	Index PageType = iota
 	Nav
-	BlogPost
+	BlogPostType
 	DigitalRestoration
 )
 
@@ -104,18 +107,18 @@ type NavElem struct {
 type Article struct {
 	Header   string
 	Date     time.Time // Optional
-	Elements []Element // In the header
+	Content  template.HTML
 	Sections []Section
 }
 
 func article(
 	header string,
-	elements []Element,
+	content template.HTML,
 	sections []Section,
 ) Article {
 	return Article{
 		Header:   header,
-		Elements: elements,
+		Content:  content,
 		Sections: sections,
 	}
 }
@@ -129,17 +132,17 @@ type Section struct {
 	Aside  struct {
 		Figures []Figure
 	}
-	Elements []Element
+	Content template.HTML
 }
 
 func section(
 	header string,
 	asideFigures []Figure,
-	elements []Element,
+	content template.HTML,
 ) Section {
 	s := Section{
-		Header:   header,
-		Elements: elements,
+		Header:  header,
+		Content: content,
 	}
 	s.Aside.Figures = asideFigures
 	return s
@@ -181,28 +184,36 @@ func image(
 	}
 }
 
-type ElementType string
+var md = goldmark.New()
 
-const (
-	Paragraph     ElementType = "Paragraph"
-	UnorderedList ElementType = "UnorderedList"
-	OrderedList   ElementType = "OrderedList"
-)
-
-type Element struct {
-	Type  ElementType
-	Text  string
-	Items []string
+// Parses markdown into HTML. Will log issues and panic if wrong.
+//
+// Don't go crazy - just use light elements. Should ideally use above DSL
+// for structuring.
+func markdown(s string) template.HTML {
+	var sb strings.Builder
+	err := md.Convert([]byte(s), &sb)
+	if err != nil {
+		log.Err(err).Msgf("could not parse markdown (%s...)", head(s, 20))
+		panic(fmt.Errorf("could not parse markdown: %w", err))
+	}
+	return template.HTML(sb.String())
 }
 
-// Parses some light markdown into elements. Will log issues
-// and panic if wrong.
-func markdown(md string) []Element {
-	//TODO:
-	return []Element{
-		{
-			Type: Paragraph,
-			Text: "TODO: markdown",
-		},
+func head(s string, count int) string {
+	runes := []rune(s)
+	if count > len(runes) {
+		count = len(runes)
 	}
+	return string(runes[:count])
+}
+
+func table(t [][]any) template.HTML {
+	var sb strings.Builder
+	err := rootTmpl.ExecuteTemplate(&sb, "table", t)
+	if err != nil {
+		log.Err(err).Interface("table", t).Msg("could not build table")
+		panic(fmt.Errorf("could not build table: %w", err))
+	}
+	return template.HTML(sb.String())
 }

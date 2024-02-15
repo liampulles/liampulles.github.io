@@ -15,9 +15,9 @@ func GenSite(outputFolder string) error {
 		return err
 	}
 
-	err = errors.Join(err, gen(outputFolder, site.IndexPage))
+	err = errors.Join(err, gen(outputFolder, site.IndexPage()))
 	for _, blogPage := range site.BlogPosts {
-		err = errors.Join(err, gen(outputFolder, blogPage))
+		err = errors.Join(err, gen(outputFolder, blogPage.Page))
 	}
 	return err
 }
