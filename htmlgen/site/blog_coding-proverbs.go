@@ -85,10 +85,12 @@ var proverb_designByContract = section(
 Check that the input and output of important functions are sensible. This can be
 as simple as a few assert statements, e.g.
 
-`+codeFigureMarkdown("go", `public sendSms(String cell) {
+~~~go
+public sendSms(String cell) {
     assert PhoneValidationUtil.ValidNumber(cell);
    // ...
-}`)+`
+}
+~~~
 
 Do this instead of defensive programming, and apply selectively - put it on your
 core business logic for specific variables; resources.
@@ -116,7 +118,8 @@ able to check at compile time that a type implements an interface.
 A nice pattern I've seen for this is to assign an unnamed global variable of the
 interface type to an implementation instance, e.g.
 
-`+codeFigureMarkdown("go", `type Hashable interface {
+~~~go
+type Hashable interface {
     Hash() []byte
 }
 
@@ -125,7 +128,8 @@ type StructThingy struct{}
 
 // Implementation checks:
 var _ Hashable = (BasicThingy)("")
-var _ Hashable = &StructThingy{}`)+`
+var _ Hashable = &StructThingy{}
+~~~
 
 Here we check that <code>BasicThingy</code> and <code>*StructThingy</code>
 implement Hashable. If they don't, the compiler will generate a nice error
@@ -150,7 +154,8 @@ connected upon startup.
 
 But there's no reason you can't do this wiring yourself:
 
-`+codeFigureMarkdown("go", `func main() {
+~~~go
+func main() {
     server := Wire()
     server.Run()
 }
@@ -159,7 +164,8 @@ func Wire() *http.Server {
     cfgProvider := config.NewProvider()
     svc := usecase.NewService(cfgProvider)
     return http.NewServer(cfgProvider, svc)
-}`)+`
+}
+~~~
 
 Advantages:
 * You don't need to depend on an external library
@@ -181,7 +187,8 @@ This makes it trivial for new starters on the repo to get up and going.
 
 Here's an example for a Go tool:
 
-`+codeFigureMarkdown("make", `GOBIN := $(shell go env GOPATH)/bin
+~~~make
+GOBIN := $(shell go env GOPATH)/bin
 
 inspect: $(GOBIN)/golangci-lint
 	$(GOBIN)/golangci-lint run
@@ -190,7 +197,8 @@ $(GOBIN)/golangci-lint:
 	$(MAKE) install-golangci-lint
 install-golangci-lint:
 	curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(GOBIN) v1.46.2
-	rm -rf ./v1.46.2`)+`
+	rm -rf ./v1.46.2
+~~~
 
 If you run inspect, Make will check if a file at <code>$(GOBIN)/golangci-lint</code>
 exists. If it does not, the associated directive will be executed, which then

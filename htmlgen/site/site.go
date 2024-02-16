@@ -307,6 +307,13 @@ var md = goldmark.New(
 // Don't go crazy - just use light elements. Should ideally use above DSL
 // for structuring.
 func markdown(s string) template.HTML {
+	// Surround codeblocks with figures
+	s = strings.ReplaceAll(s, "\n\n~~~", "\n\n<figure class=\"highlight\">\n\n~~~")
+	s = strings.ReplaceAll(s, "~~~\n\n", "~~~\n\n</figure>\n\n")
+
+	// Replace "Hacked" backticks
+	s = strings.ReplaceAll(s, `\'`, "`")
+
 	var sb strings.Builder
 	err := md.Convert([]byte(s), &sb)
 	if err != nil {
@@ -343,22 +350,6 @@ func indexTOC() template.HTML {
 		DigitalRestorations: DigitalRestorations,
 	}
 	return execTemplate(rootTmpl, "index-toc", data)
-}
-
-// Emits markdown with code wrapping, taking care of certain requirements
-// needed for this site
-func codeFigureMarkdown(lang string, code string) string {
-	// Replace any backtick-hacks
-	code = strings.ReplaceAll(code, "\\'", "`")
-	return fmt.Sprintf(`
-<figure class="highlight">
-
-~~~%s
-%s
-~~~
-
-</figure>
-`, lang, code)
 }
 
 type RedirectPage struct {

@@ -139,8 +139,8 @@ service instances which have no dependencies, then uses those to construct the
 services which rely on those services, and so-on until you've created the
 server, which you can then execute.
 
-`+codeFigureMarkdown("go",
-		`// CreateServerFactory injects all the dependencies
+~~~go
+// CreateServerFactory injects all the dependencies
 // needed to create http.ServerFactory
 func CreateServerFactory(
     source goConfig.Source,
@@ -164,7 +164,8 @@ func CreateServerFactory(
     }
     inventoryItemConstructor := entity.NewInventoryItemConstructorImpl()
     muxWrapper := mux.NewWrapperImpl()
-    //...`)+`
+    //...
+~~~
 
 This is fairly mundane, boiler-platery code - but it is pretty easy to
 understand and update, and I haven't found good enough cause to use an external
@@ -191,8 +192,8 @@ This does not mean that we cannot customize how our objects are serialized - it
 just means that we need to make use of an "intermediary" struct in order to do
 this. For example:
 
-`+codeFigureMarkdown("go",
-		`// FromInventoryItemView converts a view to JSON
+~~~go
+// FromInventoryItemView converts a view to JSON
 func (e *EncoderServiceImpl) FromInventoryItemView(
     view *inventory.ViewVO,
 ) ([]byte, error) {
@@ -220,7 +221,8 @@ type jsonViewVO struct {
     Name      string    \'json:"name"\'
     Location  string    \'json:"location"\'
     Available bool      \'json:"available"\'
-}`)+`
+}
+~~~
 
 Here we first map our use case view (which contains the elements of the entity
 we want to expose) to an intermediary struct, and then marshal the struct. By
@@ -243,8 +245,8 @@ This abstracted view includes everything ranging from:
 
 Here is a good example from the Inventory Item Entity:
 
-`+codeFigureMarkdown("go",
-		`// IsAvailable will return true if the inventory item may
+~~~go
+// IsAvailable will return true if the inventory item may
 // be checked out - false otherwise.
 func (i *InventoryItemImpl) IsAvailable() bool {
     return i.available
@@ -272,7 +274,8 @@ func (i *InventoryItemImpl) CheckIn() error {
     }
     i.available = true
     return nil
-}`)+`
+}
+~~~
 
 Here we have not exposed the available field on the struct. Instead, we
 encapsulate access via methods, some of which may throw errors. This is done to
