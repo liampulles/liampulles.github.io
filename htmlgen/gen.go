@@ -32,6 +32,9 @@ func GenSite(outputFolder string) error {
 	for _, blogPage := range site.BlogPosts {
 		jobs = append(jobs, genJob(outputFolder, blogPage.Page.Short, page(blogPage.Page)))
 	}
+	for _, dr := range site.DigitalRestorations {
+		jobs = append(jobs, genJob(outputFolder, dr.Page.Short, page(dr.Page)))
+	}
 	for _, r := range site.RedirectPages {
 		jobs = append(jobs, genJob(outputFolder, r.Short, redirect(r)))
 	}

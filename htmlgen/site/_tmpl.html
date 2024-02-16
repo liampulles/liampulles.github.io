@@ -59,12 +59,13 @@
 {{define "section"}}
 <section>
     {{if .Header}}<h2>{{.Header}}</h2>{{end}}
+    {{if .SubHeader}}<h3>{{.SubHeader}}</h3>{{end}}
     {{if .Aside.Figures}}
     <aside>
         {{range .Aside.Figures}}
-        <figure>
+        <figure {{if .Optional}}class="optional"{{end}}>
             {{range .Images}}
-            <img src="{{.Src}}" width="{{.Width}}" height="{{.Height}}" alt="{{.Alt}}">
+            {{template "image" .}}
             {{end}}
             {{if .Caption}}<figcaption><i>{{.Caption}}</i></figcaption>{{end}}
         </figure>
@@ -73,6 +74,10 @@
     {{end}}
     {{.Content}}
 </section>
+{{end}}
+
+{{define "image"}}
+<img src="{{.Src}}" width="{{.Width}}" height="{{.Height}}" alt="{{.Alt}}">
 {{end}}
 
 {{define "article"}}
@@ -152,4 +157,11 @@
 <meta http-equiv=refresh content="0;url={{.Dest}}">
 <p>Redirecting...</p>
 <a href={{.Dest}}>Click here if you are not redirected.</a>
+{{end}}
+
+{{define "restoration-page"}}
+<section class="centerpiece">
+    {{template "image" .Image}}
+    {{.Description}}
+</section>
 {{end}}

@@ -8,12 +8,12 @@ import (
 	"cloud.google.com/go/civil"
 )
 
-type BlogPost struct {
+type DatedPost struct {
 	Page
 	Date time.Time
 }
 
-var BlogPosts []BlogPost
+var BlogPosts []DatedPost
 
 func blogPost(
 	short string,
@@ -22,7 +22,7 @@ func blogPost(
 	date civil.Date,
 	opening template.HTML,
 	sections ...Section,
-) BlogPost {
+) DatedPost {
 	t := date.In(time.Local)
 	var allSections []Section
 	allSections = append(allSections, section("", opening))
@@ -37,7 +37,7 @@ func blogPost(
 			),
 			withComments(short),
 		))
-	return BlogPost{
+	return DatedPost{
 		Page: page,
 		Date: t,
 	}

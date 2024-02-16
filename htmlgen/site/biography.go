@@ -6,7 +6,7 @@ var BiographyPage = page(rootTmpl, "biography", root(
 	article("Biography", nil,
 		section("",
 			markdown(biography_body),
-			figure("", image("profile.jpg", 300, 300, "")),
+			withAsideFigure(figure("", image("profile.jpg", 300, 300, ""))),
 		),
 	),
 	withConnectWithMe,

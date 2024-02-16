@@ -50,11 +50,11 @@ code into a series of layers:
   layers sits.
 * **The Frameworks and Drivers Layer**: This is where code interacting with
   external libraries sits.`),
-	figure("The Layers of The Clean Architecture.", image(
+	withAsideFigure(figure("The Layers of The Clean Architecture.", image(
 		"clean-architecture-diagram.png",
 		731, 731,
 		"Diagram of the clean architecture",
-	)),
+	))),
 )
 
 var cleanGo_howDoIKnow = section(
@@ -93,14 +93,14 @@ switch - thus we (e.g.) put the Repository interface in the use case layer, but
 we put the SQL (and potentially NoSQL) implementations of that repository in the
 adapter layer.
 `),
-	figure("Any notion of a specific DB implementation or router framework certainly belongs in the Drivers and Frameworks layer.",
+	withAsideFigure(optionalFigure("Any notion of a specific DB implementation or router framework certainly belongs in the Drivers and Frameworks layer.",
 		image("postgresql-icon.png", 110, 110, "PostgreSQL logo"),
 		image("gorilla-icon.jpeg", 110, 110, "Gorilla mux logo"),
-	),
-	figure("A helpful way to think through your layers is to imagine radically changing the DB and web frameworks.",
+	)),
+	withAsideFigure(optionalFigure("A helpful way to think through your layers is to imagine radically changing the DB and web frameworks.",
 		image("mongodb-icon.png", 110, 110, "MongoDB logo"),
 		image("grpc-icon.png", 110, 110, "gRPC logo"),
-	),
+	)),
 )
 
 var cleanGo_howDoIStructure = section(
@@ -121,13 +121,13 @@ to the greatest degree possible.
 Anyway, on the side you'll see my package structure. The important ones here are
 the *adapter*, *domain*, *driver*, *usecase*, and *wire* packages. Which brings
 us to...`),
-	figure(`Package structure for <a href="https://github.com/liampulles/matchstick-video">Matchstick Video!</a>`,
+	withAsideFigure(figure(`Package structure for <a href="https://github.com/liampulles/matchstick-video">Matchstick Video!</a>`,
 		image(
 			"matchstick-video-package-structure.png",
 			232, 414,
 			"Screenshot of a folder tree view for the app",
 		),
-	),
+	)),
 )
 
 var cleanGo_theWirePackage = section(
@@ -278,11 +278,11 @@ Here we have not exposed the available field on the struct. Instead, we
 encapsulate access via methods, some of which may throw errors. This is done to
 protect the entity - it is the use case layer's job to deal with these errors.
 `),
-	figure("The Entity is King, and treats itself as such.", image(
+	withAsideFigure(figure("The Entity is King, and treats itself as such.", image(
 		"my-super-sweet-16.jpg",
 		375, 500,
 		"A boy dressed as a king on a throne in a super sweet 16 reality show",
-	)),
+	))),
 )
 
 var cleanGo_conclusion = section(

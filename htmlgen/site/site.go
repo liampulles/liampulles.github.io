@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"html/template"
 	"path/filepath"
+	"sort"
 	"strings"
 	"time"
 
@@ -26,7 +27,6 @@ var rootTmpl = loadTemplate(nil, "_tmpl.html")
 
 var allNavElem = []NavElem{
 	nameToNav("Biography"),
-	nameToNav("Proverbs"),
 	nameToNav("Code"),
 }
 
@@ -34,6 +34,7 @@ var RedirectPages = []RedirectPage{
 	redirectPage("code", "https://github.com/liampulles"),
 	redirectPage("blog/notes-on-applying-the-clean-architecture-in-go", "/clean-go.html"),
 	redirectPage("blog/jira-tickets", "/jira-tickets.html"),
+	redirectPage("digital_restorations/woodstock-3-days-of-peace-and-music", "/woodstock-restoration.html"),
 }
 
 // ---
@@ -191,8 +192,9 @@ func mul[T any](many ...T) []T {
 }
 
 type Section struct {
-	Header string
-	Aside  struct {
+	Header    string
+	SubHeader string
+	Aside     struct {
 		Figures []Figure
 	}
 	Content template.HTML
@@ -201,19 +203,45 @@ type Section struct {
 func section(
 	header string,
 	content template.HTML,
-	asideFigures ...Figure,
+	opts ...func(*Section),
 ) Section {
 	s := Section{
 		Header:  header,
 		Content: content,
 	}
-	s.Aside.Figures = asideFigures
+	for _, opt := range opts {
+		if opt == nil {
+			continue
+		}
+		opt(&s)
+	}
 	return s
 }
 
+func withAsideFigure(figure Figure) func(s *Section) {
+	return func(s *Section) {
+		s.Aside.Figures = append(s.Aside.Figures, figure)
+	}
+}
+
+func superSection(
+	header string,
+	content template.HTML,
+	sections ...Section,
+) Section {
+	for _, section := range sections {
+		section.SubHeader = section.Header
+		section.Header = ""
+		sectionContent := execTemplate(rootTmpl, "section", section)
+		content += sectionContent
+	}
+	return section(header, content)
+}
+
 type Figure struct {
-	Images  []Image
-	Caption template.HTML
+	Images   []Image
+	Caption  template.HTML
+	Optional bool
 }
 
 func figure(
@@ -223,6 +251,17 @@ func figure(
 	return Figure{
 		Images:  images,
 		Caption: template.HTML(caption),
+	}
+}
+
+func optionalFigure(
+	caption string,
+	images ...Image,
+) Figure {
+	return Figure{
+		Images:   images,
+		Caption:  template.HTML(caption),
+		Optional: true,
 	}
 }
 
@@ -286,13 +325,22 @@ func head(s string, count int) string {
 }
 
 type IndexTOC struct {
-	BlogPosts           []BlogPost
-	DigitalRestorations []BlogPost // TODO
+	BlogPosts           []DatedPost
+	DigitalRestorations []DatedPost
 }
 
 func indexTOC() template.HTML {
+	// Sort posts
+	sort.Slice(BlogPosts, func(i, j int) bool {
+		return BlogPosts[i].Date.Before(BlogPosts[j].Date)
+	})
+	sort.Slice(DigitalRestorations, func(i, j int) bool {
+		return DigitalRestorations[i].Date.Before(DigitalRestorations[j].Date)
+	})
+
 	data := IndexTOC{
-		BlogPosts: BlogPosts,
+		BlogPosts:           BlogPosts,
+		DigitalRestorations: DigitalRestorations,
 	}
 	return execTemplate(rootTmpl, "index-toc", data)
 }

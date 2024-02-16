@@ -73,11 +73,11 @@ work). This pre-sight helps them to plan and for me to explain my work.
 Note that this does not stop unexpected things from coming up during coding, but it
 does help reduce them. And when those moments do come up I try to go and plan again
 before coding.`),
-	figure("", image(
+	withAsideFigure(figure("", image(
 		"thinking-dev.webp",
 		512, 512,
 		"A software developer leaning back in his chair thinking hard about his work. Thought bubbles, casual clothing, brown hair.",
-	)),
+	))),
 )
 
 var jira_ticketsAsASecondBrain = section(
@@ -96,11 +96,11 @@ review.
 This practice serves to enable a kind of agile Plan-Do-Reflect mode of working.
 Instead of just barraging through code, uncertain of where I am going, I am making
 steady steps with a clear path ahead. It leads to more inner peace (I think).`),
-	figure("", image(
+	withAsideFigure(figure("", image(
 		"thinking-goldfish.webp",
 		512, 512,
 		"A goldfish leaning back in his chair thinking hard about his work. Thought bubbles.",
-	)),
+	))),
 )
 
 var jira_ticketsAsAsync = section(
@@ -118,11 +118,11 @@ ticket rather than slack them. My rationale being:
 
 Although having said that, people's preferences differ, and one should respect the
 communication channels others prefer (especially when asking them for help).`),
-	figure("", image(
+	withAsideFigure(figure("", image(
 		"thinking-cyberpunk.webp",
 		512, 512,
 		"A man sitting in his chair hacking into the matrix.",
-	)),
+	))),
 )
 
 var jira_conclusion = section(
