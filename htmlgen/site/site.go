@@ -69,8 +69,7 @@ type Root struct {
 	SEODescription string
 	NavElem        []NavElem
 	Article        Article
-	ConnectWithMe  bool
-	Year           int
+	Footer         Footer
 }
 
 func root(
@@ -84,7 +83,9 @@ func root(
 		SEODescription: "SEODescription",
 		NavElem:        AllNavElem,
 		Article:        article,
-		Year:           time.Now().Year(),
+		Footer: Footer{
+			Year: time.Now().Year(),
+		},
 	}
 
 	for _, opt := range opts {
@@ -98,7 +99,12 @@ func root(
 }
 
 func withConnectWithMe(r *Root) {
-	r.ConnectWithMe = true
+	r.Footer.ConnectWithMe = true
+}
+
+type Footer struct {
+	ConnectWithMe bool
+	Year          int
 }
 
 type NavElem struct {
@@ -139,8 +145,8 @@ type Section struct {
 
 func section(
 	header string,
-	asideFigures []Figure,
 	content template.HTML,
+	asideFigures ...Figure,
 ) Section {
 	s := Section{
 		Header:  header,

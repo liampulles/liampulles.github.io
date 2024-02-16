@@ -5,8 +5,14 @@ var BiographyPage = page(rootTmpl, "biography", root(
 	"Biography of Liam Pulles, speaking to key experience and giving contact links.",
 	article("Biography", "",
 		section("",
-			mul(figure("", image("profile.jpg", 300, 300, ""))),
-			markdown(`
+			markdown(biography_body),
+			figure("", image("profile.jpg", 300, 300, "")),
+		),
+	),
+	withConnectWithMe,
+))
+
+const biography_body = `
 I am a software developer currently working in **Johannesburg,
 South Africa** for the **[Valenture Institute](https://www.valentureinstitute.com/)**.
 I completed my honors in Computer Science at the University of the Witwatersrand
@@ -24,9 +30,4 @@ I am familiar with **Kubernetes**, **Docker**, **Spring**, and **Ansible** - amo
 and frameworks.
 
 My hobbies include working on small coding and Linux related projects, as well as
-viewing a variety of films (I suppose I could be called a "film buff").
-`,
-			)),
-	),
-	withConnectWithMe,
-))
+viewing a variety of films (I suppose I could be called a "film buff").`

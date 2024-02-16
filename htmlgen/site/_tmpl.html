@@ -1,6 +1,6 @@
 {{define "section"}}
 <section>
-    {{if .Header}}<h3>{{.Header}}</h3>{{end}}
+    {{if .Header}}<h2>{{.Header}}</h2>{{end}}
     {{if .Aside.Figures}}
     <aside>
         {{range .Aside.Figures}}
@@ -27,6 +27,21 @@
         {{template "section" .}}
     {{end}}
 </article>
+{{end}}
+
+{{define "footer"}}
+<footer>
+    {{if .ConnectWithMe}}
+    <p>
+        <b>Connect with me:</b>
+        <a href=https://github.com/liampulles>Github</a>,
+        <a href=https://www.linkedin.com/in/liampulles/>LinkedIn</a>,
+        <a href=https://letterboxd.com/sl1m/>Letterboxd</a>,
+        <a href="mailto:me@liampulles.com">Email</a>
+    <p>
+    {{end}}
+    <p>© {{.Year}} Liam Pulles.</p>
+</footer>
 {{end}}
 
 {{define "root"}}
@@ -80,18 +95,7 @@
     </main>
 
     <!-- Footer -->
-    <footer>
-        {{if .ConnectWithMe}}
-        <p>
-            <b>Connect with me:</b>
-            <a href=https://github.com/liampulles>Github</a>,
-            <a href=https://www.linkedin.com/in/liampulles/>LinkedIn</a>,
-            <a href=https://letterboxd.com/sl1m/>Letterboxd</a>,
-            <a href="mailto:me@liampulles.com">Email</a>
-        <p>
-        {{end}}
-        <p>© {{.Year}} Liam Pulles.</p>
-    </footer>
+    {{template "footer" .Footer}}
     <script src=/script.js></script>
 {{end}}
 

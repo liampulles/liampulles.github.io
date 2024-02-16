@@ -21,11 +21,11 @@ func blogPost(
 	seoDesc string,
 	date civil.Date,
 	opening template.HTML,
-	sections []Section,
+	sections ...Section,
 ) BlogPost {
 	t := date.In(time.Local)
 	var allSections []Section
-	allSections = append(allSections, section("", nil, opening))
+	allSections = append(allSections, section("", opening))
 	allSections = append(allSections, sections...)
 	page := page(rootTmpl, short,
 		root(title, seoDesc,
