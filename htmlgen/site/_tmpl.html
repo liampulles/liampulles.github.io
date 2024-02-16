@@ -1,49 +1,3 @@
-{{define "section"}}
-<section>
-    {{if .Header}}<h2>{{.Header}}</h2>{{end}}
-    {{if .Aside.Figures}}
-    <aside>
-        {{range .Aside.Figures}}
-        <figure>
-            {{range .Images}}
-            <img src="{{.Src}}" width="{{.Width}}" height="{{.Height}}" alt="{{.Alt}}">
-            {{end}}
-            {{if .Caption}}<figcaption><i>{{.Caption}}</i></figcaption>{{end}}
-        </figure>
-        {{end}}
-    </aside>
-    {{end}}
-    {{.Content}}
-</section>
-{{end}}
-
-{{define "article"}}
-<article>
-    <header>
-        <h1>{{.Header}}</h1>
-        {{.Content}}
-    </header>
-    {{range .Sections}}
-        {{template "section" .}}
-    {{end}}
-</article>
-{{end}}
-
-{{define "footer"}}
-<footer>
-    {{if .ConnectWithMe}}
-    <p>
-        <b>Connect with me:</b>
-        <a href=https://github.com/liampulles>Github</a>,
-        <a href=https://www.linkedin.com/in/liampulles/>LinkedIn</a>,
-        <a href=https://letterboxd.com/sl1m/>Letterboxd</a>,
-        <a href="mailto:me@liampulles.com">Email</a>
-    <p>
-    {{end}}
-    <p>© {{.Year}} Liam Pulles.</p>
-</footer>
-{{end}}
-
 {{define "root"}}
     <!doctype html>
     <html lang=en color-mode=light>
@@ -99,14 +53,75 @@
     <script src=/script.js></script>
 {{end}}
 
-{{define "table"}}
-    <table>
-    {{range .}}
-        <tr>
-        {{range .}}
-            <td>{{.}}</td>
+{{define "section"}}
+<section>
+    {{if .Header}}<h2>{{.Header}}</h2>{{end}}
+    {{if .Aside.Figures}}
+    <aside>
+        {{range .Aside.Figures}}
+        <figure>
+            {{range .Images}}
+            <img src="{{.Src}}" width="{{.Width}}" height="{{.Height}}" alt="{{.Alt}}">
+            {{end}}
+            {{if .Caption}}<figcaption><i>{{.Caption}}</i></figcaption>{{end}}
+        </figure>
         {{end}}
-        </tr>
+    </aside>
     {{end}}
+    {{.Content}}
+</section>
+{{end}}
+
+{{define "article"}}
+<article>
+    <header>
+        <h1>{{.Header}}</h1>
+        {{.HeaderContent}}
+    </header>
+    {{.RawContent}}
+    {{range .Sections}}
+        {{template "section" .}}
+    {{end}}
+</article>
+{{end}}
+
+{{define "footer"}}
+<footer>
+    {{if .ConnectWithMe}}
+    <p>
+        <b>Connect with me:</b>
+        <a href=https://github.com/liampulles>Github</a>,
+        <a href=https://www.linkedin.com/in/liampulles/>LinkedIn</a>,
+        <a href=https://letterboxd.com/sl1m/>Letterboxd</a>,
+        <a href="mailto:me@liampulles.com">Email</a>
+    <p>
+    {{end}}
+    <p>© {{.Year}} Liam Pulles.</p>
+</footer>
+{{end}}
+
+{{define "index-toc"}}
+<section>
+    <p>Hi there - if you're interested in my writing, read on. If you want to hire me (or otherwise find out more about me), then you may wish to see my <a href="/biography.html">biography</a> or my <a href="/code.html">code</a>.</p>
+</section>
+<section class="toc">
+    <h3>Blog posts</h3>
+    <table>
+        {{range .BlogPosts}}
+        <tr>
+            <th class="toc-date">{{.Date.Format "Jan 02, 2006"}}</th>
+            <th><a href="/{{.Page.Short}}.html">{{.Page.Data.Title}}</a></th>
+        </tr>
+        {{end}}
     </table>
+    <h3>Digital restorations</h3>
+    <table>
+        {{range .DigitalRestorations}}
+        <tr>
+            <th class="toc-date">{{.Date.Format "Jan 02, 2006"}}</th>
+            <th><a href="/{{.Page.Short}}.html">{{.Page.Data.Title}}</a></th>
+        </tr>
+        {{end}}
+    </table>
+</section>
 {{end}}

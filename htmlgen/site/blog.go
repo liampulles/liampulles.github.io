@@ -10,7 +10,7 @@ import (
 
 type BlogPost struct {
 	Page
-	Date civil.Date
+	Date time.Time
 }
 
 var BlogPosts []BlogPost
@@ -30,11 +30,11 @@ func blogPost(
 	page := page(rootTmpl, short,
 		root(title, seoDesc,
 			article(title,
-				markdown(fmt.Sprintf("*Written %s*", t.Format("2 January 2006"))),
+				mul(withHeaderContent(markdown(fmt.Sprintf("*Written %s*", t.Format("2 January 2006"))))),
 				allSections...,
 			)))
 	return BlogPost{
 		Page: page,
-		Date: date,
+		Date: t,
 	}
 }

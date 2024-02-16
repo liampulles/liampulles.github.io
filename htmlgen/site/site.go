@@ -37,6 +37,16 @@ func loadTemplate(root *template.Template, file string) *template.Template {
 	return template.Must(t.ParseFiles(filepath.Join("htmlgen", "site", file)))
 }
 
+func execTemplate(t *template.Template, name string, data any) template.HTML {
+	var sb strings.Builder
+	err := t.ExecuteTemplate(&sb, name, data)
+	if err != nil {
+		log.Err(err).Msgf("could not exec template %s", name)
+		panic(fmt.Errorf("could not exec template %s: %w", name, err))
+	}
+	return template.HTML(sb.String())
+}
+
 func nameToNav(name string) NavElem {
 	short := strings.ReplaceAll(name, " ", "-")
 	short = strings.ToLower(short)
@@ -113,21 +123,41 @@ type NavElem struct {
 }
 
 type Article struct {
-	Header   string
-	Date     time.Time // Optional
-	Content  template.HTML
-	Sections []Section
+	Header        string
+	HeaderContent template.HTML
+	RawContent    template.HTML
+	Sections      []Section
 }
 
 func article(
 	header string,
-	content template.HTML,
+	opts []func(*Article),
 	sections ...Section,
 ) Article {
-	return Article{
+	a := Article{
 		Header:   header,
-		Content:  content,
 		Sections: sections,
+	}
+
+	for _, opt := range opts {
+		if opt == nil {
+			continue
+		}
+		opt(&a)
+	}
+
+	return a
+}
+
+func withHeaderContent(headerContent template.HTML) func(a *Article) {
+	return func(a *Article) {
+		a.HeaderContent = headerContent
+	}
+}
+
+func withRawContent(content template.HTML) func(a *Article) {
+	return func(a *Article) {
+		a.RawContent = content
 	}
 }
 
@@ -218,12 +248,14 @@ func head(s string, count int) string {
 	return string(runes[:count])
 }
 
-func table(t [][]any) template.HTML {
-	var sb strings.Builder
-	err := rootTmpl.ExecuteTemplate(&sb, "table", t)
-	if err != nil {
-		log.Err(err).Interface("table", t).Msg("could not build table")
-		panic(fmt.Errorf("could not build table: %w", err))
+type IndexTOC struct {
+	BlogPosts           []BlogPost
+	DigitalRestorations []BlogPost // TODO
+}
+
+func indexTOC() template.HTML {
+	data := IndexTOC{
+		BlogPosts: BlogPosts,
 	}
-	return template.HTML(sb.String())
+	return execTemplate(rootTmpl, "index-toc", data)
 }

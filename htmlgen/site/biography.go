@@ -3,7 +3,7 @@ package site
 var BiographyPage = page(rootTmpl, "biography", root(
 	"Liam Pulles - Biography",
 	"Biography of Liam Pulles, speaking to key experience and giving contact links.",
-	article("Biography", "",
+	article("Biography", nil,
 		section("",
 			markdown(biography_body),
 			figure("", image("profile.jpg", 300, 300, "")),
