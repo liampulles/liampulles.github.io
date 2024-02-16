@@ -1,0 +1,77 @@
+<!doctype html><html lang=en color-mode=light><meta charset=utf-8><title>Notes on applying &#34;The Clean Architecture&#34; in Go</title><meta name=description content=SEODescription><meta name=author content="Liam Pulles"><meta name=viewport content="width=device-width,initial-scale=1"><script>if(localStorage.getItem("color-mode")==="dark"||(window.matchMedia("(prefers-color-scheme: dark)").matches&&!localStorage.getItem("color-mode"))){document.documentElement.setAttribute("color-mode","dark");}</script><link rel=preconnect href=https://cdnjs.cloudflare.com><link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin=anonymous referrerpolicy=no-referrer><link rel=preload href=https://fonts.gstatic.com/s/sourcesanspro/v22/6xK3dSBYKcSV-LCoeQqfX1RYOo3qOK7l.woff2 as=font type=font/woff2 crossorigin><link rel=preload href=https://fonts.gstatic.com/s/fraunces/v31/6NUh8FyLNQOQZAnv9bYEvDiIdE9Ea92uemAk_WBq8U_9v0c2Wa0K7iN7hzFUPJH58nib1603gg7S2nfgRYIctxuTCf7T.woff2 as=font type=font/woff2 crossorigin><link href=/style.css rel=stylesheet><link href=/light.css rel=stylesheet><link href=/dark.css rel=stylesheet><link href=/images/favicon.ico rel="shortcut icon" type=image/x-icon><header class=site-header><p><a href=/>Liam Pulles</a><nav><ul><li><a href=/biography.html>Biography</a><li><a href=/proverbs.html>Proverbs</a><li><a href=/code.html>Code</a></ul></nav><div class=color-mode__header><i class="color-mode__btn light--hidden fa-solid fa-sun fa-xl"></i><i class="color-mode__btn dark--hidden fa-solid fa-moon fa-xl"></i></div></header><main><article><header><h1>Notes on applying &#34;The Clean Architecture&#34; in Go</h1><p><em>Written 29 September 2020</em></header><section><p>Having had an appetite for experimenting with a REST API in Go, my research
+indicated that Robert &quot;Uncle Bob&quot; Martin's Clean Architecture is something like
+the &quot;architecture of choice&quot; among Gophers. However, I have found that there is
+a lack of good resources out there for applying it in Go. So here is my attempt
+to fill that gap...<p><em><strong>Note:</strong> I am not an Architect, and I've only applied this pattern on one
+application - so please take everything I'm about to say with a big pinch of
+salt. You can find the example REST API I implemented
+<a href=https://github.com/liampulles/matchstick-video>here</a></em></section><section><h2>So, what is this &#34;Clean Architecture&#34; thing anyway?</h2><aside><figure><img src=/images/clean-architecture-diagram.png width=731px height=731px alt="Diagram of the clean architecture"><figcaption><i>The Layers of The Clean Architecture.</i></figcaption></figure></aside><p>The best resource on this is definitely Uncle Bob's
+<a href=https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html>blog post</a>
+on the subject, but in essence the architecture is concerned with abstracting
+implementation details away from your business logic. It does this by separating
+code into a series of layers:<ul><li><strong>The Entity Layer</strong>: This is where your business logic sits.<li><strong>The Use Case Layer</strong>: This is where your application logic sits.<li><strong>The Adapter Layer</strong>: This is where the glue between the use case and driver
+layers sits.<li><strong>The Frameworks and Drivers Layer</strong>: This is where code interacting with
+external libraries sits.</ul></section><section><h2>How do I know where to put my Code?</h2><aside><figure><img src=/images/postgresql-icon.png width=110px height=110px alt="PostgreSQL logo">
+<img src=/images/gorilla-icon.jpeg width=110px height=110px alt="Gorilla mux logo"><figcaption><i>Any notion of a specific DB implementation or router framework certainly belongs in the Drivers and Frameworks layer.</i></figcaption></figure><figure><img src=/images/mongodb-icon.png width=110px height=110px alt="MongoDB logo">
+<img src=/images/grpc-icon.png width=110px height=110px alt="gRPC logo"><figcaption><i>A helpful way to think through your layers is to imagine radically changing the DB and web frameworks.</i></figcaption></figure></aside><p>This is a question I wrestled with quite a bit in this project. Firstly,
+remember that you are learning, so its okay to put down the code in a layer with
+a TODO and then come back later to refactor it. However, I have come up with a
+set of questions you can ask yourself in order to come to a considered decision:<ol><li><strong>Can this code be copied and pasted into another application,</strong> and be
+useful without modification? If so, then it probably belongs in the entity
+layer. Examples include: string validation functions (e.g. isBlank) and your
+core business logic.<li><strong>Does this code deal with orchestrating the logic of a transaction,</strong>
+e.g. finding all users in the database? If so, it probably belongs in the use
+case layer. Examples include: the core orchestration logic (as mentioned) as
+well as factories for constructing entity types, and interfaces which code in
+the adapter layer must implement.<li><strong>Does the code call any external code or use any external types?</strong> If so, it
+probably belongs in the frameworks and drivers layer. Examples include:
+PostgreSQL driver configurations, Mux handlers and server setup, etc.<li><strong>If your code does not fit with one of the above questions,</strong> and/or deals
+with bridging calls to and from the use case and driver and frameworks
+layers, then it probably belongs in the adapter layer. Examples include: Your
+controllers, JSON transformers, SQL code, and configuration utilities.</ol><p>You may be thinking that a lot of the things I've put into the adapter layer may
+belong in the use case layer. What I would recommend is: imagine what layers
+would need to change if you switched your API and DB implementations to a
+completely different philosophy.<p>For example: what if I used GRPC instead of a REST API, and a NoSQL DB instead
+of an SQL DB? The use case logic should not be (hugely) affected by this
+switch - thus we (e.g.) put the Repository interface in the use case layer, but
+we put the SQL (and potentially NoSQL) implementations of that repository in the
+adapter layer.</section><section><h2>How do I structure my packages?</h2><aside><figure><img src=/images/matchstick-video-package-structure.png width=232px height=414px alt="Screenshot of a folder tree view for the app"><figcaption><i>Package structure for <a href=https://github.com/liampulles/matchstick-video>Matchstick Video!</a></i></figcaption></figure></aside><p>Firstly, we're going to rename some of our layers for practical reasons. I've
+renamed the entity layer to the domain layer, because entities have their own
+meaning in a DDD sense which I wish to maintain. Secondly, I'm going to simplify
+&quot;drivers and frameworks&quot; to just &quot;drivers&quot;.<p>Remember that the names are just a suggestion - as are the number of layers. You
+can (and should) adjust them to what makes sense for your team. The important
+thing is that you separate logic so as to try and minimize the time it takes to
+figure out where you need to make changes, and to minimize the number of lines
+which need to be touched for a change. We are trying to enable ongoing change
+to the greatest degree possible.<p>Anyway, on the side you'll see my package structure. The important ones here are
+the <em>adapter</em>, <em>domain</em>, <em>driver</em>, <em>usecase</em>, and <em>wire</em> packages. Which brings
+us to...</section><section><h2>How do I structure my packages?</h2><p>The <em>wire</em> layer sits outside of the other layers, and it deals with dependency
+injection. Basically, this layer contains a function which first creates the
+service instances which have no dependencies, then uses those to construct the
+services which rely on those services, and so-on until you've created the
+server, which you can then execute.<figure class=highlight><pre tabindex=0 class=chroma><code><span class=line><span class=cl><span class=c1>// CreateServerFactory injects all the dependencies
+</span></span></span><span class=line><span class=cl><span class=c1>// needed to create http.ServerFactory
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>func</span> <span class=nf>CreateServerFactory</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>    <span class=nx>source</span> <span class=nx>goConfig</span><span class=p>.</span><span class=nx>Source</span><span class=p>,</span>
+</span></span><span class=line><span class=cl><span class=p>)</span> <span class=p>(</span><span class=nx>http</span><span class=p>.</span><span class=nx>ServerFactory</span><span class=p>,</span> <span class=kt>error</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// Each &#34;tap&#34; below indicates a level of dependency
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nx>configStore</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>config</span><span class=p>.</span><span class=nf>NewStoreImpl</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>        <span class=nx>source</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=kc>nil</span><span class=p>,</span> <span class=nx>err</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=nx>errorParser</span> <span class=o>:=</span> <span class=nx>adapterDb</span><span class=p>.</span><span class=nf>NewErrorParserImpl</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// --- NEXT TAP ---
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nx>helperService</span> <span class=o>:=</span> <span class=nx>sql</span><span class=p>.</span><span class=nf>NewHelperServiceImpl</span><span class=p>(</span><span class=nx>errorParser</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=nx>databaseService</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>db</span><span class=p>.</span><span class=nf>NewDatabaseServiceImpl</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>        <span class=nx>configStore</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=kc>nil</span><span class=p>,</span> <span class=nx>err</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=nx>inventoryItemConstructor</span> <span class=o>:=</span> <span class=nx>entity</span><span class=p>.</span><span class=nf>NewInventoryItemConstructorImpl</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=nx>muxWrapper</span> <span class=o>:=</span> <span class=nx>mux</span><span class=p>.</span><span class=nf>NewWrapperImpl</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=c1>//...
+</span></span></span></code></pre></figure></section></article></main><footer><p>© 2024 Liam Pulles.</footer><script src=/script.js></script>

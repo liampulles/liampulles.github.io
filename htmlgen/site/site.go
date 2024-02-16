@@ -7,8 +7,11 @@ import (
 	"strings"
 	"time"
 
+	chromahtml "github.com/alecthomas/chroma/v2/formatters/html"
 	"github.com/rs/zerolog/log"
 	"github.com/yuin/goldmark"
+	highlighting "github.com/yuin/goldmark-highlighting/v2"
+	goldhtml "github.com/yuin/goldmark/renderer/html"
 	"go.abhg.dev/goldmark/wikilink"
 )
 
@@ -188,7 +191,7 @@ func section(
 
 type Figure struct {
 	Images  []Image
-	Caption string
+	Caption template.HTML
 }
 
 func figure(
@@ -197,7 +200,7 @@ func figure(
 ) Figure {
 	return Figure{
 		Images:  images,
-		Caption: caption,
+		Caption: template.HTML(caption),
 	}
 }
 
@@ -223,7 +226,19 @@ func image(
 }
 
 var md = goldmark.New(
-	goldmark.WithExtensions(&wikilink.Extender{}),
+	goldmark.WithExtensions(
+		// E.g. [[biography]] type links
+		&wikilink.Extender{},
+		// Applies syntax highlighting via https://github.com/alecthomas/chroma
+		highlighting.NewHighlighting(
+			highlighting.WithFormatOptions(
+				chromahtml.WithClasses(true),
+			),
+		),
+	),
+	goldmark.WithRendererOptions(
+		goldhtml.WithUnsafe(),
+	),
 )
 
 // Parses markdown into HTML. Will log issues and panic if wrong.
@@ -258,4 +273,18 @@ func indexTOC() template.HTML {
 		BlogPosts: BlogPosts,
 	}
 	return execTemplate(rootTmpl, "index-toc", data)
+}
+
+// Emits markdown with code wrapping, taking care of certain requirements
+// needed for this site
+func codeFigureMarkdown(lang string, code string) string {
+	return fmt.Sprintf(`
+<figure class="highlight">
+
+~~~%s
+%s
+~~~
+
+</figure>
+`, lang, code)
 }

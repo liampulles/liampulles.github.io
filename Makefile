@@ -11,5 +11,11 @@ pre-commit: ${GOBIN}/minify clean
 	minify -r -o _site/ _site_gen/
 	cp -r static/* _site
 
+watch:
+	while true; do \
+		$(MAKE) pre-commit; \
+		inotifywait -qre close_write htmlgen; \
+	done
+
 ${GOBIN}/minify:
 	go install github.com/tdewolff/minify/cmd/minify@latest

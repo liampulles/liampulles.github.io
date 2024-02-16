@@ -10,7 +10,10 @@
     <meta name=viewport content="width=device-width,initial-scale=1">
 
     <!-- Dark mode toggle script -->
-    <script>if (localStorage.getItem("color-mode") === "dark" || (window.matchMedia("(prefers-color-scheme: dark)").matches && !localStorage.getItem("color-mode"))) { document.documentElement.setAttribute("color-mode", "dark"); }</script>
+    <script>
+    if (localStorage.getItem("color-mode") === "dark" || (window.matchMedia("(prefers-color-scheme: dark)").matches && !localStorage.getItem("color-mode"))) { 
+        document.documentElement.setAttribute("color-mode", "dark"); 
+    }</script>
 
     <!-- Fonts -->
     <link rel=preconnect href=https://cdnjs.cloudflare.com>
@@ -25,8 +28,8 @@
 
     <!-- Stylesheets -->
     <link href=/style.css rel=stylesheet>
-    <link href=/tango.css rel=stylesheet>
-    <link href=/monokai.css rel=stylesheet>
+    <link href=/light.css rel=stylesheet>
+    <link href=/dark.css rel=stylesheet>
     <link href=/images/favicon.ico rel="shortcut icon" type=image/x-icon>
 
     <!-- Header/Nav -->
