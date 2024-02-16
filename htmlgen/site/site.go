@@ -20,9 +20,11 @@ import (
 
 // Other details are probably in the render functions.
 
+const liveURL = "https://liampulles.com"
+
 var rootTmpl = loadTemplate(nil, "_tmpl.html")
 
-var AllNavElem = []NavElem{
+var allNavElem = []NavElem{
 	nameToNav("Biography"),
 	nameToNav("Proverbs"),
 	nameToNav("Code"),
@@ -94,7 +96,7 @@ func root(
 	r := Root{
 		Title:          title,
 		SEODescription: "SEODescription",
-		NavElem:        AllNavElem,
+		NavElem:        allNavElem,
 		Article:        article,
 		Footer: Footer{
 			Year: time.Now().Year(),
@@ -115,9 +117,23 @@ func withConnectWithMe(r *Root) {
 	r.Footer.ConnectWithMe = true
 }
 
+func withComments(short string) func(r *Root) {
+	return func(r *Root) {
+		c := Comments{
+			FullURL: fmt.Sprintf("%s/%s.html", liveURL, short),
+		}
+		r.Footer.Comments = &c
+	}
+}
+
 type Footer struct {
 	ConnectWithMe bool
 	Year          int
+	Comments      *Comments
+}
+
+type Comments struct {
+	FullURL string
 }
 
 type NavElem struct {
@@ -278,6 +294,8 @@ func indexTOC() template.HTML {
 // Emits markdown with code wrapping, taking care of certain requirements
 // needed for this site
 func codeFigureMarkdown(lang string, code string) string {
+	// Replace any backtick-hacks
+	code = strings.ReplaceAll(code, "\\'", "`")
 	return fmt.Sprintf(`
 <figure class="highlight">
 

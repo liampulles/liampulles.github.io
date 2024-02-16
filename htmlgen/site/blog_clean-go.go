@@ -17,6 +17,9 @@ func init() {
 		cleanGo_howDoIKnow,
 		cleanGo_howDoIStructure,
 		cleanGo_theWirePackage,
+		cleanGo_jsonStruct,
+		cleanGo_entities,
+		cleanGo_conclusion,
 	))
 }
 
@@ -163,5 +166,130 @@ func CreateServerFactory(
     muxWrapper := mux.NewWrapperImpl()
     //...`)+`
 
+This is fairly mundane, boiler-platery code - but it is pretty easy to
+understand and update, and I haven't found good enough cause to use an external
+package to do it (though if you want to use an external package,
+[Google's wire tool](https://github.com/google/wire) seems to be a good choice).
+
+What IS important is that you make a separate package (and layer) for wiring, as
+it is going to be importing code from all over your project, and you want to
+make sure that there aren't circular dependencies.`),
+)
+
+var cleanGo_jsonStruct = section(
+	`JSON struct tags`,
+	markdown(`
+One might be compelled to put JSON struct tags (as well as ORM stuct tags, etc.)
+on your entities in the domain package, but this of course would be a violation
+of our segregation rules: application communication does not form part of the
+business rules. If we go back to our thought experiment to reinforce this point:
+what if we wanted to use GRPC instead? This should not require us touching the
+domain package, so clearly we cannot put any JSON tags on the entity to begin
+with.
+
+This does not mean that we cannot customize how our objects are serialized - it
+just means that we need to make use of an "intermediary" struct in order to do
+this. For example:
+
+`+codeFigureMarkdown("go",
+		`// FromInventoryItemView converts a view to JSON
+func (e *EncoderServiceImpl) FromInventoryItemView(
+    view *inventory.ViewVO,
+) ([]byte, error) {
+    intermediary := mapViewIntermediary(view)
+
+    bytes, err := json.Marshal(intermediary)
+    if err != nil {
+        return nil, fmt.Errorf("could not convert inventory"+
+        " item view to json - marshal error: %w", err)
+    }
+    return bytes, nil
+}
+
+func mapViewIntermediary(view *inventory.ViewVO) *jsonViewVO {
+    return &jsonViewVO{
+        ID:        view.ID,
+        Name:      view.Name,
+        Location:  view.Location,
+        Available: view.Available,
+    }
+}
+
+type jsonViewVO struct {
+    ID        entity.ID \'json:"id"\'
+    Name      string    \'json:"name"\'
+    Location  string    \'json:"location"\'
+    Available bool      \'json:"available"\'
+}`)+`
+
+Here we first map our use case view (which contains the elements of the entity
+we want to expose) to an intermediary struct, and then marshal the struct. By
+doing this, we've decoupled the entity from concerns over how it is viewed
+externally, and we've decoupled that view from its encoding.`),
+)
+
+var cleanGo_entities = section(
+	`Entities`,
+	markdown(`
+I like to think of Entities as bratty Beverly Hill teenagers: they have an
+entitled view of the world which may not map to reality.
+
+This abstracted view includes everything ranging from:
+* Method parameters
+* Responses
+* Errors
+* Services that Entities might need to use
+* etc.
+
+Here is a good example from the Inventory Item Entity:
+
+`+codeFigureMarkdown("go",
+		`// IsAvailable will return true if the inventory item may
+// be checked out - false otherwise.
+func (i *InventoryItemImpl) IsAvailable() bool {
+    return i.available
+}
+
+// Checkout will mark the inventory item as unavilable.
+// If the inventory item is not available,
+// then an error is returned.
+func (i *InventoryItemImpl) Checkout() error {
+    if !i.available {
+        return fmt.Errorf("cannot check out inventory"+
+        " item - it is unavailable")
+    }
+    i.available = false
+    return nil
+}
+
+// CheckIn will mark the inventory item as available.
+// If the inventory item is available, then an
+// error is returned.
+func (i *InventoryItemImpl) CheckIn() error {
+    if i.available {
+        return fmt.Errorf("cannot check in inventory"+
+        " item - it is already checked in")
+    }
+    i.available = true
+    return nil
+}`)+`
+
+Here we have not exposed the available field on the struct. Instead, we
+encapsulate access via methods, some of which may throw errors. This is done to
+protect the entity - it is the use case layer's job to deal with these errors.
 `),
+	figure("The Entity is King, and treats itself as such.", image(
+		"my-super-sweet-16.jpg",
+		375, 500,
+		"A boy dressed as a king on a throne in a super sweet 16 reality show",
+	)),
+)
+
+var cleanGo_conclusion = section(
+	`Conclusion`,
+	markdown(`
+I found The Clean Architecture to work very well for a REST API, and for Go. It
+takes a fair bit of time to set up, but what you are left with is a very modular
+and easy to change structure. I will definitely use it for my web apps GOing
+forward. ;)`),
 )

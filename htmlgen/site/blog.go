@@ -30,9 +30,13 @@ func blogPost(
 	page := page(rootTmpl, short,
 		root(title, seoDesc,
 			article(title,
-				mul(withHeaderContent(markdown(fmt.Sprintf("*Written %s*", t.Format("2 January 2006"))))),
+				mul(
+					withHeaderContent(markdown(fmt.Sprintf("*Written %s*", t.Format("2 January 2006")))),
+				),
 				allSections...,
-			)))
+			),
+			withComments(short),
+		))
 	return BlogPost{
 		Page: page,
 		Date: t,

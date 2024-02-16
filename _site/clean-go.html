@@ -74,4 +74,84 @@ server, which you can then execute.<figure class=highlight><pre tabindex=0 class
 </span></span><span class=line><span class=cl>    <span class=nx>inventoryItemConstructor</span> <span class=o>:=</span> <span class=nx>entity</span><span class=p>.</span><span class=nf>NewInventoryItemConstructorImpl</span><span class=p>()</span>
 </span></span><span class=line><span class=cl>    <span class=nx>muxWrapper</span> <span class=o>:=</span> <span class=nx>mux</span><span class=p>.</span><span class=nf>NewWrapperImpl</span><span class=p>()</span>
 </span></span><span class=line><span class=cl>    <span class=c1>//...
-</span></span></span></code></pre></figure></section></article></main><footer><p>© 2024 Liam Pulles.</footer><script src=/script.js></script>
+</span></span></span></code></pre></figure><p>This is fairly mundane, boiler-platery code - but it is pretty easy to
+understand and update, and I haven't found good enough cause to use an external
+package to do it (though if you want to use an external package,
+<a href=https://github.com/google/wire>Google's wire tool</a> seems to be a good choice).<p>What IS important is that you make a separate package (and layer) for wiring, as
+it is going to be importing code from all over your project, and you want to
+make sure that there aren't circular dependencies.</section><section><h2>JSON struct tags</h2><p>One might be compelled to put JSON struct tags (as well as ORM stuct tags, etc.)
+on your entities in the domain package, but this of course would be a violation
+of our segregation rules: application communication does not form part of the
+business rules. If we go back to our thought experiment to reinforce this point:
+what if we wanted to use GRPC instead? This should not require us touching the
+domain package, so clearly we cannot put any JSON tags on the entity to begin
+with.<p>This does not mean that we cannot customize how our objects are serialized - it
+just means that we need to make use of an &quot;intermediary&quot; struct in order to do
+this. For example:<figure class=highlight><pre tabindex=0 class=chroma><code><span class=line><span class=cl><span class=c1>// FromInventoryItemView converts a view to JSON
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>func</span> <span class=p>(</span><span class=nx>e</span> <span class=o>*</span><span class=nx>EncoderServiceImpl</span><span class=p>)</span> <span class=nf>FromInventoryItemView</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>    <span class=nx>view</span> <span class=o>*</span><span class=nx>inventory</span><span class=p>.</span><span class=nx>ViewVO</span><span class=p>,</span>
+</span></span><span class=line><span class=cl><span class=p>)</span> <span class=p>([]</span><span class=kt>byte</span><span class=p>,</span> <span class=kt>error</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>intermediary</span> <span class=o>:=</span> <span class=nf>mapViewIntermediary</span><span class=p>(</span><span class=nx>view</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=nx>bytes</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>json</span><span class=p>.</span><span class=nf>Marshal</span><span class=p>(</span><span class=nx>intermediary</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=kc>nil</span><span class=p>,</span> <span class=nx>fmt</span><span class=p>.</span><span class=nf>Errorf</span><span class=p>(</span><span class=s>&#34;could not convert inventory&#34;</span><span class=o>+</span>
+</span></span><span class=line><span class=cl>        <span class=s>&#34; item view to json - marshal error: %w&#34;</span><span class=p>,</span> <span class=nx>err</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=nx>bytes</span><span class=p>,</span> <span class=kc>nil</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>mapViewIntermediary</span><span class=p>(</span><span class=nx>view</span> <span class=o>*</span><span class=nx>inventory</span><span class=p>.</span><span class=nx>ViewVO</span><span class=p>)</span> <span class=o>*</span><span class=nx>jsonViewVO</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=o>&amp;</span><span class=nx>jsonViewVO</span><span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=nx>ID</span><span class=p>:</span>        <span class=nx>view</span><span class=p>.</span><span class=nx>ID</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nx>Name</span><span class=p>:</span>      <span class=nx>view</span><span class=p>.</span><span class=nx>Name</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nx>Location</span><span class=p>:</span>  <span class=nx>view</span><span class=p>.</span><span class=nx>Location</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nx>Available</span><span class=p>:</span> <span class=nx>view</span><span class=p>.</span><span class=nx>Available</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>type</span> <span class=nx>jsonViewVO</span> <span class=kd>struct</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>ID</span>        <span class=nx>entity</span><span class=p>.</span><span class=nx>ID</span> <span class=s>`json:&#34;id&#34;`</span>
+</span></span><span class=line><span class=cl>    <span class=nx>Name</span>      <span class=kt>string</span>    <span class=s>`json:&#34;name&#34;`</span>
+</span></span><span class=line><span class=cl>    <span class=nx>Location</span>  <span class=kt>string</span>    <span class=s>`json:&#34;location&#34;`</span>
+</span></span><span class=line><span class=cl>    <span class=nx>Available</span> <span class=kt>bool</span>      <span class=s>`json:&#34;available&#34;`</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></figure><p>Here we first map our use case view (which contains the elements of the entity
+we want to expose) to an intermediary struct, and then marshal the struct. By
+doing this, we've decoupled the entity from concerns over how it is viewed
+externally, and we've decoupled that view from its encoding.</section><section><h2>Entities</h2><aside><figure><img src=/images/my-super-sweet-16.jpg width=375px height=500px alt="A boy dressed as a king on a throne in a super sweet 16 reality show"><figcaption><i>The Entity is King, and treats itself as such.</i></figcaption></figure></aside><p>I like to think of Entities as bratty Beverly Hill teenagers: they have an
+entitled view of the world which may not map to reality.<p>This abstracted view includes everything ranging from:<ul><li>Method parameters<li>Responses<li>Errors<li>Services that Entities might need to use<li>etc.</ul><p>Here is a good example from the Inventory Item Entity:<figure class=highlight><pre tabindex=0 class=chroma><code><span class=line><span class=cl><span class=c1>// IsAvailable will return true if the inventory item may
+</span></span></span><span class=line><span class=cl><span class=c1>// be checked out - false otherwise.
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>func</span> <span class=p>(</span><span class=nx>i</span> <span class=o>*</span><span class=nx>InventoryItemImpl</span><span class=p>)</span> <span class=nf>IsAvailable</span><span class=p>()</span> <span class=kt>bool</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=nx>i</span><span class=p>.</span><span class=nx>available</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// Checkout will mark the inventory item as unavilable.
+</span></span></span><span class=line><span class=cl><span class=c1>// If the inventory item is not available,
+</span></span></span><span class=line><span class=cl><span class=c1>// then an error is returned.
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>func</span> <span class=p>(</span><span class=nx>i</span> <span class=o>*</span><span class=nx>InventoryItemImpl</span><span class=p>)</span> <span class=nf>Checkout</span><span class=p>()</span> <span class=kt>error</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>!</span><span class=nx>i</span><span class=p>.</span><span class=nx>available</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=nx>fmt</span><span class=p>.</span><span class=nf>Errorf</span><span class=p>(</span><span class=s>&#34;cannot check out inventory&#34;</span><span class=o>+</span>
+</span></span><span class=line><span class=cl>        <span class=s>&#34; item - it is unavailable&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=nx>i</span><span class=p>.</span><span class=nx>available</span> <span class=p>=</span> <span class=kc>false</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=kc>nil</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// CheckIn will mark the inventory item as available.
+</span></span></span><span class=line><span class=cl><span class=c1>// If the inventory item is available, then an
+</span></span></span><span class=line><span class=cl><span class=c1>// error is returned.
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>func</span> <span class=p>(</span><span class=nx>i</span> <span class=o>*</span><span class=nx>InventoryItemImpl</span><span class=p>)</span> <span class=nf>CheckIn</span><span class=p>()</span> <span class=kt>error</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=nx>i</span><span class=p>.</span><span class=nx>available</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=nx>fmt</span><span class=p>.</span><span class=nf>Errorf</span><span class=p>(</span><span class=s>&#34;cannot check in inventory&#34;</span><span class=o>+</span>
+</span></span><span class=line><span class=cl>        <span class=s>&#34; item - it is already checked in&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=nx>i</span><span class=p>.</span><span class=nx>available</span> <span class=p>=</span> <span class=kc>true</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=kc>nil</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></figure><p>Here we have not exposed the available field on the struct. Instead, we
+encapsulate access via methods, some of which may throw errors. This is done to
+protect the entity - it is the use case layer's job to deal with these errors.</section><section><h2>Conclusion</h2><p>I found The Clean Architecture to work very well for a REST API, and for Go. It
+takes a fair bit of time to set up, but what you are left with is a very modular
+and easy to change structure. I will definitely use it for my web apps GOing
+forward. ;)</section></article></main><footer><p><b>Comments? Send me an <a href=mailto:me@liampulles.com>email</a>. Or, share this piece:</b><p><a href="https://twitter.com/intent/tweet?url=https%3a%2f%2fliampulles.com%2fclean-go.html" aria-label="Share on Twitter" target=_blank><i class="fa-brands fa-square-twitter fa-xl"></i></a><a href="http://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fliampulles.com%2fclean-go.html" aria-label="Share on LinkedIn" target=_blank><i class="fa-brands fa-linkedin fa-xl"></i></a><a href="https://news.ycombinator.com/submitlink?u=https%3a%2f%2fliampulles.com%2fclean-go.html" aria-label="Share on Hacker News" target=_blank><i class="fa-brands fa-square-hacker-news fa-xl"></i></a><a href="http://reddit.com/submit?url=https%3a%2f%2fliampulles.com%2fclean-go.html" aria-label="Share on Reddit" target=_blank><i class="fa-brands fa-square-reddit fa-xl"></i></a><a href="https://www.facebook.com/sharer.php?u=https%3a%2f%2fliampulles.com%2fclean-go.html" aria-label="Share on Facebook" target=_blank><i class="fa-brands fa-square-facebook fa-xl"></i></a><a href=mailto:me@liampulles.com><i class="fa-solid fa-square-envelope fa-xl"></i></a><p>© 2024 Liam Pulles.</footer><script src=/script.js></script>

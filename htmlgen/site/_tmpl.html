@@ -90,6 +90,22 @@
 
 {{define "footer"}}
 <footer>
+    {{if .Comments}}
+    <p><b>Comments? Send me an <a href="mailto:me@liampulles.com">email</a>. Or, share this piece:</b></p>
+    <p>
+        <a href="https://twitter.com/intent/tweet?url={{.Comments.FullURL}}"
+            aria-label="Share on Twitter" target=_blank><i class="fa-brands fa-square-twitter fa-xl"></i></a>
+        <a href="http://www.linkedin.com/shareArticle?mini=true&amp;url={{.Comments.FullURL}}"
+            aria-label="Share on LinkedIn" target=_blank><i class="fa-brands fa-linkedin fa-xl"></i></a>
+        <a href="https://news.ycombinator.com/submitlink?u={{.Comments.FullURL}}"
+            aria-label="Share on Hacker News" target=_blank><i class="fa-brands fa-square-hacker-news fa-xl"></i></a>
+        <a href="http://reddit.com/submit?url={{.Comments.FullURL}}"
+            aria-label="Share on Reddit" target=_blank><i class="fa-brands fa-square-reddit fa-xl"></i></a>
+        <a href="https://www.facebook.com/sharer.php?u={{.Comments.FullURL}}"
+            aria-label="Share on Facebook" target=_blank><i class="fa-brands fa-square-facebook fa-xl"></i></a>
+        <a href="mailto:me@liampulles.com"><i class="fa-solid fa-square-envelope fa-xl"></i></a>
+    </p>
+    {{end}}
     {{if .ConnectWithMe}}
     <p>
         <b>Connect with me:</b>
