@@ -30,6 +30,12 @@ var allNavElem = []NavElem{
 	nameToNav("Code"),
 }
 
+var RedirectPages = []RedirectPage{
+	redirectPage("code", "https://github.com/liampulles"),
+	redirectPage("blog/notes-on-applying-the-clean-architecture-in-go", "/clean-go.html"),
+	redirectPage("blog/jira-tickets", "/jira-tickets.html"),
+}
+
 // ---
 // --- Helpers
 // ---
@@ -64,7 +70,7 @@ func nameToNav(name string) NavElem {
 type Page struct {
 	Template *template.Template
 	Short    string
-	Data     Root
+	Data     any
 }
 
 func page(
@@ -305,4 +311,18 @@ func codeFigureMarkdown(lang string, code string) string {
 
 </figure>
 `, lang, code)
+}
+
+type RedirectPage struct {
+	Template *template.Template
+	Short    string
+	Dest     string
+}
+
+func redirectPage(fromShort, to string) RedirectPage {
+	return RedirectPage{
+		Template: rootTmpl,
+		Short:    fromShort,
+		Dest:     to,
+	}
 }

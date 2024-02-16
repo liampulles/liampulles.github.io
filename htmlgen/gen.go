@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"io"
 	"os"
 	"path"
 	"path/filepath"
@@ -16,8 +17,8 @@ import (
 )
 
 func GenSite(outputFolder string) error {
-	// Delete and make the folder
-	err := recreateFolder(outputFolder)
+	// Delete the folder, start fresh
+	err := deleteFolder(outputFolder)
 	if err != nil {
 		return err
 	}
@@ -25,10 +26,14 @@ func GenSite(outputFolder string) error {
 	// Do some HTML templating, and stylesheet writing
 	// -> HTML
 	var jobs []jobFn
-	jobs = append(jobs, genJob(outputFolder, site.IndexPage()))
-	jobs = append(jobs, genJob(outputFolder, site.BiographyPage))
+	indexPage := site.IndexPage()
+	jobs = append(jobs, genJob(outputFolder, indexPage.Short, page(indexPage)))
+	jobs = append(jobs, genJob(outputFolder, site.BiographyPage.Short, page(site.BiographyPage)))
 	for _, blogPage := range site.BlogPosts {
-		jobs = append(jobs, genJob(outputFolder, blogPage.Page))
+		jobs = append(jobs, genJob(outputFolder, blogPage.Page.Short, page(blogPage.Page)))
+	}
+	for _, r := range site.RedirectPages {
+		jobs = append(jobs, genJob(outputFolder, r.Short, redirect(r)))
 	}
 	// -> CSS
 	jobs = append(jobs, writeStyle(outputFolder, "monokai", "dark"))
@@ -36,7 +41,7 @@ func GenSite(outputFolder string) error {
 	return doAll(jobs...)
 }
 
-func recreateFolder(outputFolder string) error {
+func deleteFolder(outputFolder string) error {
 	err := os.RemoveAll(outputFolder)
 	if err != nil {
 		log.Err(err).
@@ -45,21 +50,24 @@ func recreateFolder(outputFolder string) error {
 		return err
 	}
 
-	err = os.MkdirAll(outputFolder, os.ModePerm)
-	if err != nil {
-		log.Err(err).
-			Str("dir", outputFolder).
-			Msg("could not make output dir, failing")
-		return err
-	}
-
 	return nil
 }
 
-func genJob(outputFolder string, page site.Page) jobFn {
+func genJob(outputFolder string, short string, with withFile) jobFn {
 	return func() error {
+		loc := path.Join(outputFolder, short+".html")
+
+		// Make folder
+		dir := filepath.Dir(loc)
+		err := os.MkdirAll(dir, os.ModePerm)
+		if err != nil {
+			log.Err(err).
+				Str("dir", dir).
+				Msg("could not make output dir, failing")
+			return err
+		}
+
 		// Open the file
-		loc := path.Join(outputFolder, page.Short+".html")
 		w, err := os.Create(loc)
 		if err != nil {
 			log.Err(err).
@@ -78,16 +86,39 @@ func genJob(outputFolder string, page site.Page) jobFn {
 			err = errors.Join(err, cErr)
 		}()
 
-		// Template the HTML out to the file
-		err = page.Template.ExecuteTemplate(w, "root", page.Data)
+		// Use file
+		err = with(w)
 		if err != nil {
-			log.Err(err).
-				Str("loc", loc).
-				Msg("templating failed")
 			return err
 		}
 
 		log.Debug().Str("file", loc).Msg("generated")
+		return nil
+	}
+}
+
+type withFile func(io.Writer) error
+
+func page(p site.Page) withFile {
+	return func(w io.Writer) error {
+		err := p.Template.ExecuteTemplate(w, "root", p.Data)
+		if err != nil {
+			log.Err(err).
+				Msg("templating failed")
+			return err
+		}
+		return nil
+	}
+}
+
+func redirect(p site.RedirectPage) withFile {
+	return func(w io.Writer) error {
+		err := p.Template.ExecuteTemplate(w, "redirect", p)
+		if err != nil {
+			log.Err(err).
+				Msg("templating failed")
+			return err
+		}
 		return nil
 	}
 }
@@ -128,6 +159,15 @@ func writeStyle(outputFolder, name, lightDark string) jobFn {
 
 		// Now add the light dark mode after the comment on each line
 		css = strings.ReplaceAll(css, "*/", fmt.Sprintf(`*/ :root[color-mode="%s"]`, lightDark))
+
+		// Make folder
+		err = os.MkdirAll(outputFolder, os.ModePerm)
+		if err != nil {
+			log.Err(err).
+				Str("dir", outputFolder).
+				Msg("could not make output dir, failing")
+			return err
+		}
 
 		// Now we can write it out
 		loc := filepath.Join(outputFolder, lightDark+".css")

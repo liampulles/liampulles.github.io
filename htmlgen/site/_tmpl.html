@@ -144,3 +144,12 @@
     </table>
 </section>
 {{end}}
+
+{{define "redirect"}}
+<!doctype html>
+<link rel=canonical href={{.Dest}}>
+<meta charset=utf-8>
+<meta http-equiv=refresh content="0;url={{.Dest}}">
+<p>Redirecting...</p>
+<a href={{.Dest}}>Click here if you are not redirected.</a>
+{{end}}
