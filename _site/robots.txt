@@ -1,1 +1,5 @@
-Sitemap: https://liampulles.com/sitemap.xml
+User-agent: *
+Allow: /
+
+User-agent: GPTBot
+Disallow: /
