@@ -9,6 +9,7 @@ import (
 
 	"github.com/rs/zerolog/log"
 	"github.com/yuin/goldmark"
+	"go.abhg.dev/goldmark/wikilink"
 )
 
 // The site files are essentially a blueprint for the site. What is defined here
@@ -16,7 +17,7 @@ import (
 
 // Other details are probably in the render functions.
 
-var rootTmpl = loadTemplate(nil, "site.html")
+var rootTmpl = loadTemplate(nil, "_tmpl.html")
 
 var AllNavElem = []NavElem{
 	nameToNav("Biography"),
@@ -184,7 +185,9 @@ func image(
 	}
 }
 
-var md = goldmark.New()
+var md = goldmark.New(
+	goldmark.WithExtensions(&wikilink.Extender{}),
+)
 
 // Parses markdown into HTML. Will log issues and panic if wrong.
 //

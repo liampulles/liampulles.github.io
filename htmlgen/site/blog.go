@@ -8,8 +8,6 @@ import (
 	"cloud.google.com/go/civil"
 )
 
-var blogTmpl = loadTemplate(rootTmpl, "blog.html")
-
 type BlogPost struct {
 	Page
 	Date civil.Date
@@ -29,7 +27,7 @@ func blogPost(
 	var allSections []Section
 	allSections = append(allSections, section("", nil, opening))
 	allSections = append(allSections, sections...)
-	page := page(blogTmpl, BlogPostType, short,
+	page := page(rootTmpl, BlogPostType, short,
 		root(title, seoDesc,
 			article(title,
 				markdown(fmt.Sprintf("*Written %s*", t.Format("2 January 2006"))),

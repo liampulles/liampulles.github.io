@@ -4,7 +4,10 @@ go 1.21.5
 
 require github.com/rs/zerolog v1.32.0
 
-require github.com/yuin/goldmark v1.7.0 // indirect
+require (
+	github.com/yuin/goldmark v1.7.0 // indirect
+	go.abhg.dev/goldmark/wikilink v0.5.0 // indirect
+)
 
 require (
 	cloud.google.com/go v0.112.0

@@ -6,16 +6,14 @@ import (
 	"time"
 )
 
-var indexTmpl = loadTemplate(rootTmpl, "index.html")
-
 func IndexPage() Page {
-	return page(indexTmpl, Index, "index",
+	return page(rootTmpl, Index, "index",
 		root("Liam Pulles", "Homepage for Liam Pulles's blog.",
 			article("Welcome!", "", mul(
 				section("", nil, markdown(`
 Hi there - if you're interested in my writing, read on. 
 If you want to hire me (or otherwise find out more about me), then you may wish to see
-my [biography](/biography.html) or my [code](/code.html).`)),
+my [[biography]] or my [[code]].`)),
 				section("Blog posts", nil, blogPostsTable()),
 			))))
 }
