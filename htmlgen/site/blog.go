@@ -27,11 +27,11 @@ func blogPost(
 	var allSections []Section
 	allSections = append(allSections, section("", nil, opening))
 	allSections = append(allSections, sections...)
-	page := page(rootTmpl, BlogPostType, short,
+	page := page(rootTmpl, short,
 		root(title, seoDesc,
 			article(title,
 				markdown(fmt.Sprintf("*Written %s*", t.Format("2 January 2006"))),
-				allSections,
+				allSections...,
 			)))
 	return BlogPost{
 		Page: page,

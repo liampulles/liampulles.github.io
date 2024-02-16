@@ -7,15 +7,18 @@ import (
 )
 
 func IndexPage() Page {
-	return page(rootTmpl, Index, "index",
-		root("Liam Pulles", "Homepage for Liam Pulles's blog.",
-			article("Welcome!", "", mul(
-				section("", nil, markdown(`
+	return page(rootTmpl, "index", root(
+		"Liam Pulles",
+		"Homepage for Liam Pulles's blog.",
+		article("Welcome!", "",
+			section("", nil, markdown(`
 Hi there - if you're interested in my writing, read on. 
 If you want to hire me (or otherwise find out more about me), then you may wish to see
 my [[biography]] or my [[code]].`)),
-				section("Blog posts", nil, blogPostsTable()),
-			))))
+			section("Blog posts", nil, blogPostsTable()),
+		),
+	),
+	)
 }
 
 func blogPostsTable() template.HTML {

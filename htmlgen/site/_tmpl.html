@@ -8,7 +8,7 @@
             {{range .Images}}
             <img src="{{.Src}}" width="{{.Width}}" height="{{.Height}}" alt="{{.Alt}}">
             {{end}}
-            <figcaption><i>{{.Caption}}</i></figcaption>
+            {{if .Caption}}<figcaption><i>{{.Caption}}</i></figcaption>{{end}}
         </figure>
         {{end}}
     </aside>
@@ -81,6 +81,15 @@
 
     <!-- Footer -->
     <footer>
+        {{if .ConnectWithMe}}
+        <p>
+            <b>Connect with me:</b>
+            <a href=https://github.com/liampulles>Github</a>,
+            <a href=https://www.linkedin.com/in/liampulles/>LinkedIn</a>,
+            <a href=https://letterboxd.com/sl1m/>Letterboxd</a>,
+            <a href="mailto:me@liampulles.com">Email</a>
+        <p>
+        {{end}}
         <p>© {{.Year}} Liam Pulles.</p>
     </footer>
     <script src=/script.js></script>

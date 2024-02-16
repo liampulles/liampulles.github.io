@@ -46,33 +46,19 @@ func nameToNav(name string) NavElem {
 	}
 }
 
-type InlineMarkdown string
-
-type PageType int
-
-const (
-	Index PageType = iota
-	Nav
-	BlogPostType
-	DigitalRestoration
-)
-
 type Page struct {
 	Template *template.Template
-	Type     PageType
 	Short    string
 	Data     Root
 }
 
 func page(
 	tmpl *template.Template,
-	typ PageType,
 	short string,
 	data Root,
 ) Page {
 	return Page{
 		Template: tmpl,
-		Type:     typ,
 		Short:    short,
 		Data:     data,
 	}
@@ -83,6 +69,7 @@ type Root struct {
 	SEODescription string
 	NavElem        []NavElem
 	Article        Article
+	ConnectWithMe  bool
 	Year           int
 }
 
@@ -90,14 +77,28 @@ func root(
 	title string,
 	seoDesc string,
 	article Article,
+	opts ...func(*Root),
 ) Root {
-	return Root{
+	r := Root{
 		Title:          title,
 		SEODescription: "SEODescription",
 		NavElem:        AllNavElem,
 		Article:        article,
 		Year:           time.Now().Year(),
 	}
+
+	for _, opt := range opts {
+		if opt == nil {
+			continue
+		}
+		opt(&r)
+	}
+
+	return r
+}
+
+func withConnectWithMe(r *Root) {
+	r.ConnectWithMe = true
 }
 
 type NavElem struct {
@@ -115,7 +116,7 @@ type Article struct {
 func article(
 	header string,
 	content template.HTML,
-	sections []Section,
+	sections ...Section,
 ) Article {
 	return Article{
 		Header:   header,
@@ -155,8 +156,8 @@ type Figure struct {
 }
 
 func figure(
-	images []Image,
 	caption string,
+	images ...Image,
 ) Figure {
 	return Figure{
 		Images:  images,
