@@ -189,6 +189,11 @@ code {
     font-family: monospace;
 }
 
+p code {
+    background-color: var(--code-background);
+    padding: 0.07em;
+}
+
 section li {
     margin-top: 0.5em;
 }
@@ -289,7 +294,8 @@ section li {
     --text: #000000;
     --header: #000000;
     --background: #fbfbfb;
-    --border: #d4d4d4;
+    --code-background: #eeeeee;
+    --border: #b8b8b8;
     --link: #0000EE;
     --visited: #551A8B;
 }
@@ -298,7 +304,8 @@ section li {
     --text: #d1d5db;
     --header: #eaebee;
     --background: #14181c;
-    --border: #353535;
+    --code-background: #272822;
+    --border: #4d4d4d;
     --link: #6d8fff;
     --visited: #8a63ad;
 }

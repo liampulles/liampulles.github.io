@@ -131,7 +131,7 @@ var _ Hashable = (BasicThingy)("")
 var _ Hashable = &StructThingy{}
 ~~~
 
-Here we check that <code>BasicThingy</code> and <code>*StructThingy</code>
+Here we check that \'BasicThingy\' and \'*StructThingy\'
 implement Hashable. If they don't, the compiler will generate a nice error
 message pointing at the assignment. For this reason, it is nice to put this
 assignment next to the implementation type declaration.
@@ -200,13 +200,13 @@ install-golangci-lint:
 	rm -rf ./v1.46.2
 ~~~
 
-If you run inspect, Make will check if a file at <code>$(GOBIN)/golangci-lint</code>
+If you run inspect, Make will check if a file at \'$(GOBIN)/golangci-lint\'
 exists. If it does not, the associated directive will be executed, which then
-leads to the <code>install</code> directive being executed, and finally whatever
+leads to the \'install\' directive being executed, and finally whatever
 shell commands are needed to install the program are run.
 
 Another benefit of this abstraction is that if you update the tool, you can just
-advise the team to run <code>make install-golangci-lint</code> manually.
+advise the team to run \'make install-golangci-lint\' manually.
 `),
 	withAsideFigure(optionalFigure("", image(
 		"proverbs/Tool check and install.webp",
