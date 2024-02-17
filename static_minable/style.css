@@ -243,7 +243,7 @@ section li {
 /* Snippet should display as a "popup" */
 .snippet {
     position: absolute;
-    width: inherit; /* Shrink to width */
+    width: auto; /* Shrink to width */
     left: 2%;
     margin-top: 1.5rem; /* Puts it below the triggering text */
     padding: 15px;
@@ -262,7 +262,12 @@ section li {
 }
 
 /* Trim down margins at top and bottom of snippet */
-.snippet h2 { margin-top: 0; }
+.snippet h2 { 
+    margin-top: 0;
+    /* Don;t interfere with button */
+    margin-left: 18%;
+    margin-right: 18%;
+}
 .snippet > :last-child { margin-bottom: 0; }
 
 .close-snippet {
