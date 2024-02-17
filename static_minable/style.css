@@ -162,6 +162,13 @@ img {
     height: auto;
 }
 
+.svg-icon {
+    display: inline-block;
+    width: 2em;
+    height: 2em;
+    overflow: hidden;
+  }
+
 figcaption {
     padding-top: 0.5em;
     font-size: 0.8em;
@@ -214,6 +221,10 @@ section li {
 
 .toc-date {
     width: 6em;
+}
+
+.color-mode__header {
+    padding-left: 1.2rem;
 }
 
 /* Mobile responsiveness (keep at bottom to override) */
@@ -277,6 +288,9 @@ section li {
         display: flex;
         flex-direction: column;
     }
+    .color-mode__header {
+        padding-left: 1.0rem;
+    }
     .toc-date {
         display: none;
     }
@@ -316,8 +330,4 @@ section li {
 
 :root[color-mode="dark"] .dark--hidden {
     display: none;
-}
-
-.color-mode__header {
-    padding-left: 1.2em;
 }
