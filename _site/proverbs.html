@@ -40,7 +40,7 @@ interface type to an implementation instance, e.g.<figure class=highlight><pre t
 </span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>var</span> <span class=nx>_</span> <span class=nx>Hashable</span> <span class=p>=</span> <span class=p>(</span><span class=nx>BasicThingy</span><span class=p>)(</span><span class=s>&#34;&#34;</span><span class=p>)</span>
 </span></span><span class=line><span class=cl><span class=kd>var</span> <span class=nx>_</span> <span class=nx>Hashable</span> <span class=p>=</span> <span class=o>&amp;</span><span class=nx>StructThingy</span><span class=p>{}</span>
 </span></span></code></pre></figure><p>Here we check that <code>BasicThingy</code> and <code>*StructThingy</code>
-implement Hashable. If they don't, the compiler will generate a nice error
+implement <code>Hashable</code>. If they don't, the compiler will generate a nice error
 message pointing at the assignment. For this reason, it is nice to put this
 assignment next to the implementation type declaration.</section><section><h3>You don&#39;t need a dependency injection library</h3><p>If you follow the Service pattern from DDD, then you'll have a number of
 services which transitively depend on each other. Typically, you'll use some

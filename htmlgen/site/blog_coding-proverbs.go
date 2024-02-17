@@ -132,7 +132,7 @@ var _ Hashable = &StructThingy{}
 ~~~
 
 Here we check that \'BasicThingy\' and \'*StructThingy\'
-implement Hashable. If they don't, the compiler will generate a nice error
+implement \'Hashable\'. If they don't, the compiler will generate a nice error
 message pointing at the assignment. For this reason, it is nice to put this
 assignment next to the implementation type declaration.
 

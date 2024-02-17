@@ -133,7 +133,7 @@
     <table>
         {{range .BlogPosts}}
         <tr>
-            <th class="toc-date">{{.Date.Format "Jan 02, 2006"}}</th>
+            <th class="toc-date">{{.Date.Format "02 Jan 2006"}}</th>
             <th><a href="/{{.Page.Short}}.html">{{.Page.Data.Title}}</a></th>
         </tr>
         {{end}}
@@ -142,7 +142,7 @@
     <table>
         {{range .DigitalRestorations}}
         <tr>
-            <th class="toc-date">{{.Date.Format "Jan 02, 2006"}}</th>
+            <th class="toc-date">{{.Date.Format "02 Jan 2006"}}</th>
             <th><a href="/{{.Page.Short}}.html">{{.Page.Data.Title}}</a></th>
         </tr>
         {{end}}
@@ -161,7 +161,7 @@
 
 {{define "restoration-page"}}
 <section class="centerpiece">
-    {{template "image" .Image}}
+    <a href="{{.Image.Src}}">{{template "image" .Image}}</a>
     {{.Description}}
 </section>
 {{end}}

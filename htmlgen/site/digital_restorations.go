@@ -21,7 +21,7 @@ func digitalRestoration(
 	t := date.In(time.Local)
 	page := page(rootTmpl, short,
 		root(title, seoDesc,
-			article("Welcome!", mul(
+			article(title, mul(
 				withHeaderContent(markdown(fmt.Sprintf("*Written %s*", t.Format("2 January 2006")))),
 				withRawContent(restorationPage(image, description)),
 			)),
