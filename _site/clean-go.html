@@ -1,0 +1,157 @@
+<!doctype html><html lang=en color-mode=light><meta charset=utf-8><title>Notes on applying &#34;The Clean Architecture&#34; in Go</title><meta name=description content=SEODescription><meta name=author content="Liam Pulles"><meta name=viewport content="width=device-width,initial-scale=1"><script>if(localStorage.getItem("color-mode")==="dark"||(window.matchMedia("(prefers-color-scheme: dark)").matches&&!localStorage.getItem("color-mode"))){document.documentElement.setAttribute("color-mode","dark");}</script><link rel=preconnect href=https://cdnjs.cloudflare.com><link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin=anonymous referrerpolicy=no-referrer><link rel=preload href=https://fonts.gstatic.com/s/sourcesanspro/v22/6xK3dSBYKcSV-LCoeQqfX1RYOo3qOK7l.woff2 as=font type=font/woff2 crossorigin><link rel=preload href=https://fonts.gstatic.com/s/fraunces/v31/6NUh8FyLNQOQZAnv9bYEvDiIdE9Ea92uemAk_WBq8U_9v0c2Wa0K7iN7hzFUPJH58nib1603gg7S2nfgRYIctxuTCf7T.woff2 as=font type=font/woff2 crossorigin><link href=/style.css rel=stylesheet><link href=/light.css rel=stylesheet><link href=/dark.css rel=stylesheet><link href=/images/favicon.ico rel="shortcut icon" type=image/x-icon><header class=site-header><p><a href=/>Liam Pulles</a><nav><ul><li><a href=/biography.html>Biography</a><li><a href=/code.html>Code</a></ul></nav><div class=color-mode__header><i class="color-mode__btn light--hidden fa-solid fa-sun fa-xl"></i><i class="color-mode__btn dark--hidden fa-solid fa-moon fa-xl"></i></div></header><main><article><header><h1>Notes on applying &#34;The Clean Architecture&#34; in Go</h1><p><em>Written 29 September 2020</em></header><section><p>Having had an appetite for experimenting with a REST API in Go, my research
+indicated that Robert &quot;Uncle Bob&quot; Martin's Clean Architecture is something like
+the &quot;architecture of choice&quot; among Gophers. However, I have found that there is
+a lack of good resources out there for applying it in Go. So here is my attempt
+to fill that gap...<p><em><strong>Note:</strong> I am not an Architect, and I've only applied this pattern on one
+application - so please take everything I'm about to say with a big pinch of
+salt. You can find the example REST API I implemented
+<a href=https://github.com/liampulles/matchstick-video>here</a></em></section><section><h2>So, what is this &#34;Clean Architecture&#34; thing anyway?</h2><aside><figure><img src=/images/clean-architecture-diagram.png width=731px height=731px alt="Diagram of the clean architecture"><figcaption><i>The Layers of The Clean Architecture.</i></figcaption></figure></aside><p>The best resource on this is definitely Uncle Bob's
+<a href=https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html>blog post</a>
+on the subject, but in essence the architecture is concerned with abstracting
+implementation details away from your business logic. It does this by separating
+code into a series of layers:<ul><li><strong>The Entity Layer</strong>: This is where your business logic sits.<li><strong>The Use Case Layer</strong>: This is where your application logic sits.<li><strong>The Adapter Layer</strong>: This is where the glue between the use case and driver
+layers sits.<li><strong>The Frameworks and Drivers Layer</strong>: This is where code interacting with
+external libraries sits.</ul></section><section><h2>How do I know where to put my Code?</h2><aside><figure class=optional><img src=/images/postgresql-icon.png width=110px height=110px alt="PostgreSQL logo">
+<img src=/images/gorilla-icon.jpeg width=110px height=110px alt="Gorilla mux logo"><figcaption><i>Any notion of a specific DB implementation or router framework certainly belongs in the Drivers and Frameworks layer.</i></figcaption></figure><figure class=optional><img src=/images/mongodb-icon.png width=110px height=110px alt="MongoDB logo">
+<img src=/images/grpc-icon.png width=110px height=110px alt="gRPC logo"><figcaption><i>A helpful way to think through your layers is to imagine radically changing the DB and web frameworks.</i></figcaption></figure></aside><p>This is a question I wrestled with quite a bit in this project. Firstly,
+remember that you are learning, so its okay to put down the code in a layer with
+a TODO and then come back later to refactor it. However, I have come up with a
+set of questions you can ask yourself in order to come to a considered decision:<ol><li><strong>Can this code be copied and pasted into another application,</strong> and be
+useful without modification? If so, then it probably belongs in the entity
+layer. Examples include: string validation functions (e.g. isBlank) and your
+core business logic.<li><strong>Does this code deal with orchestrating the logic of a transaction,</strong>
+e.g. finding all users in the database? If so, it probably belongs in the use
+case layer. Examples include: the core orchestration logic (as mentioned) as
+well as factories for constructing entity types, and interfaces which code in
+the adapter layer must implement.<li><strong>Does the code call any external code or use any external types?</strong> If so, it
+probably belongs in the frameworks and drivers layer. Examples include:
+PostgreSQL driver configurations, Mux handlers and server setup, etc.<li><strong>If your code does not fit with one of the above questions,</strong> and/or deals
+with bridging calls to and from the use case and driver and frameworks
+layers, then it probably belongs in the adapter layer. Examples include: Your
+controllers, JSON transformers, SQL code, and configuration utilities.</ol><p>You may be thinking that a lot of the things I've put into the adapter layer may
+belong in the use case layer. What I would recommend is: imagine what layers
+would need to change if you switched your API and DB implementations to a
+completely different philosophy.<p>For example: what if I used GRPC instead of a REST API, and a NoSQL DB instead
+of an SQL DB? The use case logic should not be (hugely) affected by this
+switch - thus we (e.g.) put the Repository interface in the use case layer, but
+we put the SQL (and potentially NoSQL) implementations of that repository in the
+adapter layer.</section><section><h2>How do I structure my packages?</h2><aside><figure><img src=/images/matchstick-video-package-structure.png width=232px height=414px alt="Screenshot of a folder tree view for the app"><figcaption><i>Package structure for <a href=https://github.com/liampulles/matchstick-video>Matchstick Video!</a></i></figcaption></figure></aside><p>Firstly, we're going to rename some of our layers for practical reasons. I've
+renamed the entity layer to the domain layer, because entities have their own
+meaning in a DDD sense which I wish to maintain. Secondly, I'm going to simplify
+&quot;drivers and frameworks&quot; to just &quot;drivers&quot;.<p>Remember that the names are just a suggestion - as are the number of layers. You
+can (and should) adjust them to what makes sense for your team. The important
+thing is that you separate logic so as to try and minimize the time it takes to
+figure out where you need to make changes, and to minimize the number of lines
+which need to be touched for a change. We are trying to enable ongoing change
+to the greatest degree possible.<p>Anyway, on the side you'll see my package structure. The important ones here are
+the <em>adapter</em>, <em>domain</em>, <em>driver</em>, <em>usecase</em>, and <em>wire</em> packages. Which brings
+us to...</section><section><h2>How do I structure my packages?</h2><p>The <em>wire</em> layer sits outside of the other layers, and it deals with dependency
+injection. Basically, this layer contains a function which first creates the
+service instances which have no dependencies, then uses those to construct the
+services which rely on those services, and so-on until you've created the
+server, which you can then execute.<figure class=highlight><pre tabindex=0 class=chroma><code><span class=line><span class=cl><span class=c1>// CreateServerFactory injects all the dependencies
+</span></span></span><span class=line><span class=cl><span class=c1>// needed to create http.ServerFactory
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>func</span> <span class=nf>CreateServerFactory</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>    <span class=nx>source</span> <span class=nx>goConfig</span><span class=p>.</span><span class=nx>Source</span><span class=p>,</span>
+</span></span><span class=line><span class=cl><span class=p>)</span> <span class=p>(</span><span class=nx>http</span><span class=p>.</span><span class=nx>ServerFactory</span><span class=p>,</span> <span class=kt>error</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// Each &#34;tap&#34; below indicates a level of dependency
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nx>configStore</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>config</span><span class=p>.</span><span class=nf>NewStoreImpl</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>        <span class=nx>source</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=kc>nil</span><span class=p>,</span> <span class=nx>err</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=nx>errorParser</span> <span class=o>:=</span> <span class=nx>adapterDb</span><span class=p>.</span><span class=nf>NewErrorParserImpl</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// --- NEXT TAP ---
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nx>helperService</span> <span class=o>:=</span> <span class=nx>sql</span><span class=p>.</span><span class=nf>NewHelperServiceImpl</span><span class=p>(</span><span class=nx>errorParser</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=nx>databaseService</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>db</span><span class=p>.</span><span class=nf>NewDatabaseServiceImpl</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>        <span class=nx>configStore</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=kc>nil</span><span class=p>,</span> <span class=nx>err</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=nx>inventoryItemConstructor</span> <span class=o>:=</span> <span class=nx>entity</span><span class=p>.</span><span class=nf>NewInventoryItemConstructorImpl</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=nx>muxWrapper</span> <span class=o>:=</span> <span class=nx>mux</span><span class=p>.</span><span class=nf>NewWrapperImpl</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=c1>//...
+</span></span></span></code></pre></figure><p>This is fairly mundane, boiler-platery code - but it is pretty easy to
+understand and update, and I haven't found good enough cause to use an external
+package to do it (though if you want to use an external package,
+<a href=https://github.com/google/wire>Google's wire tool</a> seems to be a good choice).<p>What IS important is that you make a separate package (and layer) for wiring, as
+it is going to be importing code from all over your project, and you want to
+make sure that there aren't circular dependencies.</section><section><h2>JSON struct tags</h2><p>One might be compelled to put JSON struct tags (as well as ORM stuct tags, etc.)
+on your entities in the domain package, but this of course would be a violation
+of our segregation rules: application communication does not form part of the
+business rules. If we go back to our thought experiment to reinforce this point:
+what if we wanted to use GRPC instead? This should not require us touching the
+domain package, so clearly we cannot put any JSON tags on the entity to begin
+with.<p>This does not mean that we cannot customize how our objects are serialized - it
+just means that we need to make use of an &quot;intermediary&quot; struct in order to do
+this. For example:<figure class=highlight><pre tabindex=0 class=chroma><code><span class=line><span class=cl><span class=c1>// FromInventoryItemView converts a view to JSON
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>func</span> <span class=p>(</span><span class=nx>e</span> <span class=o>*</span><span class=nx>EncoderServiceImpl</span><span class=p>)</span> <span class=nf>FromInventoryItemView</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>    <span class=nx>view</span> <span class=o>*</span><span class=nx>inventory</span><span class=p>.</span><span class=nx>ViewVO</span><span class=p>,</span>
+</span></span><span class=line><span class=cl><span class=p>)</span> <span class=p>([]</span><span class=kt>byte</span><span class=p>,</span> <span class=kt>error</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>intermediary</span> <span class=o>:=</span> <span class=nf>mapViewIntermediary</span><span class=p>(</span><span class=nx>view</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=nx>bytes</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>json</span><span class=p>.</span><span class=nf>Marshal</span><span class=p>(</span><span class=nx>intermediary</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=kc>nil</span><span class=p>,</span> <span class=nx>fmt</span><span class=p>.</span><span class=nf>Errorf</span><span class=p>(</span><span class=s>&#34;could not convert inventory&#34;</span><span class=o>+</span>
+</span></span><span class=line><span class=cl>        <span class=s>&#34; item view to json - marshal error: %w&#34;</span><span class=p>,</span> <span class=nx>err</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=nx>bytes</span><span class=p>,</span> <span class=kc>nil</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>mapViewIntermediary</span><span class=p>(</span><span class=nx>view</span> <span class=o>*</span><span class=nx>inventory</span><span class=p>.</span><span class=nx>ViewVO</span><span class=p>)</span> <span class=o>*</span><span class=nx>jsonViewVO</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=o>&amp;</span><span class=nx>jsonViewVO</span><span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=nx>ID</span><span class=p>:</span>        <span class=nx>view</span><span class=p>.</span><span class=nx>ID</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nx>Name</span><span class=p>:</span>      <span class=nx>view</span><span class=p>.</span><span class=nx>Name</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nx>Location</span><span class=p>:</span>  <span class=nx>view</span><span class=p>.</span><span class=nx>Location</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nx>Available</span><span class=p>:</span> <span class=nx>view</span><span class=p>.</span><span class=nx>Available</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>type</span> <span class=nx>jsonViewVO</span> <span class=kd>struct</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>ID</span>        <span class=nx>entity</span><span class=p>.</span><span class=nx>ID</span> <span class=s>`json:&#34;id&#34;`</span>
+</span></span><span class=line><span class=cl>    <span class=nx>Name</span>      <span class=kt>string</span>    <span class=s>`json:&#34;name&#34;`</span>
+</span></span><span class=line><span class=cl>    <span class=nx>Location</span>  <span class=kt>string</span>    <span class=s>`json:&#34;location&#34;`</span>
+</span></span><span class=line><span class=cl>    <span class=nx>Available</span> <span class=kt>bool</span>      <span class=s>`json:&#34;available&#34;`</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></figure><p>Here we first map our use case view (which contains the elements of the entity
+we want to expose) to an intermediary struct, and then marshal the struct. By
+doing this, we've decoupled the entity from concerns over how it is viewed
+externally, and we've decoupled that view from its encoding.</section><section><h2>Entities</h2><aside><figure><img src=/images/my-super-sweet-16.jpg width=375px height=500px alt="A boy dressed as a king on a throne in a super sweet 16 reality show"><figcaption><i>The Entity is King, and treats itself as such.</i></figcaption></figure></aside><p>I like to think of Entities as bratty Beverly Hill teenagers: they have an
+entitled view of the world which may not map to reality.<p>This abstracted view includes everything ranging from:<ul><li>Method parameters<li>Responses<li>Errors<li>Services that Entities might need to use<li>etc.</ul><p>Here is a good example from the Inventory Item Entity:<figure class=highlight><pre tabindex=0 class=chroma><code><span class=line><span class=cl><span class=c1>// IsAvailable will return true if the inventory item may
+</span></span></span><span class=line><span class=cl><span class=c1>// be checked out - false otherwise.
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>func</span> <span class=p>(</span><span class=nx>i</span> <span class=o>*</span><span class=nx>InventoryItemImpl</span><span class=p>)</span> <span class=nf>IsAvailable</span><span class=p>()</span> <span class=kt>bool</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=nx>i</span><span class=p>.</span><span class=nx>available</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// Checkout will mark the inventory item as unavilable.
+</span></span></span><span class=line><span class=cl><span class=c1>// If the inventory item is not available,
+</span></span></span><span class=line><span class=cl><span class=c1>// then an error is returned.
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>func</span> <span class=p>(</span><span class=nx>i</span> <span class=o>*</span><span class=nx>InventoryItemImpl</span><span class=p>)</span> <span class=nf>Checkout</span><span class=p>()</span> <span class=kt>error</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>!</span><span class=nx>i</span><span class=p>.</span><span class=nx>available</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=nx>fmt</span><span class=p>.</span><span class=nf>Errorf</span><span class=p>(</span><span class=s>&#34;cannot check out inventory&#34;</span><span class=o>+</span>
+</span></span><span class=line><span class=cl>        <span class=s>&#34; item - it is unavailable&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=nx>i</span><span class=p>.</span><span class=nx>available</span> <span class=p>=</span> <span class=kc>false</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=kc>nil</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// CheckIn will mark the inventory item as available.
+</span></span></span><span class=line><span class=cl><span class=c1>// If the inventory item is available, then an
+</span></span></span><span class=line><span class=cl><span class=c1>// error is returned.
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>func</span> <span class=p>(</span><span class=nx>i</span> <span class=o>*</span><span class=nx>InventoryItemImpl</span><span class=p>)</span> <span class=nf>CheckIn</span><span class=p>()</span> <span class=kt>error</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=nx>i</span><span class=p>.</span><span class=nx>available</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=nx>fmt</span><span class=p>.</span><span class=nf>Errorf</span><span class=p>(</span><span class=s>&#34;cannot check in inventory&#34;</span><span class=o>+</span>
+</span></span><span class=line><span class=cl>        <span class=s>&#34; item - it is already checked in&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=nx>i</span><span class=p>.</span><span class=nx>available</span> <span class=p>=</span> <span class=kc>true</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=kc>nil</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></figure><p>Here we have not exposed the available field on the struct. Instead, we
+encapsulate access via methods, some of which may throw errors. This is done to
+protect the entity - it is the use case layer's job to deal with these errors.</section><section><h2>Conclusion</h2><p>I found The Clean Architecture to work very well for a REST API, and for Go. It
+takes a fair bit of time to set up, but what you are left with is a very modular
+and easy to change structure. I will definitely use it for my web apps GOing
+forward. ;)</section></article></main><footer><p><b>Comments? Send me an <a href=mailto:me@liampulles.com>email</a>. Or, share this piece:</b><p><a href="https://twitter.com/intent/tweet?url=https%3a%2f%2fliampulles.com%2fclean-go.html" aria-label="Share on Twitter" target=_blank><i class="fa-brands fa-square-twitter fa-xl"></i></a><a href="http://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fliampulles.com%2fclean-go.html" aria-label="Share on LinkedIn" target=_blank><i class="fa-brands fa-linkedin fa-xl"></i></a><a href="https://news.ycombinator.com/submitlink?u=https%3a%2f%2fliampulles.com%2fclean-go.html" aria-label="Share on Hacker News" target=_blank><i class="fa-brands fa-square-hacker-news fa-xl"></i></a><a href="http://reddit.com/submit?url=https%3a%2f%2fliampulles.com%2fclean-go.html" aria-label="Share on Reddit" target=_blank><i class="fa-brands fa-square-reddit fa-xl"></i></a><a href="https://www.facebook.com/sharer.php?u=https%3a%2f%2fliampulles.com%2fclean-go.html" aria-label="Share on Facebook" target=_blank><i class="fa-brands fa-square-facebook fa-xl"></i></a><a href=mailto:me@liampulles.com><i class="fa-solid fa-square-envelope fa-xl"></i></a><p>© 2024 Liam Pulles.</footer><script src=/script.js></script>

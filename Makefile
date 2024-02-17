@@ -1,26 +1,21 @@
 GOBIN := $(shell go env GOBIN)
 
-run: gen-proverbs bundle-install
-	-fuser -k 4001/tcp
-	bundle exec jekyll serve --port 4001 --draft
+clean:
+	rm -rf _site_gen
+	rm -rf _site
 
-pre-commit: gen-proverbs bundle-install ${GOBIN}/minify
-	bundle update
-	bundle exec jekyll build
-	minify -r -o _min_site/ _site/
-	cp -r _min_site/* _site
-	rm -rf _min_site
+pre-commit: ${GOBIN}/minify clean
+	$(MAKE) -C htmlgen install
+	htmlgen -output=_site_gen
+	cp -r static_minable/* _site_gen
+	minify -r -o _site/ _site_gen/
+	cp -r static/* _site
 
-gen-proverbs:
-	proverb-gen > proverbs.html
-
-# You might need to run this a couple times for it to work
-bundle-install:
-	bundle install
-
-setup-local:
-	sudo apt-get install ruby-full
-	sudo gem install bundler
+watch:
+	while true; do \
+		$(MAKE) pre-commit; \
+		inotifywait -qre close_write htmlgen; \
+	done
 
 ${GOBIN}/minify:
 	go install github.com/tdewolff/minify/cmd/minify@latest

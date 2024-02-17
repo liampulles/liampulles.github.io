@@ -1,10 +1,15 @@
 {
-    "[html]": {
-        "editor.wordWrap": "bounded",
-        "editor.wordWrapColumn": 80
-    },
     "[markdown]": {
         "editor.wordWrap": "bounded",
         "editor.wordWrapColumn": 80
     },
+    "[go]": {
+        "editor.rulers": [{
+            "column": 80,
+            "color": "#ff0000"
+        }]
+    },
+    "cSpell.words": [
+        "stylesheet"
+    ],
 }
