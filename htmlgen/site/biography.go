@@ -9,7 +9,7 @@ var BiographyPage = page(rootTmpl, "biography", root(
 			withAsideFigure(figure("", image("profile.jpg", 300, 300, ""))),
 		),
 	),
-	withConnectWithMe,
+	withConnectFooter,
 ))
 
 const biography_body = `

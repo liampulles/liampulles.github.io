@@ -38,6 +38,9 @@ func GenSite(outputFolder string) error {
 	for _, r := range site.RedirectPages {
 		jobs = append(jobs, genJob(outputFolder, r.Short, redirect(r)))
 	}
+	for _, s := range site.Snippets {
+		jobs = append(jobs, genJob(outputFolder, "snippet/"+s.Short, snippet(s)))
+	}
 	// -> CSS
 	jobs = append(jobs, writeStyle(outputFolder, "monokai", "dark"))
 	jobs = append(jobs, writeStyle(outputFolder, "tango", "light"))
@@ -117,6 +120,18 @@ func page(p site.Page) withFile {
 func redirect(p site.RedirectPage) withFile {
 	return func(w io.Writer) error {
 		err := p.Template.ExecuteTemplate(w, "redirect", p)
+		if err != nil {
+			log.Err(err).
+				Msg("templating failed")
+			return err
+		}
+		return nil
+	}
+}
+
+func snippet(p site.SnippetPage) withFile {
+	return func(w io.Writer) error {
+		err := p.Template.ExecuteTemplate(w, "snippet", p)
 		if err != nil {
 			log.Err(err).
 				Msg("templating failed")

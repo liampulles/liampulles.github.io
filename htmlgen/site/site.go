@@ -120,11 +120,11 @@ func root(
 	return r
 }
 
-func withConnectWithMe(r *Root) {
+func withConnectFooter(r *Root) {
 	r.Footer.ConnectWithMe = true
 }
 
-func withComments(short string) func(r *Root) {
+func withCommentsFooter(short string) func(r *Root) {
 	return func(r *Root) {
 		c := Comments{
 			FullURL: fmt.Sprintf("%s/%s.html", liveURL, short),
@@ -313,14 +313,22 @@ func markdown(s string) template.HTML {
 
 	// Replace "Hacked" backticks
 	s = strings.ReplaceAll(s, `\'`, "`")
-
 	var sb strings.Builder
 	err := md.Convert([]byte(s), &sb)
 	if err != nil {
 		log.Err(err).Msgf("could not parse markdown (%s...)", head(s, 20))
 		panic(fmt.Errorf("could not parse markdown: %w", err))
 	}
-	return template.HTML(sb.String())
+	s = sb.String()
+
+	// Replace snippets
+	s, err = replaceSnippetLinks(s)
+	if err != nil {
+		log.Err(err).Msgf("could not parse snippets in markdown (%s...)", head(s, 20))
+		panic(fmt.Errorf("could not parse snippets in markdown: %w", err))
+	}
+
+	return template.HTML(s)
 }
 
 func head(s string, count int) string {

@@ -69,7 +69,10 @@
 
     <!-- Footer -->
     {{template "footer" .Footer}}
+
+    <!-- Helper scripts -->
     <script src=/script.js></script>
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
 {{end}}
 
 {{define "section"}}
@@ -154,7 +157,9 @@
         </tr>
         {{end}}
     </table>
-    <h3>Digital restorations</h3>
+    <!-- Has snippet link -->
+    <a class="snippet-link" hx-get="/snippet/digital-restorations.html"
+        hx-swap="afterend"><h3>Digital restorations</h3></a>
     <table>
         {{range .DigitalRestorations}}
         <tr>
@@ -179,5 +184,13 @@
 <section class="centerpiece">
     <a href="{{.Image.Src}}">{{template "image" .Image}}</a>
     {{.Description}}
+</section>
+{{end}}
+
+{{define "snippet"}}
+<section class="snippet">
+    <p class="close-snippet" onclick="this.closest('.snippet').remove()">Close</p>
+    {{if .Header}}<h2>{{.Header}}</h2>{{end}}
+    {{.Content}}
 </section>
 {{end}}

@@ -25,7 +25,7 @@ func digitalRestoration(
 				withHeaderContent(markdown(fmt.Sprintf("*Written %s*", t.Format("2 January 2006")))),
 				withRawContent(restorationPage(image, description)),
 			)),
-			withComments(short),
+			withCommentsFooter(short),
 		))
 	return DatedPost{
 		Page: page,

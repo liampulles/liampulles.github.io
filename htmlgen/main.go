@@ -9,6 +9,13 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
+func init() {
+	// Setup logging
+	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
+	zerolog.SetGlobalLevel(zerolog.DebugLevel)
+	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
+}
+
 // Program flow:
 // - Read the root folder to build a project view
 // - Parse markdownish files into AST
@@ -22,11 +29,6 @@ func main() {
 		log.Debug().Msgf("%v start to finish", time.Since(start))
 		log.Debug().Msg("--------------------------------------")
 	}()
-
-	// Setup logging
-	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
-	zerolog.SetGlobalLevel(zerolog.DebugLevel)
-	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
 	log.Debug().Msg("--------------------------------------")
 
 	// Parse flags

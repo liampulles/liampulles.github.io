@@ -65,6 +65,14 @@ nav a, nav a:hover, nav a:visited, footer a, footer a:hover, footer a:visited {
     color: #cc0000;
 }
 
+/* Snippet links */
+a.snippet-link {
+    color: var(--text);
+    text-decoration:underline;
+    text-decoration-style: dotted;
+    cursor: help;
+}
+
 /* Headers */
 
 h1, h2, h3 {
@@ -112,7 +120,7 @@ header.site-header {
     margin: 0;
 }
 
-.site-header nav li {
+.site-header li {
     font-family: 'Source Sans Pro';
     font-size: 1.2rem;
     font-weight: bold;
@@ -141,6 +149,7 @@ footer i {
 
 section {
     display: inline-block;
+    position: relative;
     width: 100%;
 }
 
@@ -162,12 +171,16 @@ img {
     height: auto;
 }
 
-.svg-icon {
+svg {
     display: inline-block;
+    margin: auto;
+    overflow: hidden;
+}
+
+.svg-icon {
     width: 2em;
     height: 2em;
-    overflow: hidden;
-  }
+}
 
 figcaption {
     padding-top: 0.5em;
@@ -225,6 +238,47 @@ section li {
 
 .color-mode__header {
     padding-left: 1.2rem;
+}
+
+/* Snippet should display as a "popup" */
+.snippet {
+    position: absolute;
+    width: inherit; /* Shrink to width */
+    left: 2%;
+    margin-top: 1.5rem; /* Puts it below the triggering text */
+    padding: 15px;
+
+    background-color: var(--background);
+    outline: var(--border) solid 2px;
+
+    animation: border-pop .5s linear;
+}
+
+/* Surround new elements with green border */
+@keyframes border-pop {
+	from {
+        box-shadow: 0px 0px 13px 5px var(--border);
+	}
+}
+
+/* Trim down margins at top and bottom of snippet */
+.snippet h2 { margin-top: 0; }
+.snippet > :last-child { margin-bottom: 0; }
+
+.close-snippet {
+    /* Top right of container */
+    position: absolute;
+    margin: 0 0;
+    padding: 0.2em;
+
+    font-style: normal;
+
+    cursor: pointer;
+
+    color: var(--background);
+    background-color: var(--button);
+    border: 1px solid var(--button);
+    border-radius: 5px;
 }
 
 /* Mobile responsiveness (keep at bottom to override) */
@@ -312,6 +366,7 @@ section li {
     --border: #b8b8b8;
     --link: #0000EE;
     --visited: #551A8B;
+    --button: #6d8fff;
 }
 
 :root[color-mode="dark"] {
@@ -322,6 +377,7 @@ section li {
     --border: #4d4d4d;
     --link: #6d8fff;
     --visited: #8a63ad;
+    --button: #6d8fff;
 }
 
 :root[color-mode="light"] .light--hidden {

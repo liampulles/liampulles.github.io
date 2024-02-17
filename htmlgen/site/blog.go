@@ -24,19 +24,26 @@ func blogPost(
 	sections ...Section,
 ) DatedPost {
 	t := date.In(time.Local)
+
+	// Insert an opening section
 	var allSections []Section
 	allSections = append(allSections, section("", opening))
 	allSections = append(allSections, sections...)
+
 	page := page(rootTmpl, short,
 		root(title, seoDesc,
 			article(title,
 				mul(
-					withHeaderContent(markdown(fmt.Sprintf("*Written %s*", t.Format("2 January 2006")))),
+					withHeaderContent(markdown(fmt.Sprintf(
+						"*Written %s*",
+						t.Format("2 January 2006"),
+					))),
 				),
 				allSections...,
 			),
-			withComments(short),
+			withCommentsFooter(short),
 		))
+
 	return DatedPost{
 		Page: page,
 		Date: t,
