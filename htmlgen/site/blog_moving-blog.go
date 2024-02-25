@@ -73,7 +73,7 @@ with it. So if I ever left the site alone
 for a few months and came back to it, I had to get back up to speed with Ruby
 package management before I could really get going again.
 `),
-	withAsideFigure(optionalFigure("", image(
+	withAsideFigure(optionalFigure("The Jekyll logo", image(
 		"jekyll-icon.png",
 		562, 1024,
 		"The Jekyll logo: a test tube with red bubbling liquid.",
@@ -144,7 +144,7 @@ Suffice to say that I did not get far in writing
 my own parser, and I decided to
 abandon the custom markup approach.
 `),
-		withAsideFigure(optionalFigure("", image(
+		withAsideFigure(optionalFigure("The CommonMark logo", image(
 			"commonmark-icon.png",
 			324, 206,
 			"The CommonMark logo",

@@ -2,7 +2,7 @@
 served me well, but I decided recently to
 write my own static site generator.<p>Below you'll read about: why I did this,
 my initial false start, and my current
-widget based approach written in Go.</section><section><h2 id="Jekyll's Limitations"><a class=anchor href=#Jekyll%27s%20Limitations>Jekyll&#39;s Limitations</a></h2><aside><figure class=optional><img src=/images/jekyll-icon.png width=562px height=1024px alt="The Jekyll logo: a test tube with red bubbling liquid."></figure></aside><p>I'm kind of anal retentive when it comes to the HTML of this site. It really
+widget based approach written in Go.</section><section><h2 id="Jekyll's Limitations"><a class=anchor href=#Jekyll%27s%20Limitations>Jekyll&#39;s Limitations</a></h2><aside><figure class=optional><img src=/images/jekyll-icon.png width=562px height=1024px alt="The Jekyll logo: a test tube with red bubbling liquid."><figcaption><i>The Jekyll logo</i></figcaption></figure></aside><p>I'm kind of anal retentive when it comes to the HTML of this site. It really
 irks me if I have to use classed <code>div</code>s instead of more appropriate tags.<p>In particular, I really wanted to make use of HTML5 <code>articles</code>,
 <code>sections</code>, and <code>asides</code>. This is tricky in Jekyll: Jekyll works by
 converting markdown files into HTML, and applying them to the appropriate HTML
@@ -42,7 +42,7 @@ different markup languages.
 Probably the most popular is <a href=https://github.com/yuin/goldmark>goldmark</a>, and
 fortunately goldmark does support extensions, but it
 seemed complex to write these extensions to do what I wanted.<p>And then I thought: how hard could it be to
-write my own markdown parser?<section><h3 id="Markdown, what art thou?"><a class=anchor href=#Markdown%2c%20what%20art%20thou%3f>Markdown, what art thou?</a></h3><aside><figure class=optional><img src=/images/commonmark-icon.png width=324px height=206px alt="The CommonMark logo"></figure></aside><p>It turns out that there is no such thing as <strong>a</strong> markdown spec. There are <strong>many</strong>
+write my own markdown parser?<section><h3 id="Markdown, what art thou?"><a class=anchor href=#Markdown%2c%20what%20art%20thou%3f>Markdown, what art thou?</a></h3><aside><figure class=optional><img src=/images/commonmark-icon.png width=324px height=206px alt="The CommonMark logo"><figcaption><i>The CommonMark logo</i></figcaption></figure></aside><p>It turns out that there is no such thing as <strong>a</strong> markdown spec. There are <strong>many</strong>
 markdown specs. Markdown is one of those formats which has several
 actively used variants, which are not fully inter-compatible.<p>The closest thing to a commonly agreed spec is (appropriately named)
 <a href=https://spec.commonmark.org/current/>CommonMark</a>. My issue with CommonMark
