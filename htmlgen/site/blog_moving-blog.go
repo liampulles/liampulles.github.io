@@ -78,6 +78,11 @@ package management before I could really get going again.
 		562, 1024,
 		"The Jekyll logo: a test tube with red bubbling liquid.",
 	))),
+	withAsideFigure(figure(`Generated image: "A programmer stares out the window. He sees div HTML tags flying around in a dystopian nightmare. Surreal."`, image(
+		"dystopian-window.jpg",
+		512, 512,
+		`Generated image: "A programmer stares out the window. He sees div HTML tags flying around in a dystopian nightmare. Surreal."`,
+	))),
 )
 
 var moving_acceptCriteria = section("Acceptance criteria", markdown(`
@@ -94,7 +99,13 @@ following:
 1. I like my site's current design, and it should not change.
 1. It must not be so complex that I'll need to spend a lot of time getting back
    upto speed with it after a few months away. I.e. **keep it simple**.
-`))
+`),
+	withAsideFigure(optionalFigure(`Generated image: "A man barking orders at a bunch of computer programs sitting at the other side of a boardroom"`, image(
+		"man-barking-orders.jpg",
+		512, 512,
+		`Generated image: "A man barking orders at a bunch of computer programs sitting at the other side of a boardroom"`,
+	))),
+)
 
 var moving_firstStab = superSection("Failed first attempt",
 	markdown(`
@@ -148,6 +159,11 @@ abandon the custom markup approach.
 			"commonmark-icon.png",
 			324, 206,
 			"The CommonMark logo",
+		))),
+		withAsideFigure(figure(`Generated image: "A programmer is hallucinating. He sees the logos of various markdown implementations floating above him. He screams."`, image(
+			"markdown-nightmare.jpg",
+			512, 512,
+			`Generated image: "A programmer is hallucinating. He sees the logos of various markdown implementations floating above him. He screams."`,
 		))),
 	),
 )
@@ -267,4 +283,10 @@ add radically new concepts to the site and to change things.
 
 More than that, it has also served as a great learning experience for
 Go templating and web design. Suddenly my site is fun to play with again!
-`))
+`),
+	withAsideFigure(figure(`Generated image: "The code for a website has come to life. It is a wonderous and gleeful creature composed of text and images and wires. A man is riding this creature."`, image(
+		"man-riding-code.jpg",
+		512, 512,
+		`Generated image: "The code for a website has come to life. It is a wonderous and gleeful creature composed of text and images and wires. A man is riding this creature."`,
+	))),
+)
