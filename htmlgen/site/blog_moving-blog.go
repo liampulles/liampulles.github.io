@@ -72,7 +72,13 @@ versioning and installation. I've nothing against Ruby - I'm just not familiar
 with it. So if I ever left the site alone
 for a few months and came back to it, I had to get back up to speed with Ruby
 package management before I could really get going again.
-`))
+`),
+	withAsideFigure(optionalFigure("", image(
+		"jekyll-icon.png",
+		562, 1024,
+		"The Jekyll logo: a test tube with red bubbling liquid.",
+	))),
+)
 
 var moving_acceptCriteria = section("Acceptance criteria", markdown(`
 For my own solution to really work *long term*, it needs to do the
@@ -137,7 +143,13 @@ parse individual lines.
 Suffice to say that I did not get far in writing
 my own parser, and I decided to
 abandon the custom markup approach.
-`)),
+`),
+		withAsideFigure(optionalFigure("", image(
+			"commonmark-icon.png",
+			324, 206,
+			"The CommonMark logo",
+		))),
+	),
 )
 
 var moving_widgetDSL = section("Widget DSL", markdown(`
