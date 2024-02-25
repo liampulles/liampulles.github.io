@@ -10,7 +10,8 @@ import (
 
 type DatedPost struct {
 	Page
-	Date time.Time
+	Date     time.Time
+	Unlisted bool
 }
 
 var BlogPosts []DatedPost

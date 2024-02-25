@@ -27,6 +27,7 @@ var rootTmpl = loadTemplate(nil, "_tmpl.html")
 
 var allNavElem = []NavElem{
 	nameToNav("Biography"),
+	nameToNav("Proverbs"),
 	nameToNav("Code"),
 }
 
@@ -345,17 +346,33 @@ type IndexTOC struct {
 }
 
 func indexTOC() template.HTML {
+	// Only keep listed items
+	var blogPosts []DatedPost
+	for _, post := range BlogPosts {
+		if post.Unlisted {
+			continue
+		}
+		blogPosts = append(blogPosts, post)
+	}
+	var digRestores []DatedPost
+	for _, post := range DigitalRestorations {
+		if post.Unlisted {
+			continue
+		}
+		digRestores = append(digRestores, post)
+	}
+
 	// Sort posts
-	sort.Slice(BlogPosts, func(i, j int) bool {
-		return BlogPosts[i].Date.Before(BlogPosts[j].Date)
+	sort.Slice(blogPosts, func(i, j int) bool {
+		return blogPosts[i].Date.After(blogPosts[j].Date)
 	})
-	sort.Slice(DigitalRestorations, func(i, j int) bool {
-		return DigitalRestorations[i].Date.Before(DigitalRestorations[j].Date)
+	sort.Slice(digRestores, func(i, j int) bool {
+		return digRestores[i].Date.After(digRestores[j].Date)
 	})
 
 	data := IndexTOC{
-		BlogPosts:           BlogPosts,
-		DigitalRestorations: DigitalRestorations,
+		BlogPosts:           blogPosts,
+		DigitalRestorations: digRestores,
 	}
 	return execTemplate(rootTmpl, "index-toc", data)
 }

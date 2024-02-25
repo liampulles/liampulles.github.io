@@ -10,7 +10,8 @@
         }]
     },
     "cSpell.words": [
-        "stylesheet"
+        "stylesheet",
+        "templating"
     ],
     "livePreview.serverRoot": "_site"
 }

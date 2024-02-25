@@ -77,8 +77,8 @@
 
 {{define "section"}}
 <section>
-    {{if .Header}}<h2>{{.Header}}</h2>{{end}}
-    {{if .SubHeader}}<h3>{{.SubHeader}}</h3>{{end}}
+    {{if .Header}}<h2 id="{{.Header}}"><a class="anchor" href="#{{.Header}}">{{.Header}}</a></h2>{{end}}
+    {{if .SubHeader}}<h3 id="{{.SubHeader}}"><a class="anchor" href="#{{.SubHeader}}">{{.SubHeader}}</a></h3>{{end}}
     {{if .Aside.Figures}}
     <aside>
         {{range .Aside.Figures}}

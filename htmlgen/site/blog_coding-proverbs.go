@@ -7,15 +7,22 @@ import (
 )
 
 func init() {
-	BlogPosts = append(BlogPosts, blogPost(
+	post := blogPost(
 		"proverbs",
-		`Coding Proverbs`,
+		`Proverbs`,
 		"Contains proverbs and advice around programming and developer life.",
-		civil.Date{Year: 2022, Month: time.July, Day: 9},
+		civil.Date{Year: 2024, Month: time.February, Day: 21},
 		markdown(proverb_opening),
 		superSection("Code Design", "",
 			proverb_applyingDry,
+			proverb_minimizeShit,
 			proverb_designByContract,
+			proverb_testRefactor,
+			proverb_commentsAreGood,
+		),
+		superSection("Peopleware", "",
+			proverb_comraderyOverAll,
+			proverb_reviews,
 		),
 		superSection("Golang", "",
 			proverb_implChecks,
@@ -24,7 +31,10 @@ func init() {
 		superSection("Makefiles", "",
 			proverb_toolCheck,
 		),
-	))
+	)
+	// Its unlisted, in the nav.
+	post.Unlisted = true
+	BlogPosts = append(BlogPosts, post)
 }
 
 const proverb_opening = `
@@ -77,23 +87,57 @@ anyway.
 	))),
 )
 
+var proverb_minimizeShit = section(
+	"Aim to minimize shit, not maximize perfection.",
+	markdown(`
+I think as a junior developer especially, ones desire with code design is to try
+and find the absolute perfect abstractions and algorithms, and to over-engineer
+solutions.
+
+At least that's what I did as a junior. I would spend too much time trying to
+perfect rather unimportant aspects of the system, and be disheartened with
+the continuing existence of bad code in our codebase.
+
+And then I decided to flip my perspective.
+Rather than trying to make good things
+better, I would try to make bad things less terrible.
+
+So as an example: rather than trying to fine-tune a usecase that is already
+working okay, I will try to identify important
+parts of a
+system which are not working well or are of poor quality, and make
+a small improvement.
+
+This is an acceptance of the fact that software is the product of flawed
+corporations and people. And once you accept that, you have achieved zen,
+and you can move on to
+being productive.
+`),
+	withAsideFigure(optionalFigure("", image(
+		"proverbs/roman-sewer.jpg",
+		768, 1024,
+		"Exposed top-view of an ancient Roman sewer",
+	))),
+)
+
 var proverb_designByContract = section(
 	"Design by contract",
 	markdown(`
 *Source: The Pragmatic Programmer*
 
-Check that the input and output of important functions are sensible. This can be
+Check that the input (and sometimes output) of important
+functions are sensible. This can be
 as simple as a few assert statements, e.g.
 
-~~~go
+~~~java
 public sendSms(String cell) {
     assert PhoneValidationUtil.ValidNumber(cell);
    // ...
 }
 ~~~
 
-Do this instead of defensive programming, and apply selectively - put it on your
-core business logic for specific variables; resources.
+Do this instead of defensive programming, and apply selectively: put it on your
+core business logic for specific variables.
 
 By doing this, you'll help minimize unexpected costly mistakes where bad data
 gets through to your business logic.
@@ -106,11 +150,115 @@ gets through to your business logic.
 	))),
 )
 
+var proverb_testRefactor = section(
+	"Test first, refactor second",
+	markdown(`
+Good tests allows you to delete code with confidence. Good tests are piercing
+acceptance or integrations tests which test the main happy paths of the program
+as well as known edge cases. Refactoring generally means deleting
+and rewriting code.
+
+The lesson: write acceptance tests before doing serious refactoring.
+`),
+)
+
+var proverb_commentsAreGood = section(
+	"Curt comments are good",
+	markdown(`
+Having the code describe itself is a wonderful, but terribly hubristic idea.
+Once you've written and reviewed a piece of code that nonetheless had a bug in
+it, you should abandon the silly notion that you can understand code just by
+looking at it. Good code has comments in it.
+
+BUT you still shouldn't comment for the sake of it. Here I think are good
+opportunities for commenting:
+* The steps of a large usecase function. Moving those steps to helper functions
+  can help too.
+* Any function or piece of code which is working around something; e.g. a badly
+  designed external API.
+* Assumptions around the form of input which cannot be expressed clearly
+  with types (though see [Design by Contract](#Design%20by%20contract)).
+* Any code which is logically related but where the relationship 
+  cannot be enforced by the code (e.g. needing a struct definition to stay in
+  sync between a client and repository package).
+* An overview for a complex or relatively alien algorithm.
+
+`),
+	withAsideFigure(optionalFigure("", image(
+		"proverbs/epictetus.jpg",
+		339, 600,
+		"18th-century portrait of Epictetus, including his crutch",
+	))),
+)
+
+var proverb_comraderyOverAll = section(
+	"Prioritize people over architecture",
+	markdown(`
+Comradery is the most vital resource on a software project. It is more important
+than having a good architecture or a clean, well designed codebase.
+
+Consider two hypotheticals. In the first case
+you have a well-architected, clear, and performant system - but with a team that
+does
+not trust itself, struggles to make decisions, and which has endless bad
+arguments about all-manner of minutia.
+
+Then consider a second case. The codebase is full of spaghetti code, takes
+hours to deploy, and is relatively unclear - but the team embraces its
+constituent members, people jump in and help each other at a moments notice,
+decisions are made dispassionately and quickly, and individuals
+are largely empowered to decide how to code their own tickets as they see fit.
+
+My bet is that the first team is going to be relatively unproductive in real
+terms (that is, being slow to deliver the *right* business functionality)
+and the second team will conversely be strangely effective. And the second team will
+be able to pragmatically refactor its system over time, whereas the first team
+will lack the openness to discuss and address real arising problems with their
+system.
+`),
+	withAsideFigure(optionalFigure("", image(
+		"proverbs/sailors.jpg",
+		479, 600,
+		"Propaganda artwork depicting two sailors sharing a drink",
+	))),
+)
+
+var proverb_reviews = section(
+	"Corollary #1: Major review comments are for broken code only",
+	markdown(`
+Don't make major, blocking code review comments if it is a difference of
+opinion, even if you are only doing so to force a discussion. I would
+even say you shouldn't make a major comment if something  is violating the
+architecture, but still works.
+
+Major comments should only be used if there is a bug that will cause business
+requirements to fail.
+
+This is based on the ideas of comradery
+being key, the architecture of a system being a living thing,
+and that people should be
+empowered to do their work as they see fit (provided their solution works).
+
+You can use minor comments though. Make it clear to the team that your nits are
+purely optional and they need not even be read.
+
+I'm quite a rigorous reviewer, and this balance means I generally give 1 or
+two major comments and a dozen (sometimes several dozen) minors.
+I find that 90% of the time the
+reviewee will happily correct all the majors and most of the minors without
+any argument. Thats fine with me.`),
+	withAsideFigure(optionalFigure("", image(
+		"proverbs/scholar-reading.jpg",
+		513, 600,
+		"Dutch painting of a scholar reading in study",
+	))),
+)
+
 var proverb_implChecks = section(
 	"Implementation checks",
 	markdown(`
-Go has *structural typing*, so a type implements an interface if it defines the
-same method signatures.
+Go has *structural typing*, so a type implements an interface merely
+by defining the same methods on itself.
 
 While this can be useful for abstracting external types, it is often nice to be
 able to check at compile time that a type implements an interface.
