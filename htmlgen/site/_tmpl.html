@@ -32,6 +32,10 @@
     <link href=/dark.css rel=stylesheet>
     <link href=/images/favicon.ico rel="shortcut icon" type=image/x-icon>
 
+    <!-- Helper scripts -->
+    <script src=/script.js></script>
+    <script src="https://unpkg.com/htmx.org@1.9.10/dist/htmx.min.js"></script>
+
     <!-- Header/Nav -->
     <header class=site-header>
         <p><a href= />Liam Pulles</a>
@@ -69,10 +73,6 @@
 
     <!-- Footer -->
     {{template "footer" .Footer}}
-
-    <!-- Helper scripts -->
-    <script src=/script.js></script>
-    <script src="https://unpkg.com/htmx.org@1.9.10/dist/htmx.min.js"></script>
 {{end}}
 
 {{define "section"}}
