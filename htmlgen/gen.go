@@ -29,6 +29,8 @@ func GenSite(outputFolder string) error {
 	indexPage := site.IndexPage()
 	jobs = append(jobs, genJob(outputFolder, indexPage.Short, page(indexPage)))
 	jobs = append(jobs, genJob(outputFolder, site.BiographyPage.Short, page(site.BiographyPage)))
+	reviewsPage := site.ReviewsPage()
+	jobs = append(jobs, genJob(outputFolder, reviewsPage.Short, page(reviewsPage)))
 	for _, blogPage := range site.BlogPosts {
 		jobs = append(jobs, genJob(outputFolder, blogPage.Page.Short, page(blogPage.Page)))
 	}

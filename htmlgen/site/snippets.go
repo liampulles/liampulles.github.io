@@ -13,6 +13,7 @@ import (
 
 var ValidSnippetShorts = map[string]struct{}{
 	"digital-restorations": {},
+	"rating-system":        {},
 }
 
 var Snippets = []SnippetPage{
@@ -21,6 +22,56 @@ Digital restorations are pieces of artwork that I have cleaned and upscaled,
 to make them more suitable for high-DPI printing.
 
 I'm no expert at this - its more of a hobby really.`)),
+
+	snippetPage("rating-system", "Rating system", template.HTML(`
+<table>
+	<tr>
+		<td class="stars">(Zero)</td>
+		<td>=</td>
+		<td>Did Not Finish</td>
+	</tr>
+	<tr>
+		<td class="stars"><i class="fa-solid fa-star-half"></i></td>
+		<td>=</td>
+		<td>Practically Unwatchable</td>
+	</tr>
+	<tr>
+		<td class="stars"><i class="fa-solid fa-star"></i></td>
+		<td>=</td>
+		<td>Horrible</td>
+	</tr>
+	<tr>
+		<td class="stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half"></i></td>
+		<td>=</td>
+		<td>Bad</td>
+	</tr>
+	<tr>
+		<td class="stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></td>
+		<td>=</td>
+		<td>Moderately Bad</td>
+	</tr>
+	<tr>
+		<td class="stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half"></i></td>
+		<td>=</td>
+		<td>Ok</td>
+	</tr>
+	<tr>
+		<td class="stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></td>
+		<td>=</td>
+		<td>Good</td>
+	</tr>
+	<tr>
+		<td class="stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half"></i></td>
+		<td>=</td>
+		<td>Very Good</td>
+	</tr>
+	<tr>
+		<td class="stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></td>
+		<td>=</td>
+		<td>Great</td>
+	</tr>
+</table>
+`)),
 }
 
 type SnippetPage struct {
@@ -49,7 +100,7 @@ func snippetPage(
 	}
 }
 
-var snippetLinkRegex = regexp.MustCompile(`\?:(.*)\?`)
+var snippetLinkRegex = regexp.MustCompile(`\?:([^?]*)\?`)
 
 func replaceSnippetLinks(s string) (string, error) {
 	var err error

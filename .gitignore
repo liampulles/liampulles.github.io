@@ -1,1 +1,5 @@
 _site_gen/
+_letterboxd_exports/*.zip
+_letterboxd_exports/*.csv
+*.db
+secrets

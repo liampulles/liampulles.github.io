@@ -1,5 +1,8 @@
 GOBIN := $(shell go env GOBIN)
 
+# Use secrets
+include secrets
+
 clean:
 	rm -rf _site_gen
 	rm -rf _site

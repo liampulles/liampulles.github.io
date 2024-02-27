@@ -72,7 +72,7 @@
 
     <!-- Helper scripts -->
     <script src=/script.js></script>
-    <script src="https://unpkg.com/htmx.org@1.9.10/dist/htmx.min.js"></script>
+    <script async src="https://unpkg.com/htmx.org@1.9.10/dist/htmx.min.js"></script>
 {{end}}
 
 {{define "section"}}
@@ -145,7 +145,7 @@
 
 {{define "index-toc"}}
 <section>
-    <p>Hi there - if you're interested in my writing, read on. If you want to hire me (or otherwise find out more about me), then you may wish to see my <a href="/biography.html">biography</a> or my <a href="/code.html">code</a>.</p>
+    <p>Hi there - if you're interested in my writing, read on. If you want to hire me (or otherwise find out more about me), then you may wish to see my <a href="/biography.html">biography</a>, or my <a href="/reviews.html">film reviews</a>, or my <a href="/code.html">code</a>.</p>
 </section>
 <section class="toc">
     <h3>Blog posts</h3>
@@ -193,4 +193,42 @@
     {{if .Header}}<h2>{{.Header}}</h2>{{end}}
     {{.Content}}
 </section>
+{{end}}
+
+{{define "reviews"}}
+<section>
+    <p style="text-align: center;"><a class="snippet-link" hx-get="/snippet/rating-system.html"
+        hx-swap="afterend">Click here</a> to see my rating system.</p>
+    <p>Below are the film reviews I've written on <a href="https://letterboxd.com/sl1m">Letterboxd</a>, separated by
+        the years in which I watched and reviewed them. All opinions are my own.</p>
+</section>
+{{range .Years}}
+<section>
+    <h3>{{.Year}}</h3>
+    {{range .Reviews}}
+    <details>
+        <summary>
+            <span class="stars">{{.Stars}}</span>
+            <span><i>{{.Name}} ({{.Year}})</i></span>
+        </summary>
+        <section>
+            <aside>
+                <figure>
+                    <img loading="lazy" src="{{.PosterHref}}" width="230" height="345">
+                </figure>
+            </aside>
+            <header>
+                <h2>{{.Name}} ({{.Year}})</h2>
+                <h3>{{.Stars}}</h3>
+                <i>Reviewed {{.DateReviewed.Format "2 January 2006"}}</i>
+            </header>
+            {{.Review}}
+            <p>
+                <i><a href="{{.LetterboxdURI}}" target="_blank">See on Letterboxd</a></i>
+            </p>
+        </section>
+    </details>
+    {{end}}
+</section>
+{{end}}
 {{end}}

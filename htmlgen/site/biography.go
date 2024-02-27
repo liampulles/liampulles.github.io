@@ -1,7 +1,7 @@
 package site
 
 var BiographyPage = page(rootTmpl, "biography", root(
-	"Liam Pulles - Biography",
+	"Biography",
 	"Biography of Liam Pulles, speaking to key experience and giving contact links.",
 	article("Biography", nil,
 		section("",

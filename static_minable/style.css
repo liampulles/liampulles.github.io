@@ -22,6 +22,7 @@
 html {
     font-family: 'Source Sans Pro', 'Font Awesome';
     text-underline-offset: 0.1em;
+    scroll-behavior: smooth;
 }
 
 body {
@@ -62,7 +63,7 @@ header a, header a:hover, header a:visited {
 }
 
 nav a, nav a:hover, nav a:visited, footer a, footer a:hover, footer a:visited {
-    color: #cc0000;
+    color: var(--special-link);
 }
 
 .anchor, .anchor:visited {
@@ -224,6 +225,76 @@ section li {
     margin-top: 0.5em;
 }
 
+/* Film reviews */
+
+details {
+    margin: 4px 0;
+}
+
+summary {
+    cursor: pointer;
+    display: flex;
+    flex-direction: row;
+}
+
+summary span {
+    display: block;
+}
+
+.stars {
+    flex-shrink: 0;
+    width: 5.1rem;
+}
+
+summary::before {
+    content: '▸';
+    color: var(--special-link);
+    margin-right: 0.2rem;
+}
+
+details section {
+    width: 97%;
+    padding-left: 1.5%;
+    padding-right: 1.5%;
+    background-color: var(--blockquote-background);
+}
+
+details header {
+    text-align: center;
+}
+
+details h2, details h3 {
+    margin: 0;
+}
+
+details aside {
+    float: none;
+    max-width: none;
+}
+
+details figure {
+    margin: 10px auto;
+    max-width: 200px;
+}
+
+details img {
+    border: 1px solid var(--text);
+}
+
+details[open] summary {
+    background-color: var(--special-link);
+    padding: 2px;
+}
+
+details[open] summary:before {
+    content: "✖ Collapse";
+    color: var(--text);
+}
+
+details[open] summary span {
+    display: none;
+}
+
 /* Digital restorations */
 
 .centerpiece {
@@ -249,10 +320,12 @@ section li {
 /* Snippet should display as a "popup" */
 .snippet {
     position: absolute;
+    z-index: 1;
     width: auto; /* Shrink to width */
     left: 2%;
     margin-top: 1.5rem; /* Puts it below the triggering text */
     padding: 15px;
+    text-align: left;
 
     background-color: var(--background);
     outline: var(--border) solid 2px;
@@ -270,9 +343,9 @@ section li {
 /* Trim down margins at top and bottom of snippet */
 .snippet h2 { 
     margin-top: 0;
-    /* Don;t interfere with button */
-    margin-left: 18%;
-    margin-right: 18%;
+    /* Don't interfere with button */
+    margin-left: 2.1em;
+    margin-right: 2%;
 }
 .snippet > :last-child { margin-bottom: 0; }
 
@@ -336,7 +409,7 @@ section li {
 }
 
 /* -> Smaller width */
-@media only screen and (max-width:385px) {
+@media only screen and (max-width:472px) {
     header.site-header {
         justify-content: space-between;
     }
@@ -374,8 +447,10 @@ section li {
     --header: #000000;
     --background: #fbfbfb;
     --code-background: #eeeeee;
+    --blockquote-background: #eeeeee;
     --border: #b8b8b8;
     --link: #0000EE;
+    --special-link: #cc0000;
     --visited: #551A8B;
     --button: #6d8fff;
 }
@@ -385,8 +460,10 @@ section li {
     --header: #eaebee;
     --background: #14181c;
     --code-background: #272822;
+    --blockquote-background: #25292c;
     --border: #4d4d4d;
     --link: #6d8fff;
+    --special-link: #cc0000;
     --visited: #8a63ad;
     --button: #6d8fff;
 }

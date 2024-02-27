@@ -22,3 +22,23 @@ if (window.CSS && CSS.supports("color", "var(--primary)")) {
     var btnContainer = document.querySelector(".color-mode__header");
     btnContainer.style.display = "none";
   }
+
+// --- Close other summaries if one is expanded ---
+const summaries = document.querySelectorAll('summary');
+
+summaries.forEach((summary) => {
+  summary.addEventListener('click', closeOpenedDetails);
+});
+
+function closeOpenedDetails() {
+  summaries.forEach((summary) => {
+    let detail = summary.parentNode;
+      if (detail != this.parentNode) {
+        detail.removeAttribute('open');
+      }
+    });
+  
+  // Scroll to the summary
+  var el = this.closest("summary");
+  el.scrollIntoView(true);
+}
