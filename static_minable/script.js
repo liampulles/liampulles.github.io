@@ -23,14 +23,22 @@ if (window.CSS && CSS.supports("color", "var(--primary)")) {
     btnContainer.style.display = "none";
   }
 
-// --- Close other summaries if one is expanded ---
+// --- Handle details expansion ---
 const summaries = document.querySelectorAll('summary');
 
 summaries.forEach((summary) => {
-  summary.addEventListener('click', closeOpenedDetails);
+  summary.addEventListener('click', detailsExpand);
 });
 
-function closeOpenedDetails() {
+function detailsExpand() {
+  // Start loading any contained images
+  var details = this.closest("details");
+  var imgs = details.querySelectorAll("img");
+  imgs.forEach(function(i) {
+    i.removeAttribute("loading");
+  });
+
+  // Close others
   summaries.forEach((summary) => {
     let detail = summary.parentNode;
       if (detail != this.parentNode) {
