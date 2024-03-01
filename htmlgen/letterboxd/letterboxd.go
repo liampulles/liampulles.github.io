@@ -155,14 +155,14 @@ func openReviewsCSV(zipPath string) (r *csv.Reader, deferFn func(), err error) {
 }
 
 func readReviewsCSV(csvReader *csv.Reader) ([]Review, error) {
-	// Skip the header row
-	csvReader.Read()
+	// As map reader
+	r := headerReader(csvReader)
 
 	// Read all rows, mapping along the way
 	var reviews []Review
 	for {
 		// -> Get and check row
-		row, err := csvReader.Read()
+		row, err := r.Read()
 		if err == io.EOF {
 			break
 		}
@@ -175,26 +175,30 @@ func readReviewsCSV(csvReader *csv.Reader) ([]Review, error) {
 			return nil, err
 		}
 
-		date, err := civil.ParseDate(row[0])
+		strDate := row["Watched Date"]
+		if strDate == "" {
+			strDate = row["Date"]
+		}
+		date, err := civil.ParseDate(strDate)
 		if err != nil {
 			log.Err(err).
-				Str("date", row[0]).
+				Str("date", strDate).
 				Msg("malformed date column in reviews.csv")
 			return nil, err
 		}
-		year, err := strconv.Atoi(row[2])
+		year, err := strconv.Atoi(row["Year"])
 		if err != nil {
 			log.Err(err).
-				Str("year", row[2]).
+				Str("year", row["Year"]).
 				Msg("malformed year column in reviews.csv")
 			return nil, err
 		}
 		var ratingF float64
-		if row[4] != "" {
-			starRating, err := strconv.ParseFloat(row[4], 64)
+		if row["Rating"] != "" {
+			starRating, err := strconv.ParseFloat(row["Rating"], 64)
 			if err != nil {
 				log.Err(err).
-					Str("rating", row[4]).
+					Str("rating", row["Rating"]).
 					Msg("malformed rating column in reviews.csv")
 				return nil, err
 			}
@@ -202,28 +206,60 @@ func readReviewsCSV(csvReader *csv.Reader) ([]Review, error) {
 			if ratingF != math.Trunc(ratingF) {
 				err = errors.New("not a star rating. must go up in 0.5 increments")
 				log.Err(err).
-					Str("rating", row[4]).
+					Str("rating", row["Rating"]).
 					Msg("malformed rating column in reviews.csv")
 				return nil, err
 			}
 		}
-		rewatch := strings.EqualFold(row[5], "Yes")
+		rewatch := strings.EqualFold(row["Rewatch"], "Yes")
 
 		// Resolve some external info for it
-		externalInfo := FetchData(row[3])
+		externalInfo := FetchData(row["Letterboxd URI"])
 
 		review := Review{
 			Date:          date,
-			Name:          row[1],
+			Name:          row["Name"],
 			Year:          year,
-			LetterboxdURI: row[3],
+			LetterboxdURI: row["Letterboxd URI"],
 			Rating:        int(ratingF),
 			Rewatch:       rewatch,
-			Review:        row[6],
+			Review:        row["Review"],
 			PosterHref:    externalInfo.PosterHref,
 		}
 		reviews = append(reviews, review)
 	}
 
 	return reviews, nil
+}
+
+type csvHeaderReader struct {
+	r      *csv.Reader
+	header []string
+}
+
+func headerReader(r *csv.Reader) csvHeaderReader {
+	// Read header and map
+	header, err := r.Read()
+	if err != nil {
+		log.Fatal().Err(err).
+			Msg("could not read header row")
+	}
+
+	return csvHeaderReader{
+		r:      r,
+		header: header,
+	}
+}
+
+func (hr csvHeaderReader) Read() (map[string]string, error) {
+	row, err := hr.r.Read()
+	if err != nil {
+		return nil, err
+	}
+
+	m := make(map[string]string, len(row))
+	for i, s := range row {
+		m[hr.header[i]] = s
+	}
+	return m, nil
 }

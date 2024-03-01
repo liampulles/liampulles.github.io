@@ -73,7 +73,7 @@ func reviewsPageContent() template.HTML {
 			Stars:         starRating(review.Rating),
 			Name:          review.Name,
 			Year:          review.Year,
-			DateReviewed:  review.Date.In(time.Local),
+			DateReviewed:  review.Date.In(time.UTC),
 			Review:        markdown(reviewText),
 			LetterboxdURI: review.LetterboxdURI,
 			PosterHref:    review.PosterHref,
