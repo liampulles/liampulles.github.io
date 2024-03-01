@@ -27,17 +27,12 @@ if (window.CSS && CSS.supports("color", "var(--primary)")) {
 const summaries = document.querySelectorAll('summary');
 
 summaries.forEach((summary) => {
+  summary.addEventListener('click', startDetailsImageLoad);
+  summary.addEventListener('mouseover', startDetailsImageLoad);
   summary.addEventListener('click', detailsExpand);
 });
 
 function detailsExpand() {
-  // Start loading any contained images
-  var details = this.closest("details");
-  var imgs = details.querySelectorAll("img");
-  imgs.forEach(function(i) {
-    i.removeAttribute("loading");
-  });
-
   // Close others
   summaries.forEach((summary) => {
     let detail = summary.parentNode;
@@ -49,4 +44,13 @@ function detailsExpand() {
   // Scroll to the summary
   var el = this.closest("summary");
   el.scrollIntoView(true);
+}
+
+function startDetailsImageLoad() {
+  // Start loading any contained images
+  var details = this.closest("details");
+  var imgs = details.querySelectorAll("img");
+  imgs.forEach(function(i) {
+    i.removeAttribute("loading");
+  });
 }
