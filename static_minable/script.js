@@ -27,7 +27,6 @@ if (window.CSS && CSS.supports("color", "var(--primary)")) {
 const summaries = document.querySelectorAll('summary');
 
 summaries.forEach((summary) => {
-  summary.addEventListener('click', startDetailsImageLoad);
   summary.addEventListener('mouseover', startDetailsImageLoad);
   summary.addEventListener('click', detailsExpand);
 });
