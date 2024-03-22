@@ -6,7 +6,7 @@ widget based approach written in Go.</section><section><h2 id="Jekyll's Limitati
 irks me if I have to use classed <code>div</code>s instead of more appropriate tags.<p>In particular, I really wanted to make use of HTML5 <code>articles</code>,
 <code>sections</code>, and <code>asides</code>. This is tricky in Jekyll: Jekyll works by
 converting markdown files into HTML, and applying them to the appropriate HTML
-page template for the file category.<p>Here's a super basic example for a Jekyll blog post template:<figure class=highlight><pre tabindex=0 class=chroma><code><span class=line><span class=cl>---
+page template for the file category.<p>Here's a super basic example for a Jekyll blog post template:<figure class=highlight><pre class=chroma><code><span class=line><span class=cl>---
 </span></span><span class=line><span class=cl>layout: default
 </span></span><span class=line><span class=cl>---
 </span></span><span class=line><span class=cl><span class=p>&lt;</span><span class=nt>h1</span><span class=p>&gt;</span>{{ page.title }}<span class=p>&lt;/</span><span class=nt>h1</span><span class=p>&gt;</span>
@@ -63,7 +63,7 @@ parse individual lines.<p>Suffice to say that I did not get far in writing
 my own parser, and I decided to
 abandon the custom markup approach.</section></section><section><h2 id="Widget DSL"><a class=anchor href=#Widget%20DSL>Widget DSL</a></h2><p>What I've settled on is a kind of widget building / markdown mix. I say widget
 because the way the layouts are built is similar to the way it is done in
-Flutter and Android Native, i.e. composing nested UI elements.<p>Here is a truncated example of a digital restoration post:<figure class=highlight><pre tabindex=0 class=chroma><code><span class=line><span class=cl><span class=kd>func</span> <span class=nf>init</span><span class=p>()</span> <span class=p>{</span>
+Flutter and Android Native, i.e. composing nested UI elements.<p>Here is a truncated example of a digital restoration post:<figure class=highlight><pre class=chroma><code><span class=line><span class=cl><span class=kd>func</span> <span class=nf>init</span><span class=p>()</span> <span class=p>{</span>
 </span></span><span class=line><span class=cl>	<span class=nx>DigitalRestorations</span> <span class=p>=</span> <span class=nb>append</span><span class=p>(</span><span class=nx>DigitalRestorations</span><span class=p>,</span> <span class=nf>digitalRestoration</span><span class=p>(</span>
 </span></span><span class=line><span class=cl>		<span class=s>&#34;some-short-url&#34;</span><span class=p>,</span>
 </span></span><span class=line><span class=cl>		<span class=s>&#34;Some title&#34;</span><span class=p>,</span>
@@ -88,7 +88,7 @@ parameters (which is exactly what I want), while still allowing me
 to write the actual &quot;meat&quot;
 of the post in markdown. If the definition is getting too big, I can also split
 off the nested elements into a separate var,
-(as I have done with <code>some_desc</code>).<p>This is what the <code>digitalRestoration</code> func is doing:<figure class=highlight><pre tabindex=0 class=chroma><code><span class=line><span class=cl><span class=kd>func</span> <span class=nf>digitalRestoration</span><span class=p>(</span>
+(as I have done with <code>some_desc</code>).<p>This is what the <code>digitalRestoration</code> func is doing:<figure class=highlight><pre class=chroma><code><span class=line><span class=cl><span class=kd>func</span> <span class=nf>digitalRestoration</span><span class=p>(</span>
 </span></span><span class=line><span class=cl>	<span class=nx>short</span> <span class=kt>string</span><span class=p>,</span>
 </span></span><span class=line><span class=cl>	<span class=nx>title</span> <span class=kt>string</span><span class=p>,</span>
 </span></span><span class=line><span class=cl>	<span class=nx>seoDesc</span> <span class=kt>string</span><span class=p>,</span>
@@ -118,7 +118,7 @@ content
 (which is ultimately defining a HTML5 <code>section</code>) as well as a comments footer.<p>Using these more general helper funcs means it is quite easy for me to define
 a new type of element on my site, while keeping these elements well defined.<p>Finally, this is an example of what the HTML templating
 looks like for an article
-(other definitions can get more boiler-platey, so I'll just show you this):<figure class=highlight><pre tabindex=0 class=chroma><code><span class=line><span class=cl>{{define &#34;article&#34;}}
+(other definitions can get more boiler-platey, so I'll just show you this):<figure class=highlight><pre class=chroma><code><span class=line><span class=cl>{{define &#34;article&#34;}}
 </span></span><span class=line><span class=cl><span class=p>&lt;</span><span class=nt>article</span><span class=p>&gt;</span>
 </span></span><span class=line><span class=cl>    <span class=p>&lt;</span><span class=nt>header</span><span class=p>&gt;</span>
 </span></span><span class=line><span class=cl>        <span class=p>&lt;</span><span class=nt>h1</span><span class=p>&gt;</span>{{.Header}}<span class=p>&lt;/</span><span class=nt>h1</span><span class=p>&gt;</span>

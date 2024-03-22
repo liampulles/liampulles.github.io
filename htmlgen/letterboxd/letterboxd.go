@@ -13,8 +13,10 @@ import (
 	"slices"
 	"strconv"
 	"strings"
+	"sync"
 
 	"cloud.google.com/go/civil"
+	"github.com/liampulles/liampulles.github.io/htmlgen/parallel"
 	"github.com/rs/zerolog/log"
 )
 
@@ -158,78 +160,105 @@ func readReviewsCSV(csvReader *csv.Reader) ([]Review, error) {
 	// As map reader
 	r := headerReader(csvReader)
 
-	// Read all rows, mapping along the way
+	// Read rows and create jobs
 	var reviews []Review
+	var jobs []parallel.Job
+	var mu sync.Mutex
 	for {
 		// -> Get and check row
+		var row map[string]string
 		row, err := r.Read()
 		if err == io.EOF {
 			break
 		}
-		if len(row) == 0 {
-			continue
-		}
-		if len(row) < 7 {
-			err = fmt.Errorf("unexpected column count: %d", len(row))
-			log.Err(err).Msg("malformed reviews.csv")
-			return nil, err
-		}
-
-		strDate := row["Watched Date"]
-		if strDate == "" {
-			strDate = row["Date"]
-		}
-		date, err := civil.ParseDate(strDate)
-		if err != nil {
-			log.Err(err).
-				Str("date", strDate).
-				Msg("malformed date column in reviews.csv")
-			return nil, err
-		}
-		year, err := strconv.Atoi(row["Year"])
-		if err != nil {
-			log.Err(err).
-				Str("year", row["Year"]).
-				Msg("malformed year column in reviews.csv")
-			return nil, err
-		}
-		var ratingF float64
-		if row["Rating"] != "" {
-			starRating, err := strconv.ParseFloat(row["Rating"], 64)
+		jobs = append(jobs, func() error {
+			review, ok, err := readReviewCSVRow(row)
 			if err != nil {
-				log.Err(err).
-					Str("rating", row["Rating"]).
-					Msg("malformed rating column in reviews.csv")
-				return nil, err
+				return err
 			}
-			ratingF = starRating * 2
-			if ratingF != math.Trunc(ratingF) {
-				err = errors.New("not a star rating. must go up in 0.5 increments")
-				log.Err(err).
-					Str("rating", row["Rating"]).
-					Msg("malformed rating column in reviews.csv")
-				return nil, err
+			if !ok {
+				return nil
 			}
-		}
-		rewatch := strings.EqualFold(row["Rewatch"], "Yes")
 
-		// Resolve some external info for it
-		externalInfo := FetchData(row["Letterboxd URI"])
+			mu.Lock()
+			reviews = append(reviews, review)
+			mu.Unlock()
 
-		review := Review{
-			Date:          date,
-			Name:          row["Name"],
-			Year:          year,
-			LetterboxdURI: row["Letterboxd URI"],
-			Rating:        int(ratingF),
-			Rewatch:       rewatch,
-			Review:        row["Review"],
-			PosterHref:    externalInfo.PosterHref,
-		}
-		reviews = append(reviews, review)
+			return nil
+		})
+	}
+
+	// Run in parallel
+	err := parallel.Concurrent(jobs, 50)
+	if err != nil {
+		return nil, err
 	}
 
 	return reviews, nil
+}
+
+func readReviewCSVRow(row map[string]string) (Review, bool, error) {
+	if len(row) == 0 {
+		return Review{}, false, nil
+	}
+	if len(row) < 7 {
+		err := fmt.Errorf("unexpected column count: %d", len(row))
+		log.Err(err).Msg("malformed reviews.csv")
+		return Review{}, false, err
+	}
+
+	strDate := row["Watched Date"]
+	if strDate == "" {
+		strDate = row["Date"]
+	}
+	date, err := civil.ParseDate(strDate)
+	if err != nil {
+		log.Err(err).
+			Str("date", strDate).
+			Msg("malformed date column in reviews.csv")
+		return Review{}, false, err
+	}
+	year, err := strconv.Atoi(row["Year"])
+	if err != nil {
+		log.Err(err).
+			Str("year", row["Year"]).
+			Msg("malformed year column in reviews.csv")
+		return Review{}, false, err
+	}
+	var ratingF float64
+	if row["Rating"] != "" {
+		starRating, err := strconv.ParseFloat(row["Rating"], 64)
+		if err != nil {
+			log.Err(err).
+				Str("rating", row["Rating"]).
+				Msg("malformed rating column in reviews.csv")
+			return Review{}, false, err
+		}
+		ratingF = starRating * 2
+		if ratingF != math.Trunc(ratingF) {
+			err = errors.New("not a star rating. must go up in 0.5 increments")
+			log.Err(err).
+				Str("rating", row["Rating"]).
+				Msg("malformed rating column in reviews.csv")
+			return Review{}, false, err
+		}
+	}
+	rewatch := strings.EqualFold(row["Rewatch"], "Yes")
+
+	// Resolve some external info for it
+	externalInfo := FetchData(row["Letterboxd URI"])
+
+	review := Review{
+		Date:          date,
+		Name:          row["Name"],
+		Year:          year,
+		LetterboxdURI: row["Letterboxd URI"],
+		Rating:        int(ratingF),
+		Rewatch:       rewatch,
+		Review:        row["Review"],
+		PosterHref:    externalInfo.PosterHref,
+	}
+	return review, true, nil
 }
 
 type csvHeaderReader struct {

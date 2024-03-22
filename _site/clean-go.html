@@ -49,7 +49,7 @@ us to...</section><section><h2 id="How do I structure my packages?"><a class=anc
 injection. Basically, this layer contains a function which first creates the
 service instances which have no dependencies, then uses those to construct the
 services which rely on those services, and so-on until you've created the
-server, which you can then execute.<figure class=highlight><pre tabindex=0 class=chroma><code><span class=line><span class=cl><span class=c1>// CreateServerFactory injects all the dependencies
+server, which you can then execute.<figure class=highlight><pre class=chroma><code><span class=line><span class=cl><span class=c1>// CreateServerFactory injects all the dependencies
 </span></span></span><span class=line><span class=cl><span class=c1>// needed to create http.ServerFactory
 </span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>func</span> <span class=nf>CreateServerFactory</span><span class=p>(</span>
 </span></span><span class=line><span class=cl>    <span class=nx>source</span> <span class=nx>goConfig</span><span class=p>.</span><span class=nx>Source</span><span class=p>,</span>
@@ -87,7 +87,7 @@ what if we wanted to use GRPC instead? This should not require us touching the
 domain package, so clearly we cannot put any JSON tags on the entity to begin
 with.<p>This does not mean that we cannot customize how our objects are serialized - it
 just means that we need to make use of an &quot;intermediary&quot; struct in order to do
-this. For example:<figure class=highlight><pre tabindex=0 class=chroma><code><span class=line><span class=cl><span class=c1>// FromInventoryItemView converts a view to JSON
+this. For example:<figure class=highlight><pre class=chroma><code><span class=line><span class=cl><span class=c1>// FromInventoryItemView converts a view to JSON
 </span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>func</span> <span class=p>(</span><span class=nx>e</span> <span class=o>*</span><span class=nx>EncoderServiceImpl</span><span class=p>)</span> <span class=nf>FromInventoryItemView</span><span class=p>(</span>
 </span></span><span class=line><span class=cl>    <span class=nx>view</span> <span class=o>*</span><span class=nx>inventory</span><span class=p>.</span><span class=nx>ViewVO</span><span class=p>,</span>
 </span></span><span class=line><span class=cl><span class=p>)</span> <span class=p>([]</span><span class=kt>byte</span><span class=p>,</span> <span class=kt>error</span><span class=p>)</span> <span class=p>{</span>
@@ -120,7 +120,7 @@ this. For example:<figure class=highlight><pre tabindex=0 class=chroma><code><sp
 we want to expose) to an intermediary struct, and then marshal the struct. By
 doing this, we've decoupled the entity from concerns over how it is viewed
 externally, and we've decoupled that view from its encoding.</section><section><h2 id=Entities><a class=anchor href=#Entities>Entities</a></h2><aside><figure><img src=/images/my-super-sweet-16.jpg width=375px height=500px alt="A boy dressed as a king on a throne in a super sweet 16 reality show"><figcaption><i>The Entity is King, and treats itself as such.</i></figcaption></figure></aside><p>I like to think of Entities as bratty Beverly Hill teenagers: they have an
-entitled view of the world which may not map to reality.<p>This abstracted view includes everything ranging from:<ul><li>Method parameters<li>Responses<li>Errors<li>Services that Entities might need to use<li>etc.</ul><p>Here is a good example from the Inventory Item Entity:<figure class=highlight><pre tabindex=0 class=chroma><code><span class=line><span class=cl><span class=c1>// IsAvailable will return true if the inventory item may
+entitled view of the world which may not map to reality.<p>This abstracted view includes everything ranging from:<ul><li>Method parameters<li>Responses<li>Errors<li>Services that Entities might need to use<li>etc.</ul><p>Here is a good example from the Inventory Item Entity:<figure class=highlight><pre class=chroma><code><span class=line><span class=cl><span class=c1>// IsAvailable will return true if the inventory item may
 </span></span></span><span class=line><span class=cl><span class=c1>// be checked out - false otherwise.
 </span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>func</span> <span class=p>(</span><span class=nx>i</span> <span class=o>*</span><span class=nx>InventoryItemImpl</span><span class=p>)</span> <span class=nf>IsAvailable</span><span class=p>()</span> <span class=kt>bool</span> <span class=p>{</span>
 </span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=nx>i</span><span class=p>.</span><span class=nx>available</span>

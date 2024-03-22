@@ -2,11 +2,9 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"os"
 	"time"
 
-	"github.com/liampulles/liampulles.github.io/htmlgen/letterboxd"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 )
@@ -40,9 +38,6 @@ func main() {
 		log.Err(err).Msg("arg parse fail")
 		os.Exit(1)
 	}
-
-	info := letterboxd.FetchData("https://boxd.it/c31o3")
-	fmt.Println(info)
 
 	// Run the program
 	// Generate the site

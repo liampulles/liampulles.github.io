@@ -34,11 +34,11 @@ corporations and people. And once you accept that, you have achieved zen,
 and you can move on to
 being productive.</section><section><h3 id="Design by contract"><a class=anchor href=#Design%20by%20contract>Design by contract</a></h3><aside><figure class=optional><img src=/images/proverbs/Design%20by%20contract.webp width=266px height=400px alt="Japanese watercolor of an outset to a forest"></figure></aside><p><em>Source: The Pragmatic Programmer</em><p>Check that the input (and sometimes output) of important
 functions are sensible. This can be
-as simple as a few assert statements, e.g.<figure class=highlight><pre tabindex=0 class=chroma><code><span class=line><span class=cl><span class=kd>public</span> <span class=nf>sendSms</span><span class=o>(</span><span class=n>String</span> <span class=n>cell</span><span class=o>)</span> <span class=o>{</span>
-</span></span><span class=line><span class=cl>    <span class=k>assert</span> <span class=n>PhoneValidationUtil</span><span class=o>.</span><span class=na>ValidNumber</span><span class=o>(</span><span class=n>cell</span><span class=o>);</span>
-</span></span><span class=line><span class=cl>   <span class=c1>// ...
-</span></span></span><span class=line><span class=cl><span class=c1></span><span class=o>}</span>
-</span></span></code></pre></figure><p>Do this instead of defensive programming, and apply selectively: put it on your
+as simple as a few assert statements, e.g.<figure class=highlight><pre class=chroma><code><span class=line><span class=cl><span class=kd>public</span><span class=w> </span><span class=nf>sendSms</span><span class=p>(</span><span class=n>String</span><span class=w> </span><span class=n>cell</span><span class=p>)</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=k>assert</span><span class=w> </span><span class=n>PhoneValidationUtil</span><span class=p>.</span><span class=na>ValidNumber</span><span class=p>(</span><span class=n>cell</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>   </span><span class=c1>// ...</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>}</span><span class=w>
+</span></span></span></code></pre></figure><p>Do this instead of defensive programming, and apply selectively: put it on your
 core business logic for specific variables.<p>By doing this, you'll help minimize unexpected costly mistakes where bad data
 gets through to your business logic.</section><section><h3 id="Test first, refactor second"><a class=anchor href=#Test%20first%2c%20refactor%20second>Test first, refactor second</a></h3><p>Good tests allows you to delete code with confidence. Good tests are piercing
 acceptance or integrations tests which test the main happy paths of the program
@@ -81,7 +81,7 @@ reviewee will happily correct all the majors and most of the minors without
 any argument. Thats fine with me.</section></section><section><h2 id=Golang><a class=anchor href=#Golang>Golang</a></h2><section><h3 id="Implementation checks"><a class=anchor href=#Implementation%20checks>Implementation checks</a></h3><aside><figure class=optional><img src=/images/proverbs/Implementation%20checks.webp width=266px height=639px alt></figure></aside><p>Go has <em>structural typing</em>, so a type implements an interface merely
 by defining the same methods on itself.<p>While this can be useful for abstracting external types, it is often nice to be
 able to check at compile time that a type implements an interface.<p>A nice pattern I've seen for this is to assign an unnamed global variable of the
-interface type to an implementation instance, e.g.<figure class=highlight><pre tabindex=0 class=chroma><code><span class=line><span class=cl><span class=kd>type</span> <span class=nx>Hashable</span> <span class=kd>interface</span> <span class=p>{</span>
+interface type to an implementation instance, e.g.<figure class=highlight><pre class=chroma><code><span class=line><span class=cl><span class=kd>type</span> <span class=nx>Hashable</span> <span class=kd>interface</span> <span class=p>{</span>
 </span></span><span class=line><span class=cl>    <span class=nf>Hash</span><span class=p>()</span> <span class=p>[]</span><span class=kt>byte</span>
 </span></span><span class=line><span class=cl><span class=p>}</span>
 </span></span><span class=line><span class=cl>
@@ -97,7 +97,7 @@ message pointing at the assignment. For this reason, it is nice to put this
 assignment next to the implementation type declaration.</section><section><h3 id="You don't need a dependency injection library"><a class=anchor href=#You%20don%27t%20need%20a%20dependency%20injection%20library>You don&#39;t need a dependency injection library</a></h3><p>If you follow the Service pattern from DDD, then you'll have a number of
 services which transitively depend on each other. Typically, you'll use some
 dependency injection container or wiring library to have these services be
-connected upon startup.<p>But there's no reason you can't do this wiring yourself:<figure class=highlight><pre tabindex=0 class=chroma><code><span class=line><span class=cl><span class=kd>func</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
+connected upon startup.<p>But there's no reason you can't do this wiring yourself:<figure class=highlight><pre class=chroma><code><span class=line><span class=cl><span class=kd>func</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
 </span></span><span class=line><span class=cl>    <span class=nx>server</span> <span class=o>:=</span> <span class=nf>Wire</span><span class=p>()</span>
 </span></span><span class=line><span class=cl>    <span class=nx>server</span><span class=p>.</span><span class=nf>Run</span><span class=p>()</span>
 </span></span><span class=line><span class=cl><span class=p>}</span>
@@ -112,7 +112,7 @@ services with mock versions for integration tests.</ul><p>It is very convenient 
 things like lint your code, generate mocks, etc. What you may not be aware of is
 that - provided your dev tool can be installed via the shell - you can automate
 the installation of these tools when the directives are run for the first time.
-This makes it trivial for new starters on the repo to get up and going.<p>Here's an example for a Go tool:<figure class=highlight><pre tabindex=0 class=chroma><code><span class=line><span class=cl><span class=nv>GOBIN</span> <span class=o>:=</span> <span class=k>$(</span>shell go env GOPATH<span class=k>)</span>/bin
+This makes it trivial for new starters on the repo to get up and going.<p>Here's an example for a Go tool:<figure class=highlight><pre class=chroma><code><span class=line><span class=cl><span class=nv>GOBIN</span> <span class=o>:=</span> <span class=k>$(</span>shell go env GOPATH<span class=k>)</span>/bin
 </span></span><span class=line><span class=cl>
 </span></span><span class=line><span class=cl><span class=nf>inspect</span><span class=o>:</span> <span class=k>$(</span><span class=nv>GOBIN</span><span class=k>)</span>/<span class=n>golangci</span>-<span class=n>lint</span>
 </span></span><span class=line><span class=cl>	<span class=k>$(</span>GOBIN<span class=k>)</span>/golangci-lint run

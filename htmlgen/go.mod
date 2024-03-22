@@ -1,26 +1,20 @@
 module github.com/liampulles/liampulles.github.io/htmlgen
 
-go 1.21.5
-
-require github.com/rs/zerolog v1.32.0
+go 1.22.1
 
 require (
-	github.com/alecthomas/chroma/v2 v2.2.0 // indirect
-	github.com/dlclark/regexp2 v1.7.0 // indirect
-	github.com/json-iterator/go v1.1.12 // indirect
-	github.com/mattn/go-sqlite3 v1.14.22 // indirect
-	github.com/modern-go/concurrent v0.0.0-20180228061459-e0a39a4cb421 // indirect
-	github.com/modern-go/reflect2 v1.0.2 // indirect
-	github.com/yuin/goldmark v1.7.0 // indirect
-	github.com/yuin/goldmark-highlighting/v2 v2.0.0-20230729083705-37449abec8cc // indirect
-	go.abhg.dev/goldmark/wikilink v0.5.0 // indirect
+	cloud.google.com/go v0.112.1
+	github.com/alecthomas/chroma/v2 v2.13.0
+	github.com/mattn/go-sqlite3 v1.14.22
+	github.com/rs/zerolog v1.32.0
+	github.com/yuin/goldmark v1.7.0
+	github.com/yuin/goldmark-highlighting/v2 v2.0.0-20230729083705-37449abec8cc
+	go.abhg.dev/goldmark/wikilink v0.5.0
 )
 
 require (
-	cloud.google.com/go v0.112.0
-	github.com/cyruzin/golang-tmdb v1.5.8
-	github.com/davecgh/go-spew v1.1.1
+	github.com/dlclark/regexp2 v1.11.0 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.19 // indirect
-	golang.org/x/sys v0.15.0 // indirect
+	golang.org/x/sys v0.17.0 // indirect
 )
