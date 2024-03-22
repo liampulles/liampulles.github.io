@@ -245,7 +245,7 @@ func readReviewCSVRow(row map[string]string) (Review, bool, error) {
 	}
 	rewatch := strings.EqualFold(row["Rewatch"], "Yes")
 
-	// Resolve some external info for it
+	// Resolve some external info
 	externalInfo := FetchData(row["Letterboxd URI"])
 
 	review := Review{
