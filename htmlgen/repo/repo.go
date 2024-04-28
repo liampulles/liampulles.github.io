@@ -14,10 +14,10 @@ var db *sql.DB
 func init() {
 	// Open
 	var err error
-	db, err = sql.Open("sqlite3", "./cache.db")
+	db, err = sql.Open("sqlite3", "./cache.sqlite")
 	if err != nil {
 		log.Fatal().Err(err).
-			Str("location", "./cache.db").
+			Str("location", "./cache.sqlite").
 			Msg("could not open cache db")
 	}
 
@@ -25,7 +25,7 @@ func init() {
 	_, err = db.Exec("SELECT 1")
 	if err != nil {
 		log.Fatal().Err(err).
-			Str("location", "./cache.db").
+			Str("location", "./cache.sqlite").
 			Msg("db test failed")
 	}
 
@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS letterboxd(
 	_, err = db.Exec(sql)
 	if err != nil {
 		log.Fatal().Err(err).
-			Str("location", "./cache.db").
+			Str("location", "./cache.sqlite").
 			Msg("migration failed")
 	}
 
