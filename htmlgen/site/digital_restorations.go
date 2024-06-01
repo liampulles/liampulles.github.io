@@ -15,7 +15,7 @@ func digitalRestoration(
 	title string,
 	seoDesc string,
 	date civil.Date,
-	image Image,
+	linkImage LinkImage,
 	description template.HTML,
 ) DatedPost {
 	t := date.In(time.Local)
@@ -23,7 +23,7 @@ func digitalRestoration(
 		root(title, seoDesc,
 			article(title, mul(
 				withHeaderContent(markdown(fmt.Sprintf("*Written %s*", t.Format("2 January 2006")))),
-				withRawContent(restorationPage(image, description)),
+				withRawContent(restorationPage(linkImage, description)),
 			)),
 			withCommentsFooter(short),
 		))
@@ -34,13 +34,13 @@ func digitalRestoration(
 }
 
 type RestorationPage struct {
-	Image       Image
+	LinkImage   LinkImage
 	Description template.HTML
 }
 
-func restorationPage(image Image, description template.HTML) template.HTML {
+func restorationPage(linkImage LinkImage, description template.HTML) template.HTML {
 	return execTemplate(rootTmpl, "restoration-page", RestorationPage{
-		Image:       image,
+		LinkImage:   linkImage,
 		Description: description,
 	})
 }

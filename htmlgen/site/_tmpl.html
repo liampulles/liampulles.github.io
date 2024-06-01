@@ -95,6 +95,13 @@
 </section>
 {{end}}
 
+{{define "link-image"}}
+<figure>
+    <a href="{{.Link}}">{{template "image" .Image}}</a>
+    <figcaption><i>Click for full version</i></figcaption>
+</figure>
+{{end}}
+
 {{define "image"}}
 <img src="{{.Src}}" width="{{.Width}}" height="{{.Height}}" alt="{{.Alt}}">
 {{end}}
@@ -182,7 +189,7 @@
 
 {{define "restoration-page"}}
 <section class="centerpiece">
-    <a href="{{.Image.Src}}">{{template "image" .Image}}</a>
+    {{template "link-image" .LinkImage}}
     {{.Description}}
 </section>
 {{end}}

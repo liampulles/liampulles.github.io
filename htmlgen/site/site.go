@@ -266,6 +266,23 @@ func optionalFigure(
 	}
 }
 
+func restorationImage(
+	name string,
+	width int,
+	height int,
+	alt string,
+) LinkImage {
+	return LinkImage{
+		Link:  template.HTML(fmt.Sprintf("/images/restorations/%s.png", name)),
+		Image: image(fmt.Sprintf("restorations-thumb/%s.jpg", name), width, height, alt),
+	}
+}
+
+type LinkImage struct {
+	Link  template.HTML
+	Image Image
+}
+
 type Image struct {
 	Src    string
 	Width  string
