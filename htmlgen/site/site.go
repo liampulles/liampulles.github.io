@@ -273,7 +273,7 @@ func restorationImage(
 	alt string,
 ) LinkImage {
 	return LinkImage{
-		Link:  template.HTML(fmt.Sprintf("/images/restorations/%s.png", name)),
+		Link:  template.HTML(fmt.Sprintf("https://media.githubusercontent.com/media/liampulles/liampulles.github.io/master/_site/images/restorations/%s.png", name)),
 		Image: image(fmt.Sprintf("restorations-thumb/%s.jpg", name), width, height, alt),
 	}
 }
