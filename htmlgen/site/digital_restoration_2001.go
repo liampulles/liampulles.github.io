@@ -35,10 +35,10 @@ like and discovered the above 2001 poster. The main changes I made were to:
 * White out the text and MGM logo
 
 There is enough detail here to get a very sharp A1 print, you can possibly
-stretch it even to an A0. I had mine printed and framed on an A1 size with a
+stretch it even to an A0. I had mine printed and framed at an A1 size with a
 speckled glossy paper, which worked out very nicely.
 
-It did come out a bit darker than I expected - you might consider raising the
-mid-level a bit as the star child is a difficult to make out
+It did come out darker than I expected... you might consider raising the
+mid-level a bit as the star child is difficult to make out
 in my print.
 `)
