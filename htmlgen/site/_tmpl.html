@@ -97,8 +97,8 @@
 
 {{define "link-image"}}
 <figure>
-    <a href="{{.Link}}">{{template "image" .Image}}</a>
-    <figcaption><i>Click for full version</i></figcaption>
+    <a href="{{.Link}}" download>{{template "image" .Image}}</a>
+    <figcaption><i>Click to download full version</i></figcaption>
 </figure>
 {{end}}
 
