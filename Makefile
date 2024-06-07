@@ -1,12 +1,10 @@
 GOBIN := $(shell go env GOBIN)
-RESTORE_IMGS=$(wildcard static/images/restorations/*.png)
-RESTORE_THUMBS=$(patsubst static/images/restorations/%.png,static/images/restorations-thumb/%.jpg,$(RESTORE_IMGS))
 
 clean:
 	rm -rf _site_gen
 	rm -rf _site
 
-pre-commit: ${GOBIN}/minify clean compress-restorations
+pre-commit: ${GOBIN}/minify clean
 	$(MAKE) -C htmlgen install
 	htmlgen -output=_site_gen
 	cp -r static_minable/* _site_gen
@@ -19,10 +17,10 @@ watch:
 		inotifywait -qre close_write htmlgen; \
 	done
 
-compress-restorations: $(RESTORE_THUMBS)
-
-static/images/restorations-thumb/%.jpg: static/images/restorations/%.png
-	convert -geometry x1000 -strip -interlace Plane -quality 80 $^ $@
+# Place the restoration in the main folder, and use this to create a compressed thumb version.
+# Might have to bump up your imagemagick policy: https://stackoverflow.com/a/53699200
+static/images/restorations-thumb/%.jpg: %.png
+	convert -geometry x1000 -strip -interlace Plane -quality 90 $^ $@
 
 ${GOBIN}/minify:
 	go install github.com/tdewolff/minify/cmd/minify@latest

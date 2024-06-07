@@ -12,7 +12,12 @@ func init() {
 		"2001: A Space Odyssey",
 		"Presents a restored version of an 2001 theatrical poster. Describes the restoration process.",
 		civil.Date{Year: 2024, Month: time.June, Day: 1},
-		restorationImage("2001", 8938, 13862, "2001 poster"),
+		restorationImage(
+			"2001",
+			"https://drive.google.com/file/d/1ZwE8mEOoXXCrhbctOmsk2lvjv6AQ73v0/view?usp=sharing",
+			8938, 13862,
+			"2001 poster",
+		),
 		twoThousandOne_desc,
 	))
 }

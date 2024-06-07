@@ -12,7 +12,12 @@ func init() {
 		"Woodstock: 3 Days of Peace and Music",
 		"Presents a restored version of an old Woodstock festival poster. Describes the restoration process.",
 		civil.Date{Year: 2020, Month: time.October, Day: 1},
-		restorationImage("3-days-of-peace-and-music", 7026, 9933, "Woodstock poster"),
+		restorationImage(
+			"3-days-of-peace-and-music",
+			"https://drive.google.com/file/d/12fUKbE9aK3aVSnbwfaO5jOjBOmS4_kbz/view?usp=sharing",
+			7026, 9933,
+			"Woodstock poster",
+		),
 		woodstock_desc,
 	))
 }
