@@ -13,6 +13,7 @@ func init() {
 		"Contains proverbs and advice around programming and developer life.",
 		civil.Date{Year: 2024, Month: time.February, Day: 21},
 		markdown(proverb_opening),
+		"epictetus.jpg",
 		superSection("Code Design", "",
 			proverb_applyingDry,
 			proverb_minimizeShit,

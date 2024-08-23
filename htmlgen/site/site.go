@@ -90,6 +90,7 @@ func page(
 type Root struct {
 	Title          string
 	SEODescription string
+	JSONld         template.JS
 	NavElem        []NavElem
 	Article        Article
 	Footer         Footer
@@ -103,7 +104,7 @@ func root(
 ) Root {
 	r := Root{
 		Title:          title,
-		SEODescription: "SEODescription",
+		SEODescription: seoDesc,
 		NavElem:        allNavElem,
 		Article:        article,
 		Footer: Footer{
@@ -131,6 +132,12 @@ func withCommentsFooter(short string) func(r *Root) {
 			FullURL: fmt.Sprintf("%s/%s.html", liveURL, short),
 		}
 		r.Footer.Comments = &c
+	}
+}
+
+func withJSONld(jld JSONld) func(r *Root) {
+	return func(r *Root) {
+		r.JSONld = template.JS(jld)
 	}
 }
 

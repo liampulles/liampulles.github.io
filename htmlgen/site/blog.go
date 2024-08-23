@@ -22,6 +22,7 @@ func blogPost(
 	seoDesc string,
 	date civil.Date,
 	opening template.HTML,
+	heroImageURL string,
 	sections ...Section,
 ) DatedPost {
 	t := date.In(time.Local)
@@ -43,6 +44,7 @@ func blogPost(
 				allSections...,
 			),
 			withCommentsFooter(short),
+			withJSONld(JSONldBlogPosting(title, heroImageURL, date)),
 		))
 
 	return DatedPost{

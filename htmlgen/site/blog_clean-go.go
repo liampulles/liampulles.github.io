@@ -13,6 +13,7 @@ func init() {
 		"This article introduces Clean Architecture in Go. It discusses the layers involved, provides guidance on code placement, and suggests package structuring.",
 		civil.Date{Year: 2020, Month: time.September, Day: 29},
 		markdown(cleanGo_opening),
+		"clean-architecture-diagram.png",
 		cleanGo_whatIs,
 		cleanGo_howDoIKnow,
 		cleanGo_howDoIStructure,

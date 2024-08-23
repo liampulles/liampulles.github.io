@@ -13,6 +13,7 @@ func init() {
 		"Recounts my reasoning and experiences in moving away from Jekyll towards my own Go based static site generator",
 		civil.Date{Year: 2024, Month: time.February, Day: 20},
 		markdown(moving_opening),
+		"markdown-nightmare.jpg",
 		moving_jekyllLimits,
 		moving_acceptCriteria,
 		moving_firstStab,

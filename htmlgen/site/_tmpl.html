@@ -32,6 +32,11 @@
     <link href=/dark.css rel=stylesheet>
     <link href=/images/favicon.ico rel="shortcut icon" type=image/x-icon>
 
+    <!-- JSON-LD Metadata -->
+    {{if .JSONld}}
+    <script type="application/ld+json">{{.JSONld}}</script>
+    {{end}}
+
     <!-- Header/Nav -->
     <header class=site-header>
         <p><a href= />Liam Pulles</a>
