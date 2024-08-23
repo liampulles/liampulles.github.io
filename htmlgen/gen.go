@@ -149,7 +149,7 @@ func writeSitemap(outputFolder string) jobFn {
 			Location string `xml:"loc"`
 		}
 		var sitemapURLSet struct {
-			XMLName xml.Name     `xml:"urlset"`
+			XMLName xml.Name     `xml:"http://www.sitemaps.org/schemas/sitemap/0.9 urlset"`
 			URLs    []sitemapURL `xml:"url"`
 		}
 		for _, short := range sitemapShorts {
