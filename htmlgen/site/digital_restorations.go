@@ -26,6 +26,7 @@ func digitalRestoration(
 				withRawContent(restorationPage(linkImage, description)),
 			)),
 			withCommentsFooter(short),
+			withJSONld(JSONldBlogPosting(title, string(linkImage.Link), date)),
 		))
 	return DatedPost{
 		Page: page,
