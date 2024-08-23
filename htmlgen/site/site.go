@@ -20,7 +20,7 @@ import (
 
 // Other details are probably in the render functions.
 
-const liveURL = "https://liampulles.com"
+const LiveURL = "https://liampulles.com"
 
 var rootTmpl = loadTemplate(nil, "_tmpl.html")
 
@@ -129,7 +129,7 @@ func withConnectFooter(r *Root) {
 func withCommentsFooter(short string) func(r *Root) {
 	return func(r *Root) {
 		c := Comments{
-			FullURL: fmt.Sprintf("%s/%s.html", liveURL, short),
+			FullURL: fmt.Sprintf("%s/%s.html", LiveURL, short),
 		}
 		r.Footer.Comments = &c
 	}

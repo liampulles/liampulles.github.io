@@ -24,15 +24,15 @@ func JSONldBlogPosting(
 		"@context":      "https://schema.org",
 		"@type":         "BlogPosting",
 		"headline":      title,
-		"image":         []string{fmt.Sprintf("https://liampulles.com/images/%s", image)},
+		"image":         []string{fmt.Sprintf("%s/images/%s", LiveURL, image)},
 		"datePublished": timePublished,
 		"author": []map[string]any{
 			{
 				"@type":    "Person",
 				"name":     "Liam Pulles",
-				"url":      "https://liampulles.com/biography.html",
+				"url":      fmt.Sprintf("%s/biography.html", LiveURL),
 				"jobTitle": "Senior Software Engineer",
-				"image":    "https://liampulles.com/images/profile.jpg",
+				"image":    fmt.Sprintf("%s/images/profile.jpg", LiveURL),
 			},
 		},
 	}

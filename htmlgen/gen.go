@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/xml"
 	"errors"
 	"fmt"
 	"io"
@@ -46,6 +47,8 @@ func GenSite(outputFolder string) error {
 	// -> CSS
 	jobs = append(jobs, writeStyle(outputFolder, "monokai", "dark"))
 	jobs = append(jobs, writeStyle(outputFolder, "tango", "light"))
+	// -> Sitemap
+	jobs = append(jobs, writeSitemap(outputFolder))
 	return doAll(jobs...)
 }
 
@@ -107,7 +110,79 @@ func genJob(outputFolder string, short string, with withFile) jobFn {
 
 type withFile func(io.Writer) error
 
+// Should only contain meaningful, "actual" pages (no redirects)
+var sitemapShorts []string
+
+func writeSitemap(outputFolder string) jobFn {
+	return func() error {
+		// Make folder
+		err := os.MkdirAll(outputFolder, os.ModePerm)
+		if err != nil {
+			log.Err(err).
+				Str("dir", outputFolder).
+				Msg("could not make output dir, failing")
+			return err
+		}
+
+		loc := path.Join(outputFolder, "sitemap.xml")
+		// Open the file
+		w, err := os.Create(loc)
+		if err != nil {
+			log.Err(err).
+				Str("loc", loc).
+				Msg("could not create output file, failing")
+			return err
+		}
+		// -> Close it later
+		defer func() {
+			cErr := w.Close()
+			if cErr != nil {
+				log.Err(cErr).
+					Str("loc", loc).
+					Msg("could not close output file, failing")
+			}
+			err = errors.Join(err, cErr)
+		}()
+
+		// Template XML
+		type sitemapURL struct {
+			Location string `xml:"loc"`
+		}
+		var sitemapURLSet struct {
+			XMLName xml.Name     `xml:"urlset"`
+			URLs    []sitemapURL `xml:"url"`
+		}
+		for _, short := range sitemapShorts {
+			sitemapURLSet.URLs = append(sitemapURLSet.URLs, sitemapURL{
+				Location: fmt.Sprintf("%s/%s.html", site.LiveURL, short),
+			})
+		}
+		xmlBytes, err := xml.Marshal(sitemapURLSet)
+		if err != nil {
+			log.Err(err).
+				Str("loc", loc).
+				Msg("could not marshal sitemap xml")
+			return fmt.Errorf("invalid sitemap xml: %w", err)
+		}
+
+		// Write it to file
+		_, err = w.Write(xmlBytes)
+		if err != nil {
+			log.Err(err).
+				Str("loc", loc).
+				Msg("could not write sitemap xml")
+			return fmt.Errorf("could not write sitemap xml: %w", err)
+		}
+
+		return nil
+	}
+}
+
 func page(p site.Page) withFile {
+	// We consider all "pages" to be actual places users can navigate to,
+	// so include them in the sitemap.
+	sitemapShorts = append(sitemapShorts, p.Short)
+
 	return func(w io.Writer) error {
 		err := p.Template.ExecuteTemplate(w, "root", p.Data)
 		if err != nil {
