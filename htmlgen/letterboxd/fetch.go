@@ -63,7 +63,7 @@ func fetchFromCache(letterboxdURI string) (letterboxdInfo, bool) {
 	}, true
 }
 
-var filmLinkRegex = regexp.MustCompile(`<[^>]*"film-title-wrapper"[^>]*>[\s\S]*<a href="(\/film\/.*)"`)
+var filmLinkRegex = regexp.MustCompile(`<[^>]*"film-title-wrapper"[^>]*>[\s\S]*<a href="(\/film\/[^/]+)/">`)
 var tmdbIDRegex = regexp.MustCompile(`"https://www\.themoviedb\.org/\w*/(\d*)/"`)
 var posterRegex = regexp.MustCompile(`{"image":"([^"]*)",`)
 
