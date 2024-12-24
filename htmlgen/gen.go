@@ -28,6 +28,8 @@ func GenSite(outputFolder string) error {
 	// -> HTML
 	var jobs []jobFn
 	indexPage := site.IndexPage()
+	notFoundPage := site.NotFoundPage()
+	jobs = append(jobs, genJob(outputFolder, notFoundPage.Short, page(notFoundPage)))
 	jobs = append(jobs, genJob(outputFolder, indexPage.Short, page(indexPage)))
 	jobs = append(jobs, genJob(outputFolder, site.BiographyPage.Short, page(site.BiographyPage)))
 	reviewsPage := site.ReviewsPage()
