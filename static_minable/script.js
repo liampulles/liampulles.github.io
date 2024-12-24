@@ -84,7 +84,9 @@ function short(url) {
 
 function sortMaybesSimilar() {
   const currentShort = short(window.location.href)
-  return maybe_pages.sort((a,b) => levenshteinDistance(currentShort,a) - levenshteinDistance(currentShort,b))
+  var copy = [...maybe_pages]
+  copy.sort((a,b) => levenshteinDistance(currentShort,a.location) - levenshteinDistance(currentShort,b.location))
+  return copy
 }
 
 document.getElementById('maybePages').innerHTML = "<ul>"+sortMaybesSimilar().map(p => `<li><a href=${p.location}>${p.title}</a></li>`).join("\n")+"</ul>"
