@@ -4,10 +4,16 @@ clean:
 	rm -rf _site_gen
 	rm -rf _site
 
+combine-js:
+	cat _site_gen/maybe_pages.js _site_gen/script.js > _site_gen/temp.js
+	rm _site_gen/maybe_pages.js _site_gen/script.js
+	mv _site_gen/temp.js _site_gen/script.js
+
 pre-commit: ${GOBIN}/minify clean
 	$(MAKE) -C htmlgen install
 	htmlgen -output=_site_gen
 	cp -r static_minable/* _site_gen
+	$(MAKE) combine-js
 	minify -r -o _site/ _site_gen/
 	cp -r static/* _site
 

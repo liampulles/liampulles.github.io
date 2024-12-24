@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"encoding/xml"
 	"errors"
 	"fmt"
@@ -51,6 +52,9 @@ func GenSite(outputFolder string) error {
 	jobs = append(jobs, writeStyle(outputFolder, "tango", "light"))
 	// -> Sitemap
 	jobs = append(jobs, writeSitemap(outputFolder))
+	// -> Javascript
+	jobs = append(jobs, writeMaybePages(outputFolder))
+
 	return doAll(jobs...)
 }
 
@@ -169,6 +173,79 @@ func writeSitemap(outputFolder string) jobFn {
 
 		// Write it to file
 		_, err = w.Write(xmlBytes)
+		if err != nil {
+			log.Err(err).
+				Str("loc", loc).
+				Msg("could not write sitemap xml")
+			return fmt.Errorf("could not write sitemap xml: %w", err)
+		}
+
+		return nil
+	}
+}
+
+func writeMaybePages(outputFolder string) jobFn {
+	return func() error {
+		// Make folder
+		err := os.MkdirAll(outputFolder, os.ModePerm)
+		if err != nil {
+			log.Err(err).
+				Str("dir", outputFolder).
+				Msg("could not make output dir, failing")
+			return err
+		}
+
+		loc := path.Join(outputFolder, "maybe_pages.js")
+		// Open the file
+		w, err := os.Create(loc)
+		if err != nil {
+			log.Err(err).
+				Str("loc", loc).
+				Msg("could not create output file, failing")
+			return err
+		}
+		// -> Close it later
+		defer func() {
+			cErr := w.Close()
+			if cErr != nil {
+				log.Err(cErr).
+					Str("loc", loc).
+					Msg("could not close output file, failing")
+			}
+			err = errors.Join(err, cErr)
+		}()
+
+		// Build a set of suggestions
+		type maybePage struct {
+			Location string `json:"location"`
+			Title    string `json:"title"`
+		}
+		var maybes []maybePage
+		for _, post := range site.BlogPosts {
+			maybes = append(maybes, maybePage{
+				Location: fmt.Sprintf("%s/%s.html", site.LiveURL, post.Short),
+				Title:    post.Page.Data.Title,
+			})
+		}
+		for _, post := range site.DigitalRestorations {
+			maybes = append(maybes, maybePage{
+				Location: fmt.Sprintf("%s/%s.html", site.LiveURL, post.Short),
+				Title:    post.Page.Data.Title,
+			})
+		}
+
+		// Template out a javascript array
+		arrBytes, err := json.Marshal(maybes)
+		if err != nil {
+			log.Err(err).
+				Str("loc", loc).
+				Msg("could not write sitemap xml")
+			return fmt.Errorf("could not write json array %w", err)
+		}
+		array := fmt.Sprintf("var maybe_pages = %s", string(arrBytes))
+
+		// Write it to file
+		_, err = w.WriteString(array)
 		if err != nil {
 			log.Err(err).
 				Str("loc", loc).

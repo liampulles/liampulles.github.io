@@ -72,7 +72,7 @@ func nameToNav(name string) NavElem {
 type Page struct {
 	Template *template.Template
 	Short    string
-	Data     any
+	Data     Root
 }
 
 func page(
