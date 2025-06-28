@@ -9,10 +9,15 @@ import (
 	"path/filepath"
 	"regexp"
 	"strconv"
+	"time"
 
 	"github.com/liampulles/liampulles.github.io/htmlgen/repo"
 	"github.com/rs/zerolog/log"
 )
+
+var httpClient = http.Client{
+	Timeout: 10 * time.Second,
+}
 
 type letterboxdInfo struct {
 	TMDBid     int
@@ -115,7 +120,7 @@ func resolveTMDBidAndPosterURL(letterboxdURI string) (int, string) {
 
 func fetchPage(url string) []byte {
 	// Make request
-	res, err := http.Get(url)
+	res, err := httpClient.Get(url)
 	if err == nil && (res.StatusCode < 200 || res.StatusCode > 399) {
 		err = fmt.Errorf("error reading url: %d", res.StatusCode)
 	}
@@ -156,7 +161,7 @@ func findOrDownloadImage(tmdbID int, posterURL string) string {
 	}
 	defer file.Close()
 
-	resp, err := http.Get(posterURL)
+	resp, err := httpClient.Get(posterURL)
 	if err != nil {
 		log.Fatal().Err(err).
 			Str("poster_url", posterURL).
