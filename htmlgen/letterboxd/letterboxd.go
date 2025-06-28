@@ -189,7 +189,7 @@ func readReviewsCSV(csvReader *csv.Reader) ([]Review, error) {
 	}
 
 	// Run in parallel
-	err := parallel.Concurrent(jobs, 3)
+	err := parallel.Concurrent(jobs, 1)
 	if err != nil {
 		return nil, err
 	}

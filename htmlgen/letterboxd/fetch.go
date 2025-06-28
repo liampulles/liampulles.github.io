@@ -68,8 +68,8 @@ func fetchFromCache(letterboxdURI string) (letterboxdInfo, bool) {
 	}, true
 }
 
-var filmLinkRegex = regexp.MustCompile(`<[^>]*"film-title-wrapper"[^>]*>[\s\S]*<a href="(\/film\/[^/]+)/">`)
-var tmdbIDRegex = regexp.MustCompile(`"https://www\.themoviedb\.org/\w*/(\d*)/"`)
+var filmLinkRegex = regexp.MustCompile(`<h2\s+class=".*-primary.*"><a href="(\/film\/[^/]+)/">`)
+var tmdbIDRegex = regexp.MustCompile(`data.viewingable.uid = 'film:(\d+)'`)
 var posterRegex = regexp.MustCompile(`{"image":"([^"]*)",`)
 
 func resolveTMDBidAndPosterURL(letterboxdURI string) (int, string) {
@@ -121,6 +121,15 @@ func resolveTMDBidAndPosterURL(letterboxdURI string) (int, string) {
 func fetchPage(url string) []byte {
 	// Make request
 	res, err := httpClient.Get(url)
+	if res.StatusCode == 429 {
+		// Need to wait a bit and then retry
+		delaySec, _ := strconv.Atoi(res.Header.Get("Retry-After"))
+		log.Debug().
+			Int("delay_seconds", delaySec).
+			Msg("Letterboxd telling us to wait a bit...")
+		time.Sleep(time.Duration(delaySec+1) * time.Second)
+		return fetchPage(url)
+	}
 	if err == nil && (res.StatusCode < 200 || res.StatusCode > 399) {
 		err = fmt.Errorf("error reading url: %d", res.StatusCode)
 	}
