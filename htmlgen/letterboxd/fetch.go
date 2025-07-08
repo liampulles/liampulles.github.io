@@ -121,7 +121,7 @@ func resolveTMDBidAndPosterURL(letterboxdURI string) (int, string) {
 func fetchPage(url string) []byte {
 	// Make request
 	res, err := httpClient.Get(url)
-	if res.StatusCode == 429 {
+	if err == nil && res.StatusCode == 429 {
 		// Need to wait a bit and then retry
 		delaySec, _ := strconv.Atoi(res.Header.Get("Retry-After"))
 		log.Debug().
