@@ -1,5 +1,3 @@
-GOBIN := $(shell go env GOBIN)
-
 clean:
 	rm -rf _site_gen
 	rm -rf _site
