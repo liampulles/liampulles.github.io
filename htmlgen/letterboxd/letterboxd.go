@@ -207,6 +207,11 @@ func readReviewCSVRow(row map[string]string) (Review, bool, error) {
 		return Review{}, false, err
 	}
 
+	// Skip excluded ones
+	if slices.Contains(exclusions, row["Letterboxd URI"]) {
+		return Review{}, false, nil
+	}
+
 	strDate := row["Watched Date"]
 	if strDate == "" {
 		strDate = row["Date"]
@@ -246,12 +251,7 @@ func readReviewCSVRow(row map[string]string) (Review, bool, error) {
 	rewatch := strings.EqualFold(row["Rewatch"], "Yes")
 
 	// Resolve some external info
-	excluded, externalInfo := FetchData(row["Letterboxd URI"])
-
-	// Skip excluded ones
-	if excluded {
-		return Review{}, false, nil
-	}
+	externalInfo := FetchData(row["Letterboxd URI"])
 
 	review := Review{
 		Date:          date,

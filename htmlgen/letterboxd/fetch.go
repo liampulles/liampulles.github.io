@@ -8,7 +8,6 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
-	"slices"
 	"strconv"
 	"time"
 
@@ -26,12 +25,11 @@ type letterboxdInfo struct {
 }
 
 // Fetch data related to a film. Will try and used cached info in the db first.
-func FetchData(letterboxdURI string) (bool, letterboxdInfo) {
+func FetchData(letterboxdURI string) letterboxdInfo {
 	// Try get from cache
 	info, ok := fetchFromCache(letterboxdURI)
 	if ok {
-		excluded := slices.Contains(exclusionTMDBids, info.TMDBid)
-		return excluded, info
+		return info
 	}
 
 	// Ok, we'll have to get it manually. Resolve the TMDB id and poster url first.
@@ -39,18 +37,6 @@ func FetchData(letterboxdURI string) (bool, letterboxdInfo) {
 		Str("letterboxd_uri", letterboxdURI).
 		Msg("need to resolve letterboxd info 'manually'")
 	tmdbID, posterURL := resolveTMDBidAndPosterURL(letterboxdURI)
-
-	// Is the film excluded?
-	if tmdbID < 0 {
-		// Set in cache and skip poster
-		repoInfo := repo.LetterboxdInfo{
-			TMDBid: tmdbID,
-		}
-		repo.InsertLetterboxdInfo(letterboxdURI, repoInfo)
-		return true, letterboxdInfo{
-			TMDBid: tmdbID,
-		}
-	}
 
 	// Check and download the poster
 	posterHref := findOrDownloadImage(tmdbID, posterURL)
@@ -62,7 +48,7 @@ func FetchData(letterboxdURI string) (bool, letterboxdInfo) {
 	repo.InsertLetterboxdInfo(letterboxdURI, repoInfo)
 
 	// Map our version
-	return false, letterboxdInfo{
+	return letterboxdInfo{
 		TMDBid:     tmdbID,
 		PosterHref: posterHref,
 	}
@@ -117,11 +103,6 @@ func resolveTMDBidAndPosterURL(letterboxdURI string) (int, string) {
 			Str("url", filmURL).
 			Str("tmdb_id", string(elem[1])).
 			Msg("did not find correct TMDB id - not an int")
-	}
-
-	// Is this film excluded?
-	if slices.Contains(exclusionTMDBids, tmdbID) {
-		return -1, ""
 	}
 
 	// Parse the poster link
