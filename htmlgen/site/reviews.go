@@ -44,7 +44,11 @@ func reviewsPageContent() template.HTML {
 	}
 
 	// Sort reviews by date, latest first
+	// Then alphabetically by name
 	sort.Slice(export.Reviews, func(i, j int) bool {
+		if export.Reviews[i].Date == export.Reviews[j].Date {
+			return export.Reviews[i].Name < export.Reviews[j].Name
+		}
 		return export.Reviews[i].Date.After(export.Reviews[j].Date)
 	})
 

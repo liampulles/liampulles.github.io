@@ -7,7 +7,7 @@ combine-js:
 	rm _site_gen/maybe_pages.js _site_gen/script.js
 	mv _site_gen/temp.js _site_gen/script.js
 
-pre-commit: ${GOBIN}/minify clean
+pre-commit: clean
 	$(MAKE) -C htmlgen install
 	htmlgen -output=_site_gen
 	cp -r static_minable/* _site_gen
@@ -26,5 +26,5 @@ watch:
 static/images/restorations-thumb/%.jpg: %.png
 	convert -geometry x1000 -strip -interlace Plane -quality 90 $^ $@
 
-${GOBIN}/minify:
+install-minify:
 	go install github.com/tdewolff/minify/cmd/minify@latest
