@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"slices"
 	"strconv"
 	"time"
 
@@ -25,11 +26,12 @@ type letterboxdInfo struct {
 }
 
 // Fetch data related to a film. Will try and used cached info in the db first.
-func FetchData(letterboxdURI string) letterboxdInfo {
+func FetchData(letterboxdURI string) (bool, letterboxdInfo) {
 	// Try get from cache
 	info, ok := fetchFromCache(letterboxdURI)
 	if ok {
-		return info
+		excluded := slices.Contains(exclusionTMDBids, info.TMDBid)
+		return excluded, info
 	}
 
 	// Ok, we'll have to get it manually. Resolve the TMDB id and poster url first.
@@ -37,6 +39,18 @@ func FetchData(letterboxdURI string) letterboxdInfo {
 		Str("letterboxd_uri", letterboxdURI).
 		Msg("need to resolve letterboxd info 'manually'")
 	tmdbID, posterURL := resolveTMDBidAndPosterURL(letterboxdURI)
+
+	// Is the film excluded?
+	if tmdbID < 0 {
+		// Set in cache and skip poster
+		repoInfo := repo.LetterboxdInfo{
+			TMDBid: tmdbID,
+		}
+		repo.InsertLetterboxdInfo(letterboxdURI, repoInfo)
+		return true, letterboxdInfo{
+			TMDBid: tmdbID,
+		}
+	}
 
 	// Check and download the poster
 	posterHref := findOrDownloadImage(tmdbID, posterURL)
@@ -48,7 +62,7 @@ func FetchData(letterboxdURI string) letterboxdInfo {
 	repo.InsertLetterboxdInfo(letterboxdURI, repoInfo)
 
 	// Map our version
-	return letterboxdInfo{
+	return false, letterboxdInfo{
 		TMDBid:     tmdbID,
 		PosterHref: posterHref,
 	}
@@ -69,7 +83,7 @@ func fetchFromCache(letterboxdURI string) (letterboxdInfo, bool) {
 }
 
 var filmLinkRegex = regexp.MustCompile(`<h2\s+class=".*-primary.*"><a href="(\/film\/[^/]+)/">`)
-var tmdbIDRegex = regexp.MustCompile(`data.viewingable.uid = 'film:(\d+)'`)
+var tmdbIDRegex = regexp.MustCompile(`data-tmdb-id="(\d+)"`)
 var posterRegex = regexp.MustCompile(`{"image":"([^"]*)",`)
 
 func resolveTMDBidAndPosterURL(letterboxdURI string) (int, string) {
@@ -85,16 +99,6 @@ func resolveTMDBidAndPosterURL(letterboxdURI string) (int, string) {
 			Msg("could not resolve TMDB id")
 	}
 	filmURL := "https://letterboxd.com" + string(elem[1])
-
-	// Parse the poster link
-	elem = posterRegex.FindSubmatch(reviewBody)
-	if len(elem) < 2 {
-		err := errors.New("couldn't extract poster url from review")
-		log.Fatal().Err(err).
-			Str("letterboxd_uri", letterboxdURI).
-			Msg("could not resolve TMDB id")
-	}
-	posterURL := elem[1]
 
 	// Now fetch the film page
 	filmBody := fetchPage(filmURL)
@@ -114,6 +118,22 @@ func resolveTMDBidAndPosterURL(letterboxdURI string) (int, string) {
 			Str("tmdb_id", string(elem[1])).
 			Msg("did not find correct TMDB id - not an int")
 	}
+
+	// Is this film excluded?
+	if slices.Contains(exclusionTMDBids, tmdbID) {
+		return -1, ""
+	}
+
+	// Parse the poster link
+	elem = posterRegex.FindSubmatch(reviewBody)
+	if len(elem) < 2 {
+		err := errors.New("couldn't extract poster url from review")
+		log.Fatal().Err(err).
+			Str("letterboxd_uri", letterboxdURI).
+			Int("tmdb_id", tmdbID).
+			Msg("could not resolve TMDB id")
+	}
+	posterURL := elem[1]
 
 	return tmdbID, string(posterURL)
 }
