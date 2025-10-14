@@ -1,23 +1,18 @@
 package site
 
-import (
-	"time"
-
-	"cloud.google.com/go/civil"
-)
-
-func init() {
-	BlogPosts = append(BlogPosts, blogPost(
-		"go-in-projects",
-		`Using Go in Enterprise Projects`,
-		"I give my view on why Go works well in Enterprise projects and software",
-		civil.Date{Year: 2025, Month: time.July, Day: 8},
-		go_projects_opening,
-		"TODO.jpg",
-		go_project_monorepo,
-		go_project_clis,
-	))
-}
+// Disabled, for now, need some motivation to finish.
+// func init() {
+// 	BlogPosts = append(BlogPosts, blogPost(
+// 		"go-in-projects",
+// 		`Using Go in Enterprise Projects`,
+// 		"I give my view on why Go works well in Enterprise projects and software",
+// 		civil.Date{Year: 2025, Month: time.July, Day: 8},
+// 		go_projects_opening,
+// 		"TODO.jpg",
+// 		go_project_monorepo,
+// 		go_project_clis,
+// 	))
+// }
 
 var go_projects_opening = markdown(`
 I've been using Go professionally for a few years now, and I kind of love it.
