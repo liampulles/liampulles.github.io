@@ -11,6 +11,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/go-rod/rod"
 	"github.com/liampulles/liampulles.github.io/htmlgen/repo"
 	"github.com/rs/zerolog/log"
 )
@@ -71,6 +72,7 @@ func fetchFromCache(letterboxdURI string) (letterboxdInfo, bool) {
 var filmLinkRegex = regexp.MustCompile(`<h2\s+class=".*-primary.*"><a href="(\/film\/[^/]+)/">`)
 var tmdbIDRegex = regexp.MustCompile(`data.viewingable.uid = 'film:(\d+)'`)
 var posterRegex = regexp.MustCompile(`{"image":"([^"]*)",`)
+var emptyPosterRegex = regexp.MustCompile(`data-empty-poster-src="([^"]*empty-poster-150[^"]*)"`)
 
 func resolveTMDBidAndPosterURL(letterboxdURI string) (int, string) {
 	// Get the review page
@@ -89,10 +91,16 @@ func resolveTMDBidAndPosterURL(letterboxdURI string) (int, string) {
 	// Parse the poster link
 	elem = posterRegex.FindSubmatch(reviewBody)
 	if len(elem) < 2 {
-		err := errors.New("couldn't extract poster url from review")
-		log.Fatal().Err(err).
+		log.Debug().
 			Str("letterboxd_uri", letterboxdURI).
-			Msg("could not resolve TMDB id")
+			Msg("could not find poster for review. will try to get empty poster...")
+		elem = emptyPosterRegex.FindSubmatch(reviewBody)
+		if len(elem) < 2 {
+			err := errors.New("couldn't extract poster url from review")
+			log.Fatal().Err(err).
+				Str("letterboxd_uri", letterboxdURI).
+				Msg("could not resolve TMDB id")
+		}
 	}
 	posterURL := elem[1]
 
@@ -120,34 +128,19 @@ func resolveTMDBidAndPosterURL(letterboxdURI string) (int, string) {
 
 func fetchPage(url string) []byte {
 	// Make request
-	res, err := httpClient.Get(url)
-	if err == nil && res.StatusCode == 429 {
-		// Need to wait a bit and then retry
-		delaySec, _ := strconv.Atoi(res.Header.Get("Retry-After"))
-		log.Debug().
-			Int("delay_seconds", delaySec).
-			Msg("Letterboxd telling us to wait a bit...")
-		time.Sleep(time.Duration(delaySec+1) * time.Second)
-		return fetchPage(url)
-	}
-	if err == nil && (res.StatusCode < 200 || res.StatusCode > 399) {
-		err = fmt.Errorf("error reading url: %d", res.StatusCode)
-	}
-	if err != nil {
-		log.Fatal().Err(err).
-			Str("url", url).
-			Msg("http client error")
-	}
+	page := rod.New().MustConnect().MustPage(url).MustWaitDOMStable()
+	// if err == nil && res.StatusCode == 429 {
+	// 	// Need to wait a bit and then retry
+	// 	delaySec, _ := strconv.Atoi(res.Header.Get("Retry-After"))
+	// 	log.Debug().
+	// 		Int("delay_seconds", delaySec).
+	// 		Msg("Letterboxd telling us to wait a bit...")
+	// 	time.Sleep(time.Duration(delaySec+1) * time.Second)
+	// 	return fetchPage(url)
+	// }
 
 	// Read response
-	b, err := io.ReadAll(res.Body)
-	if err != nil {
-		log.Fatal().Err(err).
-			Str("url", url).
-			Msg("could not read response body")
-	}
-
-	return b
+	return []byte(page.MustHTML())
 }
 
 func findOrDownloadImage(tmdbID int, posterURL string) string {

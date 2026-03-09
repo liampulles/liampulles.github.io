@@ -5,7 +5,7 @@ import (
 	"html/template"
 	"time"
 
-	"cloud.google.com/go/civil"
+	"github.com/liampulles/liampulles.github.io/htmlgen/external/civil"
 )
 
 var DigitalRestorations []DatedPost

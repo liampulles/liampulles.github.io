@@ -15,7 +15,7 @@ import (
 	"strings"
 	"sync"
 
-	"cloud.google.com/go/civil"
+	"github.com/liampulles/liampulles.github.io/htmlgen/external/civil"
 	"github.com/liampulles/liampulles.github.io/htmlgen/parallel"
 	"github.com/rs/zerolog/log"
 )

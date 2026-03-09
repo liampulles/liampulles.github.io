@@ -3,7 +3,7 @@ package site
 import (
 	"time"
 
-	"cloud.google.com/go/civil"
+	"github.com/liampulles/liampulles.github.io/htmlgen/external/civil"
 )
 
 func init() {
