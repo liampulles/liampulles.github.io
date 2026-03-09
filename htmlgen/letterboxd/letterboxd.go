@@ -25,7 +25,7 @@ type Review struct {
 	Name          string
 	Year          int
 	LetterboxdURI string
-	Rating        int // Out of 10, divide by 2 to get star rating. 0 means no rating.
+	Rating        *int // Out of 10, divide by 2 to get star rating.
 	Rewatch       bool
 	Review        string // Multiline. Potentially partial HTML.
 	PosterHref    string
@@ -225,7 +225,7 @@ func readReviewCSVRow(row map[string]string) (Review, bool, error) {
 			Msg("malformed year column in reviews.csv")
 		return Review{}, false, err
 	}
-	var ratingF float64
+	var rating *int
 	if row["Rating"] != "" {
 		starRating, err := strconv.ParseFloat(row["Rating"], 64)
 		if err != nil {
@@ -234,7 +234,7 @@ func readReviewCSVRow(row map[string]string) (Review, bool, error) {
 				Msg("malformed rating column in reviews.csv")
 			return Review{}, false, err
 		}
-		ratingF = starRating * 2
+		ratingF := starRating * 2
 		if ratingF != math.Trunc(ratingF) {
 			err = errors.New("not a star rating. must go up in 0.5 increments")
 			log.Err(err).
@@ -242,6 +242,8 @@ func readReviewCSVRow(row map[string]string) (Review, bool, error) {
 				Msg("malformed rating column in reviews.csv")
 			return Review{}, false, err
 		}
+		ratingI := int(ratingF)
+		rating = &ratingI
 	}
 	rewatch := strings.EqualFold(row["Rewatch"], "Yes")
 
@@ -253,7 +255,7 @@ func readReviewCSVRow(row map[string]string) (Review, bool, error) {
 		Name:          row["Name"],
 		Year:          year,
 		LetterboxdURI: row["Letterboxd URI"],
-		Rating:        int(ratingF),
+		Rating:        rating,
 		Rewatch:       rewatch,
 		Review:        row["Review"],
 		PosterHref:    externalInfo.PosterHref,
