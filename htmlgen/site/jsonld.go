@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"cloud.google.com/go/civil"
+	"github.com/liampulles/liampulles.github.io/htmlgen/external/civil"
 )
 
 type JSONld []byte

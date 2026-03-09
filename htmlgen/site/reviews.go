@@ -89,14 +89,18 @@ func reviewsPageContent() template.HTML {
 	return execTemplate(rootTmpl, "reviews", data)
 }
 
-func starRating(rating int) template.HTML {
-	// Make the stars out of 8
-	if rating > 8 {
-		rating = 8
+func starRating(rating *int) template.HTML {
+	if rating == nil {
+		return template.HTML("(N/A)")
 	}
 
-	fullStars := rating / 2
-	halfStar := rating%2 == 1
+	// Make the stars out of 8
+	if *rating > 8 {
+		*rating = 8
+	}
+
+	fullStars := *rating / 2
+	halfStar := *rating%2 == 1
 
 	s := strings.Repeat(`<i class="fa-solid fa-star"></i>`, fullStars)
 	if halfStar {

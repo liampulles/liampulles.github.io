@@ -303,12 +303,10 @@ func doAll(jobs ...jobFn) (err error) {
 	var wg sync.WaitGroup
 	for i := range jobs {
 		job := jobs[i]
-		wg.Add(1)
-		go func() {
+		wg.Go(func() {
 			jErr := job()
 			err = errors.Join(err, jErr)
-			wg.Done()
-		}()
+		})
 	}
 	wg.Wait()
 	return err

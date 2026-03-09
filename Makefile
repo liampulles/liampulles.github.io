@@ -15,7 +15,7 @@ pre-commit: clean
 	minify -r -o _site/ _site_gen/
 	cp -r static/* _site
 
-watch:
+watch: /usr/bin/inotifywait
 	while true; do \
 		$(MAKE) pre-commit; \
 		inotifywait -qre close_write htmlgen; \
@@ -28,3 +28,6 @@ static/images/restorations-thumb/%.jpg: %.png
 
 install-minify:
 	go install github.com/tdewolff/minify/cmd/minify@latest
+
+/usr/bin/inotifywait:
+	sudo apt install inotify-tools
